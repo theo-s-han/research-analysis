@@ -1,8 +1,8 @@
-# 자료 분석 · Research Analysis
+# 자료분석
 
 HTML 조사 자료를 개별 주소로 공유하는 정적 자료실입니다. 검색, 분류, 정렬, 목록/카드 보기, 페이지 나누기, 링크 복사를 제공합니다. 원본 HTML의 표·차트·필터는 그대로 실행하며, 게시판과 자료 페이지를 함께 생성합니다.
 
-저장소 이름은 여러 주제의 자료를 포괄하는 `research-analysis`, 사이트 표시 이름은 **자료 분석**입니다.
+저장소 이름은 여러 주제의 자료를 포괄하는 `research-analysis`, 사이트 표시 이름은 **자료분석**입니다.
 
 - 공유 사이트: [자료 분석](https://theo-s-han.github.io/research-analysis/)
 - 저장소: [theo-s-han/research-analysis](https://github.com/theo-s-han/research-analysis)

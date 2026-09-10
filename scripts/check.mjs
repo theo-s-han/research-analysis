@@ -3,11 +3,18 @@ import path from 'node:path';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import { root, readJSON, hash, filesIn } from './lib.mjs';
+import { board } from './templates.mjs';
 
 const output = path.join(root, 'dist');
 const catalog = await readJSON(path.join(output, 'catalog.json'));
 const index = await fs.readFile(path.join(output, 'index.html'), 'utf8');
 const data = JSON.parse(index.match(/<script id="research-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+// Check site chrome separately so user-provided document titles remain unrestricted.
+const boardShell = board(await readJSON(path.join(root, 'site.config.json')), [], []).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+const boardCopy = boardShell.replace(/<[^>]+>/g, ' ');
+assert.doesNotMatch(boardCopy, /POLARIS\s*OFFICE|폴라리스오피스|Team knowledge|함께 쌓아가는 리서치|RESEARCH LIBRARY|TEAM RESEARCH|WORKSPACE|CONTRIBUTOR GUIDE/i, '사용자가 제공하지 않은 회사·팀·소개 문구가 게시판에 남아 있습니다.');
+assert.doesNotMatch(boardShell, /class="(?:brand-mark|workspace-profile|profile-avatar)"/, '임의의 회사 로고 또는 팀 프로필이 게시판에 남아 있습니다.');
+assert.match(boardShell, /<a class="brand"[^>]*>자료분석<\/a>/, '좌측 상단에는 사용자가 지정한 자료분석만 표시해야 합니다.');
 assert.equal(data.documents.length, catalog.documents.length);
 assert.equal(new Set(data.documents.map((doc) => doc.slug)).size, data.documents.length);
 for (const doc of catalog.documents) {
