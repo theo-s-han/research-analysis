@@ -1,0 +1,94 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>모델 비용 성능 비교</title><style>
+:root{--bg:#fff;--ink:#111;--muted:#777;--line:#d8d8d8;--red:#c92828;--cream:#f6f3ec}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif}.page{max-width:1500px;margin:auto;padding:38px 46px}header{display:grid;grid-template-columns:1.1fr .9fr;border-top:5px solid #111;border-bottom:1px solid #111;padding:18px 0 15px;gap:30px}h1{font-size:34px;line-height:1;margin:0;font-weight:500;letter-spacing:-.035em}header p{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;line-height:1.6;color:var(--muted);margin:0;align-self:end}.picks{display:grid;grid-template-columns:repeat(4,1fr);margin:26px 0 30px;border-top:1px solid #111;border-bottom:1px solid #111}.pick{padding:16px 14px;border-right:1px solid var(--line)}.pick:last-child{border:0}.pick small{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--muted);font-size:10px}.pick b{display:block;font-size:19px;margin:4px 0 14px}.pick strong{font-size:24px;font-weight:500}.ledger-head,.line{display:grid;grid-template-columns:.85fr 1.55fr .85fr .9fr .8fr .8fr .72fr .72fr .72fr .72fr;align-items:center}.ledger-head{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:10px;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid #111}.line{min-height:50px;padding:0 12px;border-bottom:1px solid var(--line);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px}.line.key{background:var(--cream)}.line.key .model b:after{content:'  추천';font-size:9px;font-weight:500;color:var(--red);text-transform:uppercase;letter-spacing:.06em}.cost{font-family:Georgia,"Times New Roman",serif;font-size:17px}.line .agent{color:var(--muted);font-size:11px}.line.legacy .model b:after{content:"  이전";font-size:9px;font-weight:500;color:var(--muted);letter-spacing:.05em}.line.external .model b:after{content:"  다른 도구";font-size:9px;font-weight:500;color:var(--red);letter-spacing:.05em}.score{text-align:right}.notes{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:28px;padding-top:16px;border-top:1px solid #111;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.notes h2{font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px}.notes p{font-size:12px;color:var(--muted);line-height:1.7;margin:0}
+.tip{position:relative;display:inline-flex;align-items:center;gap:5px;cursor:help}.tip i{font-style:normal;font-size:9px;width:15px;height:15px;border:1px solid currentColor;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;opacity:.55}.tip:hover:after,.tip:focus:after{content:attr(data-tip);position:absolute;z-index:50;left:0;top:calc(100% + 8px);width:360px;max-width:80vw;padding:11px 12px;background:#101216;color:#fff;border-radius:8px;font-size:12px;line-height:1.55;font-weight:450;white-space:normal;box-shadow:0 10px 30px #0003}.tip:hover:before,.tip:focus:before{content:"";position:absolute;z-index:51;left:18px;top:calc(100% + 2px);border:6px solid transparent;border-bottom-color:#101216}
+.tip{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}@media(max-width:1100px){.page{padding:28px 24px}.ledger-wrap{overflow-x:auto}.ledger{min-width:1200px}}@media(max-width:800px){header{grid-template-columns:1fr}.picks{grid-template-columns:1fr 1fr}}
+
+.results{margin-top:34px;border-top:3px solid #111;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.results-title{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:14px 12px 9px;border-bottom:1px solid #111}.results-title h2{font:500 25px Georgia,"Times New Roman",serif;margin:0}.results-title p{margin:4px 0 0;color:var(--muted);font-size:11px}.result-row{display:grid;grid-template-columns:150px 150px 1fr;gap:24px;align-items:start;padding:14px 12px;border-bottom:1px solid var(--line);font-size:12px;line-height:1.6}.result-row .tag{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:2px}.result-row b{font-family:Georgia,"Times New Roman",serif;font-size:17px;font-weight:500;line-height:1.35}.result-row .why{color:#4b4b4b}.result-row.skip{background:#fafafa}.result-row.skip b{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;font-weight:650}.result-row strong{color:var(--ink)}.result-foot{padding:10px 12px;color:var(--muted);font-size:10px;line-height:1.55}@media(max-width:800px){.results-title,.result-row{grid-template-columns:1fr;gap:5px}.result-row{padding:13px 10px}}
+
+
+</style></head><body><main class="page"><header><h1>모델 비용<br>성능 비교</h1><p></p></header><section class="picks"><div class="pick"><small>명확한 작업</small><b>Luna Max</b><strong>1.0×</strong></div><div class="pick"><small>한 단계 상향</small><b>Sol Medium</b><strong>7.2~8.8×</strong></div><div class="pick"><small>복잡한 분석</small><b>Sol High</b><strong>10.0~12.5×</strong></div><div class="pick"><small>최후 수단</small><b>Sol Max</b><strong>16.5~20.6×</strong></div></section><div class="ledger-wrap"><div class="ledger"><div class="ledger-head">
+<span>Agent</span>
+<span>Model</span>
+<span><span class="tip" tabindex="0" data-tip="한 작업을 수행할 때 Codex 사용 한도가 얼마나 소모될 수 있는지를 Luna Max = 1.0배로 비교한 값입니다. 예: 6.0×라면 같은 수준의 작업을 반복할 때 Luna Max보다 약 6배 큰 한도 비용이 들 수 있다는 뜻입니다. 실제 결제 금액이나 실제 처리 토큰 개수를 뜻하지 않습니다. GPT-5.6 이외 모델은 같은 기준의 추정치가 없어 —로 표시합니다.">Token cost<i>?</i></span></span>
+<span style="text-align:right"><span class="tip" tabindex="0" data-tip="Artificial Analysis 평가 작업 1건에서 에이전트가 평균적으로 처리한 전체 토큰량입니다. 입력·캐시·출력 토큰을 포함한 비교값입니다. 위 Token cost와는 다른 값입니다. Tokens / Task가 많다고 반드시 Codex 한도 비용도 같은 비율로 커지는 것은 아닙니다.">Tokens / Task<i>?</i></span></span>
+<span style="text-align:right"><span class="tip" tabindex="0" data-tip="Artificial Analysis 평가에서 작업 1건을 수행하는 동안 발생한 평균 API 비용입니다. 낮을수록 같은 벤치마크 작업을 더 싸게 수행했다는 뜻입니다. ChatGPT/Codex 구독 한도나 회사 내부 과금과는 다른 값입니다.">$ / Task<i>?</i></span></span>
+<span style="text-align:right"><span class="tip" tabindex="0" data-tip="Artificial Analysis의 코딩 에이전트 평가에서 작업 1건을 끝내는 데 걸린 평균 시간입니다. 낮을수록 결과가 빨리 나왔다는 뜻입니다. 예: 6.3분은 평가 작업 한 건을 약 6.3분에 처리했다는 의미입니다. 실제 업무 시간은 작업 크기와 환경에 따라 달라질 수 있으므로 모델 간 속도 비교용으로 보는 것이 좋습니다.">Time<i>?</i></span></span>
+<span style="text-align:right"><span class="tip" tabindex="0" data-tip="코딩 에이전트가 개발 작업을 처음부터 끝까지 얼마나 잘 해결하는지 보는 종합 점수입니다. DeepSWE, Terminal-Bench, SWE-Atlas 계열 평가를 합쳐 봅니다. 예: ‘저장 후 값이 깨진다’는 문제가 주어졌을 때 원인을 추정하고, 관련 파일을 찾고, 필요한 명령을 실행하고, 수정 방향까지 잡는 전체 능력입니다. 점수가 높을수록 특정 한 가지 능력보다 전반적인 문제 해결력이 좋다고 보면 됩니다.">Index<i>?</i></span></span>
+<span style="text-align:right"><span class="tip" tabindex="0" data-tip="실제 소프트웨어 프로젝트에서 코드를 읽고 문제를 찾아 수정하는 능력을 봅니다. 단순히 질문에 답하는 것이 아니라 저장소 안의 여러 파일을 확인하고 실제 변경이 필요한 상황에 가깝습니다. 예: ‘특정 파일을 저장하면 날짜 형식이 깨진다’는 문제가 있을 때 관련 코드를 찾아 원인을 파악하고 수정하는 작업입니다. 점수가 높을수록 버그 수정이나 기능 변경처럼 실제 코드 손질이 필요한 작업에 강하다고 볼 수 있습니다.">DeepSWE<i>?</i></span></span>
+<span style="text-align:right"><span class="tip" tabindex="0" data-tip="터미널에서 여러 단계의 작업을 스스로 이어서 수행하는 능력을 봅니다. 한 번의 명령으로 끝나는지가 아니라, 결과를 보고 다음 행동을 판단하는 것이 중요합니다. 예: 빌드 실행 → 실패 로그 확인 → 관련 테스트만 다시 실행 → 설정이나 파일 확인 → 재검증처럼 여러 단계를 연속으로 처리하는 상황입니다. 점수가 높을수록 자동 검증, 빌드, 테스트, 로그 분석처럼 절차가 이어지는 작업에 강하다고 볼 수 있습니다.">Terminal<i>?</i></span></span>
+<span style="text-align:right"><span class="tip edge" tabindex="0" data-tip="코드베이스의 구조와 문맥을 이해하고 필요한 정보를 정확히 찾아내는 능력을 봅니다. 직접 코드를 고치는 능력보다는 ‘어디를 봐야 하는가’를 이해하는 쪽에 가깝습니다. 예: ‘셀 병합 기능은 어느 모듈에서 처리하는가?’, ‘이 함수를 바꾸면 어떤 기능이 영향을 받는가?’ 같은 질문에 코드 전체를 살펴 답하는 상황입니다. 점수가 높을수록 낯선 코드에서 위치를 찾거나 영향 범위를 파악하는 데 유리하다고 볼 수 있습니다.">Atlas<i>?</i></span></span>
+</div><section><article class="line"><div class="agent">Codex</div><div class="model"><b>Luna Medium</b></div><div class="cost">0.27×</div><div class="score">4.4M</div><div class="score">$0.09</div><div class="score">3.4분</div><div class="score">42</div><div class="score">37%</div><div class="score">62%</div><div class="score">27%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Luna High</b></div><div class="cost">0.60×</div><div class="score">9.5M</div><div class="score">$0.19</div><div class="score">5.7분</div><div class="score">52</div><div class="score">53%</div><div class="score">73%</div><div class="score">29%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Luna XHigh</b></div><div class="cost">0.80×</div><div class="score">12.3M</div><div class="score">$0.25</div><div class="score">6.6분</div><div class="score">53</div><div class="score">57%</div><div class="score">71%</div><div class="score">31%</div></article><article class="line key"><div class="agent">Codex</div><div class="model"><b>Luna Max</b></div><div class="cost">1.00×</div><div class="score">15.5M</div><div class="score">$0.31</div><div class="score">8.0분</div><div class="score">57</div><div class="score">63%</div><div class="score">75%</div><div class="score">33%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Terra Medium</b></div><div class="cost">2.00×</div><div class="score">3.1M</div><div class="score">$0.72</div><div class="score">4.3분</div><div class="score">48</div><div class="score">46%</div><div class="score">70%</div><div class="score">29%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Terra High</b></div><div class="cost">3.52×</div><div class="score">5.5M</div><div class="score">$1.27</div><div class="score">6.2분</div><div class="score">55</div><div class="score">60%</div><div class="score">72%</div><div class="score">31%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Terra XHigh</b></div><div class="cost">4.16×</div><div class="score">6.5M</div><div class="score">$1.52</div><div class="score">6.9분</div><div class="score">56</div><div class="score">58%</div><div class="score">77%</div><div class="score">33%</div></article><article class="line key"><div class="agent">Codex</div><div class="model"><b>Terra Max</b></div><div class="cost">6.00×</div><div class="score">9.5M</div><div class="score">$2.21</div><div class="score">8.4분</div><div class="score">60</div><div class="score">67%</div><div class="score">78%</div><div class="score">36%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Sol Medium</b></div><div class="cost">7.2~8.8×</div><div class="score">5.8M</div><div class="score">$2.99</div><div class="score">5.2분</div><div class="score">62</div><div class="score">64%</div><div class="score">81%</div><div class="score">40%</div></article><article class="line key"><div class="agent">Codex</div><div class="model"><b>Sol High</b></div><div class="cost">10.0~12.5×</div><div class="score">8.1M</div><div class="score">$4.14</div><div class="score">6.3분</div><div class="score">64</div><div class="score">65%</div><div class="score">82%</div><div class="score">45%</div></article><article class="line"><div class="agent">Codex</div><div class="model"><b>Sol XHigh</b></div><div class="cost">12.4~15.4×</div><div class="score">9.9M</div><div class="score">$5.24</div><div class="score">7.4분</div><div class="score">63</div><div class="score">67%</div><div class="score">80%</div><div class="score">43%</div></article><article class="line key"><div class="agent">Codex</div><div class="model"><b>Sol Max</b></div><div class="cost">16.5~20.6×</div><div class="score">13.2M</div><div class="score">$7.08</div><div class="score">10.2분</div><div class="score">65</div><div class="score">69%</div><div class="score">83%</div><div class="score">43%</div></article><article class="line legacy"><div class="agent">Codex</div><div class="model"><b>GPT-5.5 (xhigh)</b></div><div class="cost">—</div><div class="score">12.3M</div><div class="score">$5.07</div><div class="score">10.1분</div><div class="score">61</div><div class="score">—</div><div class="score">—</div><div class="score">—</div></article><article class="line legacy"><div class="agent">Codex</div><div class="model"><b>GPT-5.5 (medium)</b></div><div class="cost">—</div><div class="score">7M</div><div class="score">$2.75</div><div class="score">6.4분</div><div class="score">54</div><div class="score">—</div><div class="score">—</div><div class="score">—</div></article><article class="line legacy"><div class="agent">Codex</div><div class="model"><b>GPT-5.4 (medium)</b></div><div class="cost">—</div><div class="score">5.9M</div><div class="score">$2.42</div><div class="score">7.1분</div><div class="score">39</div><div class="score">—</div><div class="score">—</div><div class="score">—</div></article><article class="line external"><div class="agent">Claude Code</div><div class="model"><b>Fable 5 (max) · fallback</b></div><div class="cost">—</div><div class="score">14M</div><div class="score">$11.70</div><div class="score">23.4분</div><div class="score">66</div><div class="score">—</div><div class="score">—</div><div class="score">—</div></article><article class="line external"><div class="agent">Grok Build</div><div class="model"><b>Grok 4.5 (high)</b></div><div class="cost">—</div><div class="score">3.6M</div><div class="score">$2.59</div><div class="score">16.5분</div><div class="score">64</div><div class="score">—</div><div class="score">—</div><div class="score">—</div></article></section></div></div>
+<section class="results">
+  <div class="results-title">
+    <h2>결론</h2>
+    <p>작업이 명확하면 Luna Max, 문제 정의부터 필요하면 Sol.</p>
+  </div>
+
+  <div class="result-row">
+    <div class="tag">기본</div>
+    <b>Luna Max</b>
+    <div class="why"><strong>일을 잘 정의해서 주면 매우 효율적입니다.</strong> 해야 할 일, 대상 기능, 기대 결과가 명확한 검증·수정·자동화 작업에 적합합니다. 반대로 <strong>무엇을 해야 하는지, 어디가 문제인지부터 모델이 판단해야 하는 작업에는 적합하지 않습니다.</strong> 그런 작업이라면 Luna에서 실패할 때까지 기다리기보다 처음부터 Sol을 선택하는 편이 낫습니다.</div>
+  </div>
+
+  <div class="result-row">
+    <div class="tag">원인 분석</div>
+    <b>Sol Medium</b>
+    <div class="why"><strong>문제는 보이지만 원인이나 해결 방향이 명확하지 않을 때</strong> 사용합니다. 예: 테스트가 왜 실패하는지, 어떤 파일이 원인인지, 여러 로그 중 무엇을 먼저 봐야 하는지부터 판단해야 하는 작업. <strong>7.2~8.8× / Index 62</strong>로 비용은 크게 올라가지만 Luna Max보다 문제 탐색과 판단이 필요한 작업에 적합합니다.</div>
+  </div>
+
+  <div class="result-row">
+    <div class="tag">복잡한 분석</div>
+    <b>Sol High</b>
+    <div class="why">여러 파일·로그·기능이 얽혀 있거나, 원인 후보가 많고 영향 범위까지 판단해야 하는 문제에 사용합니다. <strong>10.0~12.5× / Index 64</strong>. Sol Medium보다 한 단계 높은 분석이 필요할 때 선택하면 됩니다.</div>
+  </div>
+
+  <div class="result-row">
+    <div class="tag">최후 수단</div>
+    <b>Sol Max</b>
+    <div class="why">일반적인 기본 모델로 쓰기에는 비용이 너무 큽니다. <strong>16.5~20.6×</strong>인데 Index는 65로 Sol High보다 1점 높습니다. <strong>Sol High에서도 해결되지 않거나 한 번의 정확한 분석이 매우 중요한 경우</strong>에만 사용하는 편이 합리적입니다.</div>
+  </div>
+
+  <div class="result-row">
+    <div class="tag">조건부</div>
+    <b>Terra Max</b>
+    <div class="why">Luna Max보다 더 많은 판단이 필요하지만 Sol까지 올리기에는 한도 비용이 부담스러운 경우의 중간 선택지입니다. <strong>6.0× / Index 60</strong>. 다만 Sol Medium과 비용 차이가 크지 않고 성능은 낮아 <strong>주력 모델이라기보다 비용 제한이 있을 때의 선택지</strong>에 가깝습니다.</div>
+  </div>
+
+  <div class="result-row skip">
+    <div class="tag">사실상 제외</div>
+    <b>Luna Medium / High</b>
+    <div class="why">비용은 낮지만 Index가 <strong>42 / 52</strong>로 낮습니다. 검증 업무에서 모델의 판단 결과를 다시 사람이 확인해야 한다면 절약되는 한도보다 재확인 비용이 더 커질 수 있습니다. <strong>Luna를 쓸 정도로 작업이 명확하다면 Luna Max를 사용하는 편이 낫습니다.</strong></div>
+  </div>
+
+  <div class="result-row skip">
+    <div class="tag">사실상 제외</div>
+    <b>Luna XHigh</b>
+    <div class="why">High 대비 비용은 <strong>0.60× → 0.80×</strong>로 늘지만 Index는 <strong>52 → 53</strong>입니다. Luna 계열을 사용할 상황이라면 <strong>Luna Max로 바로 올리는 편</strong>이 단순하고 안정적입니다.</div>
+  </div>
+
+  <div class="result-row skip">
+    <div class="tag">사실상 제외</div>
+    <b>Terra Medium / High / XHigh</b>
+    <div class="why">비용은 <strong>2.0~4.16×</strong>인데 Index는 <strong>48~56</strong>으로 Luna Max의 57보다 낮습니다. 현재 표의 비용·시간·점수 조합만 보면 <strong>중간 단계를 선택할 이점이 작습니다.</strong></div>
+  </div>
+
+  <div class="result-row skip">
+    <div class="tag">사실상 제외</div>
+    <b>Sol XHigh</b>
+    <div class="why">Sol High보다 비싸고(<strong>12.4~15.4×</strong>), 느리고(<strong>7.4분</strong>), Index도 낮습니다(<strong>63 vs 64</strong>). DeepSWE 점수만 특별히 우선하는 경우가 아니라면 <strong>Sol High를 사용하는 편이 낫습니다.</strong></div>
+  </div>
+
+  <div class="result-row skip">
+    <div class="tag">이전 모델</div>
+    <b>GPT-5.5 / GPT-5.4</b>
+    <div class="why">신규 작업에서는 GPT-5.6 계열보다 우선할 이유가 적습니다. GPT-5.5 xhigh는 <strong>Index 61 / 10.1분</strong>, GPT-5.4 medium은 <strong>Index 39</strong>입니다. <strong>기존 결과 재현이나 호환성 확인</strong>이 필요한 경우에만 남겨두는 편이 좋습니다.</div>
+  </div>
+
+  <div class="result-row">
+    <div class="tag">외부 참고</div>
+    <b>Fable 5 / Grok 4.5</b>
+    <div class="why">Codex에서 직접 선택하는 모델은 아닙니다. Fable 5는 <strong>Index 66</strong>으로 성능 상한 비교에, Grok 4.5는 <strong>Index 64 · 3.6M tokens · $2.59/task</strong>로 외부 에이전트의 비용 효율 비교에 참고할 만합니다.</div>
+  </div>
+
+  <div class="result-foot">※ “사실상 제외”는 모델을 사용할 수 없다는 뜻이 아니라, 현재 표에서 인접 모델 대비 비용·시간·점수 조합의 선택 이점이 작다는 의미입니다.</div>
+</section></main></body></html>

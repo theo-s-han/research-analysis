@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Codex 모델 성능·사용량 비교</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg:#ffffff; --fg:#171717; --muted:#666; --line:#dedede;
+    --head:#f4f4f5; --card:#fafafa; --accent:#2563eb; --accent-soft:#dbeafe;
+    --grid:#e5e7eb; --range:#94a3b8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#111214; --fg:#ececec; --muted:#a6a6a6; --line:#32343a;
+      --head:#1b1d22; --card:#17191e; --accent:#60a5fa; --accent-soft:#172554;
+      --grid:#30343b; --range:#94a3b8;
+    }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:28px; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+  }
+  h1 { margin:0 0 8px; font-size:24px; }
+  .sub { color:var(--muted); font-size:13px; line-height:1.6; margin-bottom:18px; }
+  .table-wrap { overflow:auto; border:1px solid var(--line); border-radius:12px; }
+  table { width:100%; min-width:940px; border-collapse:collapse; font-size:13px; }
+  th, td { padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { background:var(--head); text-align:right; position:sticky; top:0; z-index:2; }
+  th:first-child, td:first-child { text-align:left; }
+  td { text-align:right; }
+  tbody tr:hover { background:var(--card); }
+  tbody tr.reference { background:var(--accent-soft); font-weight:700; }
+  .hint {
+    display:inline-flex; width:16px; height:16px; margin-left:5px;
+    align-items:center; justify-content:center; border:1px solid var(--muted);
+    border-radius:50%; font-size:10px; color:var(--muted); cursor:help;
+    vertical-align:middle;
+  }
+  [data-tip] { position:relative; cursor:help; }
+  [data-tip]:hover::after, [data-tip]:focus::after {
+    content:attr(data-tip);
+    position:absolute; z-index:20; left:50%; top:calc(100% + 8px);
+    transform:translateX(-50%);
+    width:min(340px,80vw); padding:10px 12px;
+    background:#111827; color:#fff; border-radius:8px;
+    font-weight:400; font-size:12px; line-height:1.5; white-space:normal;
+    text-align:left; box-shadow:0 8px 24px rgba(0,0,0,.22);
+  }
+  [data-tip]:hover::before, [data-tip]:focus::before {
+    content:""; position:absolute; z-index:21; left:50%; top:calc(100% + 2px);
+    transform:translateX(-50%);
+    border:6px solid transparent; border-bottom-color:#111827;
+  }
+  .section { margin-top:28px; }
+  .section h2 { font-size:18px; margin:0 0 6px; }
+  .section p { margin:0 0 14px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .chart-card {
+    border:1px solid var(--line); border-radius:12px; padding:16px;
+    background:var(--card);
+  }
+  #chart { width:100%; height:auto; display:block; }
+  .legend {
+    display:flex; gap:16px; flex-wrap:wrap; margin-top:10px;
+    font-size:12px; color:var(--muted);
+  }
+  .legend span { display:inline-flex; gap:6px; align-items:center; }
+  .line-swatch { width:18px; height:0; border-top:2px solid var(--accent); }
+  .range-swatch { width:18px; height:8px; border-left:2px solid var(--range); border-right:2px solid var(--range); border-top:1px solid var(--range); border-bottom:1px solid var(--range); }
+  .footnote {
+    margin-top:18px; padding:14px 16px; border:1px solid var(--line);
+    border-radius:10px; background:var(--card); color:var(--muted);
+    font-size:12px; line-height:1.6;
+  }
+  .chart-tooltip {
+    position:fixed; z-index:100; display:none; pointer-events:none;
+    background:#111827; color:white; padding:8px 10px; border-radius:7px;
+    font-size:12px; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.25);
+  }
+  @media (max-width:700px) {
+    body { padding:16px; }
+    h1 { font-size:20px; }
+    .chart-card { padding:10px; }
+  }
+</style>
+</head>
+<body>
+<h1>Codex 모델 성능·사용량 비교</h1>
+<div class="sub">
+  기준: <strong>Luna XHigh = 1.00×</strong>. 성능 지표는 Artificial Analysis 기준이며,
+  Codex 한도 소비는 공개 자료를 바탕으로 한 상대 추정치입니다.
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>모델</th>
+      <th tabindex="0" data-tip="Luna XHigh를 1.00×로 둔 상대적 Codex 사용량 추정치입니다. OpenAI가 reasoning effort별 정확한 소비 배율을 공개하지 않아 일부 값은 범위로 표시합니다.">Codex 한도 소비 추정 <span class="hint">?</span></th>
+      <th tabindex="0" data-tip="Artificial Analysis의 일반 지능 종합 지표입니다. 코딩만이 아니라 추론·지식·수학 등 여러 능력을 합산한 점수입니다.">AA Intelligence <span class="hint">?</span></th>
+      <th tabindex="0" data-tip="Artificial Analysis Coding Agent Index. 실제 코딩 에이전트 작업 능력을 평가하며 DeepSWE, Terminal-Bench v2.1, SWE-Atlas-QnA를 종합합니다.">AA Coding Agent <span class="hint">?</span></th>
+      <th tabindex="0" data-tip="실제 소프트웨어 엔지니어링 문제 해결 능력 평가입니다. 저장소를 이해하고 버그 수정·기능 구현 등 코드 변경을 수행하는 능력에 초점을 둡니다.">DeepSWE <span class="hint">?</span></th>
+      <th tabindex="0" data-tip="Terminal-Bench v2.1. 터미널 환경에서 여러 단계의 작업을 계획하고 명령을 실행해 목표를 달성하는 에이전트 능력을 평가합니다.">Terminal 2.1 <span class="hint">?</span></th>
+      <th tabindex="0" data-tip="SWE-Atlas-QnA. 코드베이스와 소프트웨어 엔지니어링 문맥을 이해하고 관련 질문에 정확히 답하는 능력을 평가합니다.">SWE-Atlas <span class="hint">?</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Luna Medium</td>
+      <td><strong>~0.34×</strong></td>
+      <td>39</td>
+      <td><strong>42</strong></td>
+      <td>37%</td>
+      <td>62%</td>
+      <td>27%</td>
+    </tr>
+    <tr>
+      <td>Luna High</td>
+      <td><strong>~0.75×</strong></td>
+      <td>47</td>
+      <td><strong>52</strong></td>
+      <td>53%</td>
+      <td>73%</td>
+      <td>29%</td>
+    </tr>
+    <tr class="reference">
+      <td>Luna XHigh</td>
+      <td><strong>1.00×</strong></td>
+      <td>50</td>
+      <td><strong>53</strong></td>
+      <td>57%</td>
+      <td>71%</td>
+      <td>31%</td>
+    </tr>
+    <tr>
+      <td>Luna Max</td>
+      <td><strong>~1.25×</strong></td>
+      <td>52</td>
+      <td><strong>57</strong></td>
+      <td>63%</td>
+      <td>75%</td>
+      <td>33%</td>
+    </tr>
+    <tr>
+      <td>Terra Medium</td>
+      <td><strong>~2.5×</strong></td>
+      <td>47</td>
+      <td><strong>48</strong></td>
+      <td>46%</td>
+      <td>70%</td>
+      <td>29%</td>
+    </tr>
+    <tr>
+      <td>Terra High</td>
+      <td><strong>~4.4×</strong></td>
+      <td>50</td>
+      <td><strong>55</strong></td>
+      <td>60%</td>
+      <td>72%</td>
+      <td>31%</td>
+    </tr>
+    <tr>
+      <td>Terra XHigh</td>
+      <td><strong>~5.2×</strong></td>
+      <td>53</td>
+      <td><strong>56</strong></td>
+      <td>58%</td>
+      <td>77%</td>
+      <td>33%</td>
+    </tr>
+    <tr>
+      <td>Terra Max</td>
+      <td><strong>~7.5×</strong></td>
+      <td>57</td>
+      <td><strong>60</strong></td>
+      <td>67%</td>
+      <td>78%</td>
+      <td>36%</td>
+    </tr>
+    <tr>
+      <td>Sol Medium</td>
+      <td><strong>~9–11×</strong></td>
+      <td>56</td>
+      <td><strong>62</strong></td>
+      <td>64%</td>
+      <td>81%</td>
+      <td>40%</td>
+    </tr>
+    <tr>
+      <td>Sol High</td>
+      <td><strong>~12.5–15.6×</strong></td>
+      <td>57</td>
+      <td><strong>64</strong></td>
+      <td>65%</td>
+      <td>82%</td>
+      <td>45%</td>
+    </tr>
+    <tr>
+      <td>Sol XHigh</td>
+      <td><strong>~15.5–19.3×</strong></td>
+      <td>59</td>
+      <td><strong>63</strong></td>
+      <td>67%</td>
+      <td>80%</td>
+      <td>43%</td>
+    </tr>
+    <tr>
+      <td>Sol Max</td>
+      <td><strong>~20.6–25.8×</strong></td>
+      <td>61</td>
+      <td><strong>65</strong></td>
+      <td>69%</td>
+      <td>83%</td>
+      <td>43%</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<section class="section">
+  <h2>작업당 Codex 사용량 차이</h2>
+  <p>라인은 각 설정의 대표값을 연결합니다. 범위가 있는 Sol 계열은 세로 막대로 최소~최대 추정치를 함께 표시합니다.</p>
+  <div class="chart-card">
+    <svg id="chart" viewBox="0 0 1100 520" role="img" aria-label="Luna XHigh를 1로 둔 Codex 모델별 상대 사용량 라인 차트"></svg>
+    <div class="legend">
+      <span><i class="line-swatch"></i> 대표 소비 배율</span>
+      <span><i class="range-swatch"></i> 추정 범위</span>
+    </div>
+  </div>
+</section>
+
+<div class="footnote">
+  <strong>주의:</strong> Codex 한도 소비 배율은 OpenAI가 reasoning effort별 정확한 multiplier를 공개하지 않아 추정치입니다.
+  Sol의 범위는 이 불확실성을 그대로 보이기 위해 최소~최대값으로 표현했습니다.
+</div>
+
+<div class="chart-tooltip" id="chartTooltip"></div>
+
+<script>
+const data = [{"model": "Luna Medium", "usage": "~0.34×", "usage_min": 0.34, "usage_max": 0.34, "usage_point": 0.34, "intel": 39, "coding": 42, "deepswe": 37, "terminal": 62, "atlas": 27}, {"model": "Luna High", "usage": "~0.75×", "usage_min": 0.75, "usage_max": 0.75, "usage_point": 0.75, "intel": 47, "coding": 52, "deepswe": 53, "terminal": 73, "atlas": 29}, {"model": "Luna XHigh", "usage": "1.00×", "usage_min": 1.0, "usage_max": 1.0, "usage_point": 1.0, "intel": 50, "coding": 53, "deepswe": 57, "terminal": 71, "atlas": 31}, {"model": "Luna Max", "usage": "~1.25×", "usage_min": 1.25, "usage_max": 1.25, "usage_point": 1.25, "intel": 52, "coding": 57, "deepswe": 63, "terminal": 75, "atlas": 33}, {"model": "Terra Medium", "usage": "~2.5×", "usage_min": 2.5, "usage_max": 2.5, "usage_point": 2.5, "intel": 47, "coding": 48, "deepswe": 46, "terminal": 70, "atlas": 29}, {"model": "Terra High", "usage": "~4.4×", "usage_min": 4.4, "usage_max": 4.4, "usage_point": 4.4, "intel": 50, "coding": 55, "deepswe": 60, "terminal": 72, "atlas": 31}, {"model": "Terra XHigh", "usage": "~5.2×", "usage_min": 5.2, "usage_max": 5.2, "usage_point": 5.2, "intel": 53, "coding": 56, "deepswe": 58, "terminal": 77, "atlas": 33}, {"model": "Terra Max", "usage": "~7.5×", "usage_min": 7.5, "usage_max": 7.5, "usage_point": 7.5, "intel": 57, "coding": 60, "deepswe": 67, "terminal": 78, "atlas": 36}, {"model": "Sol Medium", "usage": "~9–11×", "usage_min": 9.0, "usage_max": 11.0, "usage_point": 10.0, "intel": 56, "coding": 62, "deepswe": 64, "terminal": 81, "atlas": 40}, {"model": "Sol High", "usage": "~12.5–15.6×", "usage_min": 12.5, "usage_max": 15.6, "usage_point": 14.05, "intel": 57, "coding": 64, "deepswe": 65, "terminal": 82, "atlas": 45}, {"model": "Sol XHigh", "usage": "~15.5–19.3×", "usage_min": 15.5, "usage_max": 19.3, "usage_point": 17.4, "intel": 59, "coding": 63, "deepswe": 67, "terminal": 80, "atlas": 43}, {"model": "Sol Max", "usage": "~20.6–25.8×", "usage_min": 20.6, "usage_max": 25.8, "usage_point": 23.2, "intel": 61, "coding": 65, "deepswe": 69, "terminal": 83, "atlas": 43}];
+
+(function drawChart() {
+  const svg = document.getElementById('chart');
+  const tip = document.getElementById('chartTooltip');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  const W = 1100, H = 520;
+  const m = {top:30, right:30, bottom:120, left:70};
+  const cw = W - m.left - m.right;
+  const ch = H - m.top - m.bottom;
+  const ymax = 28;
+
+  const css = getComputedStyle(document.documentElement);
+  const fg = css.getPropertyValue('--fg').trim();
+  const muted = css.getPropertyValue('--muted').trim();
+  const grid = css.getPropertyValue('--grid').trim();
+  const accent = css.getPropertyValue('--accent').trim();
+  const range = css.getPropertyValue('--range').trim();
+  const bg = css.getPropertyValue('--bg').trim();
+
+  const x = i => m.left + i * (cw / (data.length - 1));
+  const y = v => m.top + ch - (v / ymax) * ch;
+
+  function el(name, attrs = {}, text = null) {
+    const e = document.createElementNS(NS, name);
+    for (const [k,v] of Object.entries(attrs)) e.setAttribute(k, v);
+    if (text !== null) e.textContent = text;
+    svg.appendChild(e);
+    return e;
+  }
+
+  // Grid + Y labels
+  for (let v = 0; v <= ymax; v += 4) {
+    const yy = y(v);
+    el('line', {x1:m.left, y1:yy, x2:W-m.right, y2:yy, stroke:grid, 'stroke-width':1});
+    el('text', {x:m.left-12, y:yy+4, fill:muted, 'font-size':12, 'text-anchor':'end'}, v + '×');
+  }
+
+  // Baseline
+  el('line', {x1:m.left, y1:y(1), x2:W-m.right, y2:y(1), stroke:muted, 'stroke-width':1, 'stroke-dasharray':'5 5'});
+  el('text', {x:W-m.right, y:y(1)-7, fill:muted, 'font-size':11, 'text-anchor':'end'}, 'Luna XHigh = 1.00×');
+
+  // Range whiskers
+  data.forEach((d,i) => {
+    if (d.usage_min !== d.usage_max) {
+      const xx = x(i), y1 = y(d.usage_min), y2 = y(d.usage_max);
+      el('line', {x1:xx, y1:y1, x2:xx, y2:y2, stroke:range, 'stroke-width':3});
+      el('line', {x1:xx-7, y1:y1, x2:xx+7, y2:y1, stroke:range, 'stroke-width':2});
+      el('line', {x1:xx-7, y1:y2, x2:xx+7, y2:y2, stroke:range, 'stroke-width':2});
+    }
+  });
+
+  // Path
+  const dPath = data.map((d,i) => `${i===0?'M':'L'} ${x(i)} ${y(d.usage_point)}`).join(' ');
+  el('path', {d:dPath, fill:'none', stroke:accent, 'stroke-width':3, 'stroke-linejoin':'round', 'stroke-linecap':'round'});
+
+  // Points + labels
+  data.forEach((d,i) => {
+    const xx = x(i), yy = y(d.usage_point);
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('tabindex','0');
+    g.setAttribute('role','button');
+    g.style.cursor = 'pointer';
+
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', xx); c.setAttribute('cy', yy); c.setAttribute('r', 5.5);
+    c.setAttribute('fill', accent); c.setAttribute('stroke', bg); c.setAttribute('stroke-width', 2);
+    g.appendChild(c);
+
+    const value = document.createElementNS(NS, 'text');
+    value.setAttribute('x', xx);
+    value.setAttribute('y', yy - 10);
+    value.setAttribute('fill', fg);
+    value.setAttribute('font-size', '11');
+    value.setAttribute('font-weight', '600');
+    value.setAttribute('text-anchor', 'middle');
+    value.textContent = d.usage;
+    g.appendChild(value);
+
+    const label = document.createElementNS(NS, 'text');
+    label.setAttribute('x', xx);
+    label.setAttribute('y', H - m.bottom + 18);
+    label.setAttribute('fill', fg);
+    label.setAttribute('font-size', '11');
+    label.setAttribute('text-anchor', 'end');
+    label.setAttribute('transform', `rotate(-48 ${xx} ${H-m.bottom+18})`);
+    label.textContent = d.model;
+    g.appendChild(label);
+
+    const show = (ev) => {
+      tip.innerHTML = `<strong>${d.model}</strong><br>Codex 한도 소비: ${d.usage}<br>AA Coding Agent: ${d.coding}`;
+      tip.style.display = 'block';
+      const e = ev.touches ? ev.touches[0] : ev;
+      const px = (e.clientX || 100) + 12, py = (e.clientY || 100) + 12;
+      tip.style.left = px + 'px'; tip.style.top = py + 'px';
+    };
+    const hide = () => tip.style.display = 'none';
+
+    g.addEventListener('mousemove', show);
+    g.addEventListener('mouseenter', show);
+    g.addEventListener('mouseleave', hide);
+    g.addEventListener('focus', () => {
+      const rect = svg.getBoundingClientRect();
+      tip.innerHTML = `<strong>${d.model}</strong><br>Codex 한도 소비: ${d.usage}<br>AA Coding Agent: ${d.coding}`;
+      tip.style.display = 'block';
+      tip.style.left = (rect.left + rect.width/2) + 'px';
+      tip.style.top = (rect.top + 40) + 'px';
+    });
+    g.addEventListener('blur', hide);
+
+    svg.appendChild(g);
+  });
+
+  // Y axis title
+  const yt = el('text', {x:18, y:m.top + ch/2, fill:muted, 'font-size':12, 'text-anchor':'middle',
+                         transform:`rotate(-90 18 ${m.top+ch/2})`}, 'Luna XHigh 대비 소비 배율');
+})();
+</script>
+</body>
+</html>

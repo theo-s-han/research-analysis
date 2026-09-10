@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Artificial Analysis Coding Agent Index v1.3 — 전체 59개</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff; --fg: #171717; --muted:#666; --line:#dedede;
+    --head:#f4f4f5; --accent:#fff8d8; --card:#fafafa;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#111; --fg:#eee; --muted:#aaa; --line:#333; --head:#1d1d1f; --accent:#3b3413; --card:#181818; }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:28px; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+  }
+  h1 { font-size:24px; margin:0 0 8px; }
+  .sub { color:var(--muted); font-size:13px; line-height:1.55; margin-bottom:18px; }
+  .toolbar {
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0;
+  }
+  input, select {
+    font:inherit; padding:8px 10px; border:1px solid var(--line); border-radius:8px;
+    background:var(--bg); color:var(--fg);
+  }
+  input { min-width:280px; }
+  .count { margin-left:auto; color:var(--muted); font-size:13px; }
+  .wrap { overflow:auto; border:1px solid var(--line); border-radius:10px; }
+  table { border-collapse:collapse; width:100%; min-width:980px; font-size:13px; }
+  th, td { padding:9px 11px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { position:sticky; top:0; background:var(--head); text-align:left; z-index:1; cursor:pointer; }
+  td.num, th.num { text-align:right; }
+  tbody tr:hover { background:var(--card); }
+  tbody tr.top { background:var(--accent); }
+  .score { font-weight:700; }
+  .note {
+    margin-top:22px; padding:16px; border:1px solid var(--line); border-radius:10px; background:var(--card);
+  }
+  .note h2 { font-size:17px; margin:0 0 8px; }
+  .pill {
+    display:inline-block; padding:2px 7px; border:1px solid var(--line); border-radius:999px;
+    font-size:12px; margin-left:6px; color:var(--muted);
+  }
+  .sources { margin-top:18px; font-size:12px; color:var(--muted); line-height:1.6; }
+  a { color:inherit; }
+</style>
+</head>
+<body>
+  <h1>Artificial Analysis Coding Agent Index v1.3 — 전체 59개</h1>
+  <div class="sub">
+    Artificial Analysis 공개 비교값 기준. 동일 모델도 agent harness와 reasoning 설정에 따라 별도 항목입니다.<br>
+    Index는 DeepSWE, Terminal-Bench v2, SWE-Atlas-QnA의 합성 지표입니다.
+    <strong>Turns는 비교 요약에서 확인 가능한 대표 variant만 표시</strong>하고, 나머지는 —로 두었습니다.
+    “해석”은 Index·비용·시간을 이용한 단순 휴리스틱입니다.
+  </div>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="모델 또는 Agent 검색">
+    <select id="agent">
+      <option value="">모든 Agent</option>
+      <option value="Antigravity SDK">Antigravity SDK</option>
+<option value="Claude Code">Claude Code</option>
+<option value="Codex">Codex</option>
+<option value="Cursor CLI">Cursor CLI</option>
+<option value="Gemini CLI">Gemini CLI</option>
+<option value="Grok Build">Grok Build</option>
+<option value="Kimi Code CLI">Kimi Code CLI</option>
+<option value="Muse Code">Muse Code</option>
+<option value="Opencode">Opencode</option>
+    </select>
+    <select id="minIndex">
+      <option value="0">Index 전체</option>
+      <option value="60">Index 60+</option>
+      <option value="55">Index 55+</option>
+      <option value="50">Index 50+</option>
+    </select>
+    <span class="count" id="count">59 / 59</span>
+  </div>
+
+  <div class="wrap">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th data-key="agent">Agent</th>
+          <th data-key="model">Model / 설정</th>
+          <th class="num" data-key="index">Index ↑</th>
+          <th class="num">Tokens / Task ↓</th>
+          <th class="num" data-key="time">Time / Task ↓</th>
+          <th class="num">Turns ↓</th>
+          <th class="num" data-key="cost">$ / Task ↓</th>
+          <th>해석</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      <tr data-agent="Codex" data-index="67" data-cost="7.08" data-time="10.2">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Sol (max)</strong></td>
+        <td class="num score">67</td>
+        <td class="num">13.2M</td>
+        <td class="num">10.2분</td>
+        <td class="num">114.2</td>
+        <td class="num">$7.08</td>
+        <td>최고 성능권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="67" data-cost="8.23" data-time="23.6">
+        <td>Claude Code</td>
+        <td><strong>Opus 5 (xhigh)</strong></td>
+        <td class="num score">67</td>
+        <td class="num">21.8M</td>
+        <td class="num">23.6분</td>
+        <td class="num">153</td>
+        <td class="num">$8.23</td>
+        <td>최고 성능권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="66" data-cost="8.95" data-time="23.7">
+        <td>Claude Code</td>
+        <td><strong>Opus 5 (max)</strong></td>
+        <td class="num score">66</td>
+        <td class="num">23.9M</td>
+        <td class="num">23.7분</td>
+        <td class="num">—</td>
+        <td class="num">$8.95</td>
+        <td>최고 성능권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="66" data-cost="11.7" data-time="23.4">
+        <td>Claude Code</td>
+        <td><strong>Fable 5 (max) (with fallback)</strong></td>
+        <td class="num score">66</td>
+        <td class="num">14M</td>
+        <td class="num">23.4분</td>
+        <td class="num">—</td>
+        <td class="num">$11.70</td>
+        <td>최고 성능권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="65" data-cost="5.24" data-time="7.4">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Sol (xhigh)</strong></td>
+        <td class="num score">65</td>
+        <td class="num">9.9M</td>
+        <td class="num">7.4분</td>
+        <td class="num">—</td>
+        <td class="num">$5.24</td>
+        <td>최고 성능권</td>
+      </tr>
+      <tr data-agent="Grok Build" data-index="64" data-cost="2.59" data-time="16.5">
+        <td>Grok Build</td>
+        <td><strong>Grok 4.5 (high)</strong></td>
+        <td class="num score">64</td>
+        <td class="num">3.6M</td>
+        <td class="num">16.5분</td>
+        <td class="num">60.9</td>
+        <td class="num">$2.59</td>
+        <td>상위권 · 비용 효율</td>
+      </tr>
+      <tr data-agent="Codex" data-index="64" data-cost="4.14" data-time="6.3">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Sol (high)</strong></td>
+        <td class="num score">64</td>
+        <td class="num">8.1M</td>
+        <td class="num">6.3분</td>
+        <td class="num">—</td>
+        <td class="num">$4.14</td>
+        <td>상위 성능</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="63" data-cost="3.8" data-time="13.4">
+        <td>Claude Code</td>
+        <td><strong>Opus 5 (high)</strong></td>
+        <td class="num score">63</td>
+        <td class="num">9.7M</td>
+        <td class="num">13.4분</td>
+        <td class="num">—</td>
+        <td class="num">$3.80</td>
+        <td>상위 성능</td>
+      </tr>
+      <tr data-agent="Codex" data-index="62" data-cost="2.21" data-time="8.4">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Terra (max)</strong></td>
+        <td class="num score">62</td>
+        <td class="num">9.5M</td>
+        <td class="num">8.4분</td>
+        <td class="num">—</td>
+        <td class="num">$2.21</td>
+        <td>상위권 · 비용 효율</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="62" data-cost="3.14" data-time="12.2">
+        <td>Claude Code</td>
+        <td><strong>Opus 5 (medium)</strong></td>
+        <td class="num score">62</td>
+        <td class="num">7.9M</td>
+        <td class="num">12.2분</td>
+        <td class="num">—</td>
+        <td class="num">$3.14</td>
+        <td>상위 성능</td>
+      </tr>
+      <tr data-agent="Muse Code" data-index="61" data-cost="2.33" data-time="42.0">
+        <td>Muse Code</td>
+        <td><strong>Muse Spark 1.2 (xhigh)</strong></td>
+        <td class="num score">61</td>
+        <td class="num">21.5M</td>
+        <td class="num">42.0분</td>
+        <td class="num">149.6</td>
+        <td class="num">$2.33</td>
+        <td>상위권 · 비용 효율</td>
+      </tr>
+      <tr data-agent="Codex" data-index="61" data-cost="2.99" data-time="5.2">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Sol (medium)</strong></td>
+        <td class="num score">61</td>
+        <td class="num">5.8M</td>
+        <td class="num">5.2분</td>
+        <td class="num">—</td>
+        <td class="num">$2.99</td>
+        <td>상위권 · 비용 효율</td>
+      </tr>
+      <tr data-agent="Kimi Code CLI" data-index="61" data-cost="3.18" data-time="23.8">
+        <td>Kimi Code CLI</td>
+        <td><strong>Kimi K3</strong></td>
+        <td class="num score">61</td>
+        <td class="num">10.6M</td>
+        <td class="num">23.8분</td>
+        <td class="num">124.6</td>
+        <td class="num">$3.18</td>
+        <td>상위 성능</td>
+      </tr>
+      <tr data-agent="Codex" data-index="61" data-cost="5.07" data-time="10.1">
+        <td>Codex</td>
+        <td><strong>GPT-5.5 (xhigh)</strong></td>
+        <td class="num score">61</td>
+        <td class="num">12.3M</td>
+        <td class="num">10.1분</td>
+        <td class="num">—</td>
+        <td class="num">$5.07</td>
+        <td>상위 성능</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="61" data-cost="7.7" data-time="23.1">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.8 (max)</strong></td>
+        <td class="num score">61</td>
+        <td class="num">17.9M</td>
+        <td class="num">23.1분</td>
+        <td class="num">—</td>
+        <td class="num">$7.70</td>
+        <td>상위 성능</td>
+      </tr>
+      <tr data-agent="Codex" data-index="59" data-cost="0.31" data-time="8.0">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Luna (max)</strong></td>
+        <td class="num score">59</td>
+        <td class="num">15.5M</td>
+        <td class="num">8.0분</td>
+        <td class="num">—</td>
+        <td class="num">$0.31</td>
+        <td>초저비용 · 중상위 성능</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="58" data-cost="5.67" data-time="17.7">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.8 (xhigh)</strong></td>
+        <td class="num score">58</td>
+        <td class="num">13.7M</td>
+        <td class="num">17.7분</td>
+        <td class="num">—</td>
+        <td class="num">$5.67</td>
+        <td>중상위권</td>
+      </tr>
+      <tr data-agent="Opencode" data-index="57" data-cost="1.26" data-time="8.5">
+        <td>Opencode</td>
+        <td><strong>Gemini 3.7 Flash (high)</strong></td>
+        <td class="num score">57</td>
+        <td class="num">18.5M</td>
+        <td class="num">8.5분</td>
+        <td class="num">83.4</td>
+        <td class="num">$1.26</td>
+        <td>중상위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="57" data-cost="1.52" data-time="6.9">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Terra (xhigh)</strong></td>
+        <td class="num score">57</td>
+        <td class="num">6.5M</td>
+        <td class="num">6.9분</td>
+        <td class="num">—</td>
+        <td class="num">$1.52</td>
+        <td>빠른 중상위권</td>
+      </tr>
+      <tr data-agent="Opencode" data-index="57" data-cost="1.91" data-time="17.9">
+        <td>Opencode</td>
+        <td><strong>Muse Spark 1.2 (xhigh)</strong></td>
+        <td class="num score">57</td>
+        <td class="num">16.4M</td>
+        <td class="num">17.9분</td>
+        <td class="num">—</td>
+        <td class="num">$1.91</td>
+        <td>중상위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="57" data-cost="2.18" data-time="9.5">
+        <td>Claude Code</td>
+        <td><strong>Opus 5 (low)</strong></td>
+        <td class="num score">57</td>
+        <td class="num">5.2M</td>
+        <td class="num">9.5분</td>
+        <td class="num">—</td>
+        <td class="num">$2.18</td>
+        <td>중상위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="57" data-cost="3.74" data-time="12.4">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.8 (high)</strong></td>
+        <td class="num score">57</td>
+        <td class="num">9.1M</td>
+        <td class="num">12.4분</td>
+        <td class="num">—</td>
+        <td class="num">$3.74</td>
+        <td>중상위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="57" data-cost="3.86" data-time="32.4">
+        <td>Claude Code</td>
+        <td><strong>Qwen3.8 Max</strong></td>
+        <td class="num score">57</td>
+        <td class="num">13.2M</td>
+        <td class="num">32.4분</td>
+        <td class="num">—</td>
+        <td class="num">$3.86</td>
+        <td>중상위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="56" data-cost="1.27" data-time="6.2">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Terra (high)</strong></td>
+        <td class="num score">56</td>
+        <td class="num">5.5M</td>
+        <td class="num">6.2분</td>
+        <td class="num">—</td>
+        <td class="num">$1.27</td>
+        <td>빠른 중상위권</td>
+      </tr>
+      <tr data-agent="Antigravity SDK" data-index="56" data-cost="1.38" data-time="6.3">
+        <td>Antigravity SDK</td>
+        <td><strong>Gemini 3.7 Flash (high)</strong></td>
+        <td class="num score">56</td>
+        <td class="num">15M</td>
+        <td class="num">6.3분</td>
+        <td class="num">109.5</td>
+        <td class="num">$1.38</td>
+        <td>빠른 중상위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="55" data-cost="0.07" data-time="14.6">
+        <td>Codex</td>
+        <td><strong>DeepSeek V4 Flash (max)</strong></td>
+        <td class="num score">55</td>
+        <td class="num">20.9M</td>
+        <td class="num">14.6분</td>
+        <td class="num">—</td>
+        <td class="num">$0.07</td>
+        <td>초저비용 · 중상위 성능</td>
+      </tr>
+      <tr data-agent="Codex" data-index="55" data-cost="0.25" data-time="6.6">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Luna (xhigh)</strong></td>
+        <td class="num score">55</td>
+        <td class="num">12.3M</td>
+        <td class="num">6.6분</td>
+        <td class="num">—</td>
+        <td class="num">$0.25</td>
+        <td>초저비용 · 중상위 성능</td>
+      </tr>
+      <tr data-agent="Opencode" data-index="54" data-cost="1.43" data-time="12.6">
+        <td>Opencode</td>
+        <td><strong>Muse Spark 1.1 (xhigh)</strong></td>
+        <td class="num score">54</td>
+        <td class="num">12.2M</td>
+        <td class="num">12.6분</td>
+        <td class="num">—</td>
+        <td class="num">$1.43</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="54" data-cost="1.72" data-time="3.7">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Sol (low)</strong></td>
+        <td class="num score">54</td>
+        <td class="num">3.2M</td>
+        <td class="num">3.7분</td>
+        <td class="num">—</td>
+        <td class="num">$1.72</td>
+        <td>고속 · 낮은 reasoning</td>
+      </tr>
+      <tr data-agent="Codex" data-index="54" data-cost="2.75" data-time="6.4">
+        <td>Codex</td>
+        <td><strong>GPT-5.5 (medium)</strong></td>
+        <td class="num score">54</td>
+        <td class="num">7M</td>
+        <td class="num">6.4분</td>
+        <td class="num">—</td>
+        <td class="num">$2.75</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="54" data-cost="3.26" data-time="12.4">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.8 (medium)</strong></td>
+        <td class="num score">54</td>
+        <td class="num">7.8M</td>
+        <td class="num">12.4분</td>
+        <td class="num">—</td>
+        <td class="num">$3.26</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="51" data-cost="0.19" data-time="5.7">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Luna (high)</strong></td>
+        <td class="num score">51</td>
+        <td class="num">9.5M</td>
+        <td class="num">5.7분</td>
+        <td class="num">—</td>
+        <td class="num">$0.19</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Opencode" data-index="50" data-cost="2.93" data-time="12.2">
+        <td>Opencode</td>
+        <td><strong>Opus 4.7 (medium)</strong></td>
+        <td class="num score">50</td>
+        <td class="num">7.6M</td>
+        <td class="num">12.2분</td>
+        <td class="num">—</td>
+        <td class="num">$2.93</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="50" data-cost="5.63" data-time="15.7">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.7 (max)</strong></td>
+        <td class="num score">50</td>
+        <td class="num">15.9M</td>
+        <td class="num">15.7분</td>
+        <td class="num">—</td>
+        <td class="num">$5.63</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="48" data-cost="0.72" data-time="4.3">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Terra (medium)</strong></td>
+        <td class="num score">48</td>
+        <td class="num">3.1M</td>
+        <td class="num">4.3분</td>
+        <td class="num">—</td>
+        <td class="num">$0.72</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="47" data-cost="2.15" data-time="8.4">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.8 (low)</strong></td>
+        <td class="num score">47</td>
+        <td class="num">5.2M</td>
+        <td class="num">8.4분</td>
+        <td class="num">—</td>
+        <td class="num">$2.15</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="46" data-cost="1.28" data-time="8.0">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.6 (medium)</strong></td>
+        <td class="num score">46</td>
+        <td class="num">4.5M</td>
+        <td class="num">8.0분</td>
+        <td class="num">—</td>
+        <td class="num">$1.28</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Cursor CLI" data-index="46" data-cost="2.01" data-time="6.6">
+        <td>Cursor CLI</td>
+        <td><strong>GPT-5.5 (medium)</strong></td>
+        <td class="num score">46</td>
+        <td class="num">4M</td>
+        <td class="num">6.6분</td>
+        <td class="num">78</td>
+        <td class="num">$2.01</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Opencode" data-index="46" data-cost="2.08" data-time="10.4">
+        <td>Opencode</td>
+        <td><strong>Gemini 3.6 Flash (high)</strong></td>
+        <td class="num score">46</td>
+        <td class="num">13M</td>
+        <td class="num">10.4분</td>
+        <td class="num">—</td>
+        <td class="num">$2.08</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Cursor CLI" data-index="45" data-cost="2.68" data-time="13.6">
+        <td>Cursor CLI</td>
+        <td><strong>Opus 4.7 (medium)</strong></td>
+        <td class="num score">45</td>
+        <td class="num">5.7M</td>
+        <td class="num">13.6분</td>
+        <td class="num">—</td>
+        <td class="num">$2.68</td>
+        <td>중위권</td>
+      </tr>
+      <tr data-agent="Codex" data-index="43" data-cost="1.4" data-time="3.4">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Sol (none)</strong></td>
+        <td class="num score">43</td>
+        <td class="num">3.4M</td>
+        <td class="num">3.4분</td>
+        <td class="num">—</td>
+        <td class="num">$1.40</td>
+        <td>고속 · 낮은 reasoning</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="43" data-cost="6.51" data-time="25.1">
+        <td>Claude Code</td>
+        <td><strong>GLM-5.2</strong></td>
+        <td class="num score">43</td>
+        <td class="num">6.5M</td>
+        <td class="num">25.1분</td>
+        <td class="num">—</td>
+        <td class="num">$6.51</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Codex" data-index="42" data-cost="0.09" data-time="3.4">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Luna (medium)</strong></td>
+        <td class="num score">42</td>
+        <td class="num">4.4M</td>
+        <td class="num">3.4분</td>
+        <td class="num">—</td>
+        <td class="num">$0.09</td>
+        <td>초저비용</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="40" data-cost="1.68" data-time="6.3">
+        <td>Claude Code</td>
+        <td><strong>Opus 4.7 (medium)</strong></td>
+        <td class="num score">40</td>
+        <td class="num">4.6M</td>
+        <td class="num">6.3분</td>
+        <td class="num">—</td>
+        <td class="num">$1.68</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Codex" data-index="39" data-cost="2.42" data-time="7.1">
+        <td>Codex</td>
+        <td><strong>GPT-5.4 (medium)</strong></td>
+        <td class="num score">39</td>
+        <td class="num">5.9M</td>
+        <td class="num">7.1분</td>
+        <td class="num">—</td>
+        <td class="num">$2.42</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Cursor CLI" data-index="38" data-cost="0.08" data-time="9.5">
+        <td>Cursor CLI</td>
+        <td><strong>Composer 2.5</strong></td>
+        <td class="num score">38</td>
+        <td class="num">3.6M</td>
+        <td class="num">9.5분</td>
+        <td class="num">—</td>
+        <td class="num">$0.08</td>
+        <td>초저비용</td>
+      </tr>
+      <tr data-agent="Cursor CLI" data-index="38" data-cost="0.55" data-time="6.8">
+        <td>Cursor CLI</td>
+        <td><strong>Composer 2.5 Fast</strong></td>
+        <td class="num score">38</td>
+        <td class="num">4.2M</td>
+        <td class="num">6.8분</td>
+        <td class="num">—</td>
+        <td class="num">$0.55</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="38" data-cost="2.01" data-time="13.5">
+        <td>Claude Code</td>
+        <td><strong>Sonnet 4.6 (medium)</strong></td>
+        <td class="num score">38</td>
+        <td class="num">8.5M</td>
+        <td class="num">13.5분</td>
+        <td class="num">—</td>
+        <td class="num">$2.01</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Codex" data-index="37" data-cost="0.39" data-time="2.8">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Terra (low)</strong></td>
+        <td class="num score">37</td>
+        <td class="num">1.5M</td>
+        <td class="num">2.8분</td>
+        <td class="num">—</td>
+        <td class="num">$0.39</td>
+        <td>고속 · 낮은 reasoning</td>
+      </tr>
+      <tr data-agent="Cursor CLI" data-index="37" data-cost="1.55" data-time="8.1">
+        <td>Cursor CLI</td>
+        <td><strong>GPT-5.4 (medium)</strong></td>
+        <td class="num score">37</td>
+        <td class="num">4M</td>
+        <td class="num">8.1분</td>
+        <td class="num">—</td>
+        <td class="num">$1.55</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="36" data-cost="4.33" data-time="19.4">
+        <td>Claude Code</td>
+        <td><strong>GLM-5.1</strong></td>
+        <td class="num score">36</td>
+        <td class="num">25.9M</td>
+        <td class="num">19.4분</td>
+        <td class="num">—</td>
+        <td class="num">$4.33</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="36" data-cost="6.23" data-time="10.6">
+        <td>Claude Code</td>
+        <td><strong>Qwen3.7 Plus (thinking)</strong></td>
+        <td class="num score">36</td>
+        <td class="num">8.7M</td>
+        <td class="num">10.6분</td>
+        <td class="num">—</td>
+        <td class="num">$6.23</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="33" data-cost="1.19" data-time="41.0">
+        <td>Claude Code</td>
+        <td><strong>Kimi K2.6</strong></td>
+        <td class="num score">33</td>
+        <td class="num">11.5M</td>
+        <td class="num">41.0분</td>
+        <td class="num">—</td>
+        <td class="num">$1.19</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Claude Code" data-index="31" data-cost="0.27" data-time="17.9">
+        <td>Claude Code</td>
+        <td><strong>DeepSeek V4 Pro (high)</strong></td>
+        <td class="num score">31</td>
+        <td class="num">9.8M</td>
+        <td class="num">17.9분</td>
+        <td class="num">—</td>
+        <td class="num">$0.27</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Gemini CLI" data-index="30" data-cost="2.0" data-time="10.8">
+        <td>Gemini CLI</td>
+        <td><strong>Gemini 3.1 Pro (high)</strong></td>
+        <td class="num score">30</td>
+        <td class="num">4.7M</td>
+        <td class="num">10.8분</td>
+        <td class="num">30.7</td>
+        <td class="num">$2.00</td>
+        <td>낮은 Index</td>
+      </tr>
+      <tr data-agent="Cursor CLI" data-index="27" data-cost="0.04" data-time="8.6">
+        <td>Cursor CLI</td>
+        <td><strong>Composer 2</strong></td>
+        <td class="num score">27</td>
+        <td class="num">3M</td>
+        <td class="num">8.6분</td>
+        <td class="num">—</td>
+        <td class="num">$0.04</td>
+        <td>초저비용</td>
+      </tr>
+      <tr data-agent="Codex" data-index="25" data-cost="0.04" data-time="1.9">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Luna (low)</strong></td>
+        <td class="num score">25</td>
+        <td class="num">1.5M</td>
+        <td class="num">1.9분</td>
+        <td class="num">—</td>
+        <td class="num">$0.04</td>
+        <td>초저비용</td>
+      </tr>
+      <tr data-agent="Codex" data-index="24" data-cost="0.3" data-time="1.8">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Terra (none)</strong></td>
+        <td class="num score">24</td>
+        <td class="num">1.1M</td>
+        <td class="num">1.8분</td>
+        <td class="num">—</td>
+        <td class="num">$0.30</td>
+        <td>고속 · 낮은 reasoning</td>
+      </tr>
+      <tr data-agent="Codex" data-index="20" data-cost="0.07" data-time="2.5">
+        <td>Codex</td>
+        <td><strong>GPT-5.6 Luna (none)</strong></td>
+        <td class="num score">20</td>
+        <td class="num">3.6M</td>
+        <td class="num">2.5분</td>
+        <td class="num">—</td>
+        <td class="num">$0.07</td>
+        <td>초저비용</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <h2>GPT‑5.3‑Codex‑Spark <span class="pill">AA v1.3 미측정</span></h2>
+    <div>
+      OpenAI 공식 모델이지만 현재 Artificial Analysis Coding Agent Index v1.3의 59개 측정 행에는 개별 결과가 없습니다.
+      따라서 Index / Tokens per Task / Time per Task / Turns / Cost per Task 값을 임의로 섞지 않았습니다.
+    </div>
+    <div style="margin-top:8px;color:var(--muted);font-size:13px">
+      공식 특징: real-time coding용 text-only research preview, 128K context, 1,000 tokens/s 이상을 목표로 한 저지연 모델.
+    </div>
+  </div>
+
+  <div class="sources">
+    Sources:
+    <a href="https://artificialanalysis.ai/agents/coding-agents">Artificial Analysis Coding Agents</a> ·
+    <a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex">Claude Code vs Codex</a> ·
+    <a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-cursor-cli">Claude Code vs Cursor CLI</a> ·
+    <a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/grok-build-vs-opencode">Grok Build vs Opencode</a> ·
+    <a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/muse-code-vs-opencode">Muse Code vs Opencode</a> ·
+    <a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/antigravity-sdk-vs-claude-code">Antigravity SDK vs Claude Code</a> ·
+    <a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/gemini-cli-vs-kimi-code-cli">Gemini CLI vs Kimi Code CLI</a> ·
+    <a href="https://openai.com/index/introducing-gpt-5-3-codex-spark/">OpenAI Codex-Spark</a>
+  </div>
+
+<script>
+const q = document.getElementById('q');
+const agent = document.getElementById('agent');
+const minIndex = document.getElementById('minIndex');
+const count = document.getElementById('count');
+const tbodyEl = document.querySelector('#tbl tbody');
+
+function apply() {
+  const needle = q.value.trim().toLowerCase();
+  const a = agent.value;
+  const min = Number(minIndex.value);
+  let visible = 0;
+  for (const tr of tbodyEl.rows) {
+    const text = tr.innerText.toLowerCase();
+    const ok = (!needle || text.includes(needle))
+      && (!a || tr.dataset.agent === a)
+      && Number(tr.dataset.index) >= min;
+    tr.style.display = ok ? '' : 'none';
+    if (ok) visible++;
+    tr.classList.toggle('top', ok && Number(tr.dataset.index) >= 65);
+  }
+  count.textContent = `${visible} / 59`;
+}
+q.addEventListener('input', apply);
+agent.addEventListener('change', apply);
+minIndex.addEventListener('change', apply);
+apply();
+</script>
+</body>
+</html>

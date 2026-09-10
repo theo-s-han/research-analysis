@@ -1,0 +1,46 @@
+{
+  "codex_model_260909.html": {
+    "slug": "codex-model-guide-20260909",
+    "title": "Codex 모델 선택 가이드",
+    "description": "Luna, Terra, Sol, Astra의 추천 설정과 비용·성능을 비교하고, 작업 난이도와 문제의 명확성에 따른 모델 선택 기준을 정리했습니다.",
+    "category": "업무 활용",
+    "tags": ["Codex", "모델 선택", "Astra"],
+    "referenceDate": "2026-09-09"
+  },
+  "주요 LLM 모델.html": {
+    "slug": "llm-models",
+    "title": "주요 LLM·코딩 모델 통합 비교",
+    "description": "상용 모델부터 오픈웨이트·로컬 모델까지. 성능, 사양, 메모리 요구량과 공식 출처를 한눈에 비교합니다.",
+    "category": "모델 리서치",
+    "tags": ["LLM", "오픈웨이트", "로컬 모델"],
+    "referenceDate": "2026-08-18"
+  },
+  "Artificial Analysis Coding Agent Index v1.3.html": {
+    "slug": "coding-agent-index",
+    "title": "Coding Agent Index v1.3",
+    "description": "Artificial Analysis의 59개 코딩 에이전트 설정을 비교합니다. 성능 지수와 작업당 토큰, 시간, 비용을 함께 확인할 수 있습니다.",
+    "category": "벤치마크",
+    "tags": ["Artificial Analysis", "코딩 에이전트", "벤치마크"]
+  },
+  "Artificial Analysis Coding Agent Index v1.4.html": {
+    "slug": "coding-agent-index-v1-4",
+    "title": "Coding Agent Index v1.4",
+    "description": "68개 코딩 에이전트 선택지의 성능·비용·속도를 비교합니다. 조건별 필터, 정렬과 CSV 내려받기를 제공합니다.",
+    "category": "벤치마크",
+    "tags": ["Artificial Analysis", "코딩 에이전트", "벤치마크"]
+  },
+  "codex_model_comparison.html": {
+    "slug": "codex-model-comparison",
+    "title": "Codex 모델 성능·사용량 비교",
+    "description": "Luna, Terra, Sol의 설정별 성능 지표와 Codex 사용량의 상대 추정치를 비교합니다. 사용량 차이를 그래프로 살펴보세요.",
+    "category": "업무 활용",
+    "tags": ["Codex", "사용량", "성능 비교"]
+  },
+  "codex_model_ledger_unified.html": {
+    "slug": "model-cost-performance",
+    "title": "모델 비용·성능 비교와 선택 가이드",
+    "description": "작업당 비용과 성능을 함께 비교하고, 명확한 작업부터 복잡한 원인 분석까지 업무에 맞는 모델 선택 기준을 정리했습니다.",
+    "category": "업무 활용",
+    "tags": ["Codex", "비용 효율", "모델 선택"]
+  }
+}
