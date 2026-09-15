@@ -26,5 +26,9 @@
   "Artificial Analysis Coding Agent Index v1.4.html": {
     "sha256": "4212192c70e4b379ce15c4bf41f11c3009bd6b24413a201cc404ad2152805e5a",
     "updatedAt": "2026-09-10T01:21:03.792Z"
+  },
+  "llm_coding_benchmark_reference_company_v6.html": {
+    "sha256": "2c4451e646046a68af605e17c0c94f392729cf7c415ae6bd35bfc0f8c6229e97",
+    "updatedAt": "2026-09-15T03:21:56.115Z"
   }
 }

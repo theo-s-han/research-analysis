@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light dark" name="color-scheme"/>
+<title>LLM Coding Benchmark Reference</title>
+<style>
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f8fafc;
+      --sidebar: #fbfcfe;
+      --text: #1f2937;
+      --text-strong: #111827;
+      --muted: #667085;
+      --line: #e5e7eb;
+      --accent: #3451d1;
+      --accent-soft: #eef2ff;
+      --code-bg: #111827;
+      --code-text: #e5e7eb;
+      --note-bg: #f8fafc;
+      --warn-bg: #fff8eb;
+      --warn-line: #f59e0b;
+      --good-bg: #ecfdf3;
+      --good-line: #12b76a;
+      --header-h: 58px;
+      --left-w: 264px;
+      --right-w: 220px;
+      --content-w: 760px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f1115;
+      --bg-soft: #151922;
+      --sidebar: #11151b;
+      --text: #d7dce5;
+      --text-strong: #f3f4f6;
+      --muted: #98a2b3;
+      --line: #252b35;
+      --accent: #9aacff;
+      --accent-soft: #1d2541;
+      --code-bg: #090b10;
+      --code-text: #e5e7eb;
+      --note-bg: #151922;
+      --warn-bg: #2b2110;
+      --warn-line: #fdb022;
+      --good-bg: #10261c;
+      --good-line: #47cd89;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-h) + 20px);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter, Pretendard, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input { font: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: var(--header-h);
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar-inner {
+      height: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 0 18px;
+      display: grid;
+      grid-template-columns: var(--left-w) minmax(320px, 1fr) auto;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 800;
+      color: var(--text-strong);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: min(620px, 100%);
+      justify-self: center;
+    }
+
+    #searchInput {
+      width: 100%;
+      height: 38px;
+      padding: 0 42px 0 38px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      outline: none;
+      background: var(--bg-soft);
+      color: var(--text);
+    }
+
+    #searchInput:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 9px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-key {
+      position: absolute;
+      right: 9px;
+      top: 8px;
+      padding: 1px 6px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--muted);
+      background: var(--bg);
+      font-size: 11px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .menu-btn { display: none; }
+
+    .layout {
+      max-width: 1500px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: var(--left-w) minmax(0, 1fr) var(--right-w);
+      gap: 34px;
+      padding: 0 18px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      padding: 26px 18px 60px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .nav-group { margin-bottom: 26px; }
+
+    .nav-label {
+      margin: 0 0 8px;
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 7px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .nav-link:hover {
+      color: var(--text-strong);
+      background: var(--bg-soft);
+    }
+
+    .nav-link.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 700;
+    }
+
+    .content-wrap {
+      min-width: 0;
+      padding: 52px 0 90px;
+    }
+
+    article {
+      width: min(100%, var(--content-w));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    h1, h2, h3 {
+      color: var(--text-strong);
+      line-height: 1.3;
+      letter-spacing: -0.025em;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(32px, 5vw, 48px);
+    }
+
+    h2 {
+      margin: 54px 0 18px;
+      padding-top: 2px;
+      font-size: 27px;
+    }
+
+    h3 {
+      margin: 34px 0 12px;
+      font-size: 20px;
+    }
+
+    .lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    p { margin: 12px 0; }
+
+    ul, ol { padding-left: 22px; }
+    li + li { margin-top: 5px; }
+
+    .summary-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+.summary-list b { color: var(--text-strong); }
+
+    .callout {
+      margin: 20px 0;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: var(--note-bg);
+    }
+
+    .callout.good {
+      border-left-color: var(--good-line);
+      background: var(--good-bg);
+    }
+
+    .callout.warn {
+      border-left-color: var(--warn-line);
+      background: var(--warn-bg);
+    }
+
+    .callout-title {
+      margin-bottom: 4px;
+      color: var(--text-strong);
+      font-weight: 800;
+    }
+
+    .benchmark {
+      margin: 26px 0 36px;
+      padding-bottom: 4px;
+    }
+
+    .benchmark-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+
+    .benchmark-head h3 { margin: 0; }
+
+    .tag {
+      flex: 0 0 auto;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .definition {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .facts {
+      margin: 14px 0 0;
+      border-left: 2px solid var(--line);
+      padding-left: 16px;
+    }
+
+    .facts p { margin: 7px 0; }
+
+    .remember {
+      margin-top: 12px;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-radius: 9px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      font: 13px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    code {
+      padding: .1em .35em;
+      border-radius: 5px;
+      background: var(--bg-soft);
+      font: .92em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    pre code {
+      padding: 0;
+      background: transparent;
+    }
+
+    table {
+      width: 100%;
+      margin: 20px 0 30px;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 11px 13px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--bg-soft);
+      color: var(--text-strong);
+      font-size: 13px;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .toc {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      padding: 34px 0 60px;
+    }
+
+    .toc-title {
+      margin-bottom: 12px;
+      color: var(--text-strong);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .toc-link {
+      display: block;
+      margin: 6px 0;
+      padding-left: 12px;
+      border-left: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .toc-link:hover,
+    .toc-link.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    .toc-link.sub {
+      padding-left: 20px;
+      font-size: 12px;
+    }
+
+    .search-results {
+      display: none;
+      position: absolute;
+      top: 44px;
+      left: 0;
+      right: 0;
+      max-height: 390px;
+      overflow-y: auto;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+      box-shadow: 0 12px 28px rgba(0,0,0,.14);
+      z-index: 60;
+    }
+
+    .search-results.open { display: block; }
+
+    .search-result {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 7px;
+    }
+
+    .search-result:hover { background: var(--bg-soft); }
+
+    .search-result b {
+      display: block;
+      color: var(--text-strong);
+      font-size: 14px;
+    }
+
+    .search-result span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .empty {
+      padding: 16px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    mark {
+      background: #fde68a;
+      color: #111827;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: var(--left-w) minmax(0, 1fr);
+        gap: 26px;
+      }
+      .toc { display: none; }
+      .topbar-inner {
+        grid-template-columns: var(--left-w) minmax(260px, 1fr) auto;
+      }
+    }
+
+    @media (max-width: 760px) {
+      :root { --header-h: 56px; }
+
+      .topbar-inner {
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+      }
+
+      .brand-text { display: none; }
+      .menu-btn { display: inline-grid; place-items: center; }
+
+      .search-wrap { justify-self: stretch; }
+
+      .search-key { display: none; }
+
+      .layout {
+        display: block;
+        padding: 0 18px;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: var(--header-h);
+        left: 0;
+        z-index: 45;
+        width: min(84vw, 300px);
+        height: calc(100vh - var(--header-h));
+        padding: 22px 18px 60px;
+        border-right: 1px solid var(--line);
+        background: var(--sidebar);
+        transform: translateX(-102%);
+        transition: transform .18s ease;
+      }
+
+      .sidebar.open { transform: translateX(0); }
+
+      .content-wrap { padding-top: 36px; }
+      article { width: 100%; }
+table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      h2 { margin-top: 46px; }
+    }
+
+    @media print {
+      .topbar, .sidebar, .toc { display: none !important; }
+      .layout { display: block; max-width: none; }
+      .content-wrap { padding: 0; }
+      article { width: 100%; max-width: none; }
+      a { text-decoration: underline; }
+    }
+  
+    
+    /* Benchmark summary: clickable rows without nested-grid width collapse */
+    .summary-list li {
+      display: block;
+      margin: 0;
+      padding: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .summary-link {
+      display: grid;
+      grid-template-columns: minmax(180px, 210px) minmax(0, 1fr);
+      align-items: start;
+      column-gap: 24px;
+      row-gap: 4px;
+      width: 100%;
+      padding: 14px 12px;
+      border-radius: 8px;
+      line-height: 1.55;
+      transition: background-color .15s ease, color .15s ease;
+    }
+
+    .summary-link > b {
+      min-width: 0;
+      color: var(--text-strong);
+      word-break: keep-all;
+      overflow-wrap: normal;
+    }
+
+    .summary-link > span {
+      min-width: 0;
+      color: var(--muted);
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .summary-link:hover {
+      background: var(--bg-soft);
+    }
+
+    .summary-link.active {
+      background: var(--accent-soft);
+    }
+
+    .summary-link.active > b {
+      color: var(--accent);
+    }
+
+    @media (max-width: 760px) {
+      .summary-link {
+        grid-template-columns: 1fr;
+        row-gap: 3px;
+        padding: 13px 8px;
+      }
+    }
+
+    .benchmark-usecase {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--bg-soft);
+      overflow: hidden;
+    }
+
+    .usecase-row {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 18px;
+      padding: 12px 14px;
+      line-height: 1.6;
+    }
+
+    .usecase-row + .usecase-row {
+      border-top: 1px solid var(--line);
+    }
+
+    .usecase-row strong {
+      color: var(--text-strong);
+      font-size: 13px;
+    }
+
+    .usecase-row span {
+      min-width: 0;
+      color: var(--text);
+      font-size: 14px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    @media (max-width: 760px) {
+      .usecase-row {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+    }
+    </style>
+</head>
+<body>
+<header class="topbar">
+<div class="topbar-inner">
+<div class="brand">
+<button aria-label="메뉴 열기" class="icon-btn menu-btn" id="menuBtn">☰</button>
+<div class="brand-mark">LLM</div>
+<span class="brand-text">Developer Benchmarks</span>
+</div>
+<div class="search-wrap">
+<span class="search-icon">⌕</span>
+<input autocomplete="off" id="searchInput" placeholder="벤치마크 검색: Terminal, SWE, BFCL..." type="search"/>
+<span class="search-key">/</span>
+<div class="search-results" id="searchResults"></div>
+</div>
+<div class="toolbar">
+<button aria-label="테마 변경" class="icon-btn" id="themeBtn">◐</button>
+</div>
+</div>
+</header>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+<nav>
+<div class="nav-group">
+<div class="nav-label">Overview</div>
+<a class="nav-link active" href="#overview">벤치마크 요약</a>
+</div>
+<div class="nav-group">
+<div class="nav-label">Agent Benchmarks</div>
+<a class="nav-link" href="#aa-coding-agent">AA Coding Agent</a>
+<a class="nav-link" href="#deepswe">DeepSWE</a>
+<a class="nav-link" href="#terminal-bench">Terminal-Bench</a>
+<a class="nav-link" href="#swe-atlas">SWE-Atlas</a>
+<a class="nav-link" href="#swe-bench">SWE-bench</a>
+<a class="nav-link" href="#swe-bench-multilingual">SWE-bench Multilingual</a>
+</div>
+<div class="nav-group">
+<div class="nav-label">Coding Benchmarks</div>
+<a class="nav-link" href="#aider-polyglot">Aider Polyglot</a>
+<a class="nav-link" href="#livecodebench">LiveCodeBench</a>
+<a class="nav-link" href="#bigcodebench">BigCodeBench</a>
+<a class="nav-link" href="#humaneval">HumanEval</a>
+</div>
+<div class="nav-group">
+<div class="nav-label">Tools &amp; General</div>
+<a class="nav-link" href="#bfcl">BFCL</a>
+<a class="nav-link" href="#aa-intelligence">AA Intelligence</a>
+</div>
+</nav>
+</aside>
+<main class="content-wrap">
+<article>
+<section id="overview">
+<h1>LLM Coding Benchmark Reference</h1>
+<p class="lead">LLM 및 Coding Agent 성능표에서 자주 사용되는 주요 벤치마크의 평가 대상과 의미를 정리한 참고 문서입니다.</p>
+<div class="meta"><span>기준: 2026-09</span><span>범위: Coding Model / Coding Agent / Tool Calling</span></div>
+<h2>벤치마크 요약</h2>
+<ul class="summary-list"><li><a class="summary-link" data-target="aa-coding-agent" href="#aa-coding-agent"><b>AA Coding Agent Index</b><span>여러 소프트웨어 엔지니어링 벤치마크를 결합한 Coding Agent 종합 지수</span></a></li><li><a class="summary-link" data-target="deepswe" href="#deepswe"><b>DeepSWE</b><span>실제 저장소에서 장기 소프트웨어 엔지니어링 작업 수행 능력 평가</span></a></li><li><a class="summary-link" data-target="terminal-bench" href="#terminal-bench"><b>Terminal-Bench</b><span>터미널 환경에서 명령 실행과 문제 해결 능력 평가</span></a></li><li><a class="summary-link" data-target="swe-atlas" href="#swe-atlas"><b>SWE-Atlas</b><span>코드베이스 이해, 테스트 작성, 리팩터링 능력 평가</span></a></li><li><a class="summary-link" data-target="swe-bench" href="#swe-bench"><b>SWE-bench</b><span>실제 GitHub 이슈 기반 코드 수정 및 테스트 통과 여부 평가</span></a></li><li><a class="summary-link" data-target="swe-bench-multilingual" href="#swe-bench-multilingual"><b>SWE-bench Multilingual</b><span>여러 프로그래밍 언어의 실제 저장소 이슈 해결 능력 평가</span></a></li><li><a class="summary-link" data-target="aider-polyglot" href="#aider-polyglot"><b>Aider Polyglot</b><span>여러 언어에서 기존 코드를 수정해 테스트를 통과시키는 능력 평가</span></a></li><li><a class="summary-link" data-target="livecodebench" href="#livecodebench"><b>LiveCodeBench</b><span>신규 프로그래밍 문제에 대한 코드 생성 및 문제 해결 능력 평가</span></a></li><li><a class="summary-link" data-target="bigcodebench" href="#bigcodebench"><b>BigCodeBench</b><span>라이브러리/API를 활용한 현실적인 함수 구현 능력 평가</span></a></li><li><a class="summary-link" data-target="humaneval" href="#humaneval"><b>HumanEval</b><span>함수 단위 코드 생성 정확도 평가</span></a></li><li><a class="summary-link" data-target="bfcl" href="#bfcl"><b>BFCL</b><span>Function Calling 및 Tool Calling 정확도 평가</span></a></li><li><a class="summary-link" data-target="aa-intelligence" href="#aa-intelligence"><b>AA Intelligence Index</b><span>여러 범주의 평가를 결합한 모델 종합 지수</span></a></li></ul>
+</section>
+<section>
+<h2>Coding Agent 벤치마크</h2>
+<div class="benchmark" id="aa-coding-agent">
+<div class="benchmark-head">
+<h3>AA Coding Agent Index</h3>
+<span class="tag">종합 지수</span>
+</div>
+<p class="definition">Artificial Analysis가 여러 Coding Agent 평가 결과를 결합해 제공하는 종합 지수.</p>
+<div class="facts"><p><b>평가 대상: </b>Coding Agent의 종합 소프트웨어 엔지니어링 성능</p><p><b>평가 방식: </b>복수의 Coding Agent 벤치마크 결과를 결합해 하나의 지수로 산출</p><p><b>해석: </b>점수가 높을수록 여러 유형의 개발 작업에서 평균적으로 높은 성능을 보임</p><p><b>비고: </b>순수 모델 성능뿐 아니라 Agent harness와 실행 설정의 영향을 받을 수 있음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>여러 Coding Agent에 동일한 개발 과제를 수행시킨 뒤, 장기 작업·터미널 작업·코드베이스 이해 등 여러 하위 평가 결과를 종합 비교한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>Codex, Claude Code, Gemini CLI처럼 서로 다른 Coding Agent의 전반적인 개발 성능을 한눈에 비교할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="deepswe">
+<div class="benchmark-head">
+<h3>DeepSWE</h3>
+<span class="tag">Long-horizon SWE</span>
+</div>
+<p class="definition">실제 오픈소스 저장소에서 장기간에 걸친 기능 구현 및 버그 수정 능력을 평가하는 소프트웨어 엔지니어링 벤치마크.</p>
+<pre><code>요구사항
+- 기존 JSON parser 유지
+- YAML 지원 추가
+- sync / async API 모두 지원
+- 기존 테스트 유지
+- 신규 테스트 추가
+
+Agent가 해야 할 일
+repo 분석 → 관련 코드 탐색 → 설계 → 여러 파일 수정
+→ 빌드 → 테스트 → 실패 수정 → 최종 완료</code></pre>
+<div class="facts"><p><b>평가 대상: </b>장기 소프트웨어 엔지니어링 작업 수행 능력</p><p><b>평가 방식: </b>실제 오픈소스 저장소에서 기능 구현·버그 수정·테스트 통과 여부를 평가</p><p><b>해석: </b>점수가 높을수록 여러 단계가 필요한 장기 개발 작업을 안정적으로 완료함</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>대규모 저장소에서 신규 기능을 추가하면서 여러 파일을 수정하고, 기존 동작을 유지하며 테스트까지 통과시키는 작업을 수행한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>대규모 프로젝트에서 기능 추가, 복합 버그 수정, 여러 단계에 걸친 장시간 작업을 안정적으로 끝낼 수 있는지 판단할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="terminal-bench">
+<div class="benchmark-head">
+<h3>Terminal-Bench</h3>
+<span class="tag">Terminal Agent</span>
+</div>
+<p class="definition">터미널 환경에서 명령 실행과 도구 사용을 통해 주어진 작업을 완료하는 능력을 평가하는 Agent 벤치마크.</p>
+<pre><code>$ ls
+$ cat CMakeLists.txt
+$ cmake -S . -B build
+$ cmake --build build
+$ ctest --test-dir build
+
+# 실패 로그 분석
+$ grep -R "FooParser" src/
+$ git diff
+
+# 코드 수정 후 다시 빌드 / 테스트</code></pre>
+<div class="facts"><p><b>평가 대상: </b>터미널 기반 자율 작업 수행 능력</p><p><b>평가 방식: </b>명령 실행, 빌드, 설치, 디버깅, 설정 변경 등을 통해 주어진 목표 달성 여부를 평가</p><p><b>해석: </b>점수가 높을수록 터미널 환경에서 필요한 작업을 스스로 계획하고 수행하는 능력이 높음</p><p><b>비고: </b>버전별 문제 구성과 난이도가 다르므로 동일 버전끼리 비교해야 함</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>빌드가 실패한 프로젝트에서 로그를 확인하고, 의존성을 설치하고, 설정 파일을 수정한 뒤 다시 빌드와 테스트를 수행해 문제를 해결한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>빌드·설치·디버깅·환경 설정처럼 터미널 조작이 많은 개발 업무를 Agent가 자율적으로 처리할 수 있는지 판단할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="swe-atlas">
+<div class="benchmark-head">
+<h3>SWE-Atlas</h3>
+<span class="tag">Codebase Understanding</span>
+</div>
+<p class="definition">기존 코드베이스 이해, 테스트 작성, 리팩터링 등 소프트웨어 엔지니어링 작업 능력을 평가하는 벤치마크.</p>
+<div class="facts"><p><b>평가 대상: </b>코드베이스 이해 및 소프트웨어 엔지니어링 작업 능력</p><p><b>평가 방식: </b>Codebase QnA, Test Writing, Refactoring 등의 과제로 평가</p><p><b>해석: </b>점수가 높을수록 기존 코드 구조를 이해하고 테스트·리팩터링 작업을 수행하는 능력이 높음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>처음 보는 대규모 코드베이스에서 요청 처리 흐름을 추적하고, 관련 모듈을 찾고, 적절한 테스트를 추가하거나 구조를 리팩터링한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>대규모 기존 프로젝트에서 코드 구조를 빠르게 파악하고, 테스트 작성이나 리팩터링까지 수행할 수 있는지 판단할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="swe-bench">
+<div class="benchmark-head">
+<h3>SWE-bench Verified</h3>
+<span class="tag">Classic SWE</span>
+</div>
+<p class="definition">실제 GitHub 이슈와 저장소를 기반으로 코드 수정 후 테스트 통과 여부를 평가하는 대표적인 소프트웨어 엔지니어링 벤치마크.</p>
+<div class="facts"><p><b>평가 대상: </b>실제 저장소의 이슈 해결 능력</p><p><b>평가 방식: </b>GitHub 이슈와 repository를 제공하고 코드 수정 후 테스트 통과 여부를 확인</p><p><b>해석: </b>Resolve Rate가 높을수록 실제 소프트웨어 이슈를 해결한 비율이 높음</p><p><b>비고: </b>Verified 등 세부 버전에 따라 문제 집합이 다름</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>실제 GitHub Issue를 읽고 원인이 되는 코드를 찾아 수정한 뒤, 기존 테스트와 신규 테스트를 통과시키는 패치를 만든다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>유지보수 프로젝트에서 실제 버그 리포트나 이슈를 읽고 정확한 패치를 만들 수 있는지 판단할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="swe-bench-multilingual">
+<div class="benchmark-head">
+<h3>SWE-bench Multilingual</h3>
+<span class="tag">Multilingual</span>
+</div>
+<p class="definition">여러 프로그래밍 언어의 실제 저장소 이슈를 기반으로 repository-level 문제 해결 능력을 평가하는 벤치마크.</p>
+<div class="facts"><p><b>평가 대상: </b>다중 프로그래밍 언어 환경의 실제 저장소 이슈 해결 능력</p><p><b>평가 방식: </b>C, C++, Go, Java, JavaScript, TypeScript, PHP, Ruby, Rust 등 여러 언어의 저장소 작업을 평가</p><p><b>해석: </b>점수가 높을수록 특정 언어에 치우치지 않은 repository-level 문제 해결 능력이 높음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>C++, Java, Rust, Go 등 서로 다른 언어로 작성된 실제 저장소의 이슈를 분석하고 코드를 수정한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>여러 언어가 혼재된 제품이나 C++·Java·Rust 기반 프로젝트에서도 모델 성능이 유지되는지 확인할 때 중요하다.</span></div></div>
+</div>
+</section>
+<section>
+<h2>코드 생성·편집 벤치마크</h2>
+<div class="benchmark" id="aider-polyglot">
+<div class="benchmark-head">
+<h3>Aider Polyglot</h3>
+<span class="tag">Code Editing</span>
+</div>
+<p class="definition">여러 프로그래밍 언어에서 기존 소스 파일을 수정하고 테스트를 통과시키는 능력을 평가하는 코드 편집 벤치마크.</p>
+<div class="facts"><p><b>평가 대상: </b>다중 언어 코드 편집 능력</p><p><b>평가 방식: </b>기존 소스 파일을 수정하고 테스트를 통과시키는 방식으로 평가</p><p><b>해석: </b>점수가 높을수록 여러 언어에서 코드 수정 지시를 정확히 수행함</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>기존 함수나 클래스를 요구사항에 맞게 수정하고, 불필요한 변경 없이 테스트를 통과시키도록 패치를 생성한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>IDE나 Coding Agent에서 기존 소스 코드를 정확하게 수정하는 능력을 비교할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="livecodebench">
+<div class="benchmark-head">
+<h3>LiveCodeBench</h3>
+<span class="tag">Algorithm</span>
+</div>
+<p class="definition">새롭게 공개되는 프로그래밍 문제를 사용해 모델의 코드 생성 및 문제 해결 능력을 평가하는 벤치마크.</p>
+<div class="facts"><p><b>평가 대상: </b>신규 프로그래밍 문제 해결 능력</p><p><b>평가 방식: </b>시간에 따라 새로 공개된 문제를 사용해 코드 생성 및 실행 결과를 평가</p><p><b>해석: </b>점수가 높을수록 학습 데이터에 의존하지 않고 새로운 알고리즘 문제를 해결하는 능력이 높음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>처음 공개된 알고리즘 문제를 읽고 시간·공간 복잡도를 고려한 코드를 작성해 hidden test를 통과한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>알고리즘 문제 해결력, 코딩테스트 성능, 새로운 문제에 대한 순수 코드 생성 능력을 비교할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="bigcodebench">
+<div class="benchmark-head">
+<h3>BigCodeBench</h3>
+<span class="tag">Practical Function</span>
+</div>
+<p class="definition">라이브러리와 API를 활용해 현실적인 함수 구현 문제를 해결하는 능력을 평가하는 벤치마크.</p>
+<div class="facts"><p><b>평가 대상: </b>라이브러리/API 활용을 포함한 함수 구현 능력</p><p><b>평가 방식: </b>실제 소프트웨어 개발에 가까운 함수 구현 문제와 테스트 케이스로 평가</p><p><b>해석: </b>점수가 높을수록 여러 API를 조합해 요구사항에 맞는 코드를 구현하는 능력이 높음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>파일 처리, JSON 파싱, HTTP 요청, 데이터 변환 등 여러 라이브러리와 API를 조합해 하나의 함수를 구현한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>실제 애플리케이션 코드처럼 여러 API와 라이브러리를 조합하는 구현 능력을 비교할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="humaneval">
+<div class="benchmark-head">
+<h3>HumanEval</h3>
+<span class="tag">Legacy</span>
+</div>
+<p class="definition">함수 설명과 signature를 기반으로 코드를 생성하고 테스트 통과 여부를 확인하는 코드 생성 벤치마크.</p>
+<pre><code>def fibonacci(n):
+    """
+    n번째 Fibonacci 수를 반환하라.
+    """
+    # 모델이 구현</code></pre>
+<div class="facts"><p><b>평가 대상: </b>함수 단위 코드 생성 능력</p><p><b>평가 방식: </b>함수 설명과 signature를 제공하고 생성된 구현이 테스트를 통과하는지 평가</p><p><b>해석: </b>Pass@1 등이 높을수록 한 번의 코드 생성으로 정답 구현을 만들 확률이 높음</p><p><b>비고: </b>오래된 대표 벤치마크로 최신 상위 모델에서는 변별력이 제한적일 수 있음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>함수 설명과 signature를 제공하고, 모델이 함수 본문을 작성해 단위 테스트를 통과하는지 확인한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>간단한 함수 단위 코드 생성 능력을 빠르게 비교할 때 참고할 수 있지만, 최신 Coding Agent의 실무 성능을 판단하기에는 제한적이다.</span></div></div>
+</div>
+</section>
+<section>
+<h2>Tool Calling 및 종합 지수</h2>
+<div class="benchmark" id="bfcl">
+<div class="benchmark-head">
+<h3>BFCL</h3>
+<span class="tag">Function Calling</span>
+</div>
+<p class="definition">모델의 Function Calling 및 Tool Calling 정확도를 평가하는 벤치마크.</p>
+<pre><code>사용자:
+"서울의 내일 날씨를 알려줘"
+
+가능한 함수:
+get_weather(city, date)
+search_web(query)
+send_email(address, body)
+
+예시 호출:
+get_weather("Seoul", "tomorrow")</code></pre>
+<div class="facts"><p><b>평가 대상: </b>Function Calling / Tool Calling 정확도</p><p><b>평가 방식: </b>적절한 함수 선택, 인자 생성, 다중·연속 호출의 정확성을 평가</p><p><b>해석: </b>점수가 높을수록 도구 선택과 호출 형식의 정확도가 높음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>사용자 요청에 맞는 API를 선택하고 정확한 인자를 생성해 단일 또는 연속 함수 호출을 수행한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>Coding Agent가 빌드 도구, 검색, 데이터베이스, 외부 API 등 여러 Tool을 정확히 선택하고 호출할 수 있는지 판단할 때 중요하다.</span></div></div>
+</div>
+<div class="benchmark" id="aa-intelligence">
+<div class="benchmark-head">
+<h3>AA Intelligence Index</h3>
+<span class="tag">General</span>
+</div>
+<p class="definition">Artificial Analysis가 여러 범주의 평가 결과를 결합해 제공하는 모델 종합 지수.</p>
+<div class="facts"><p><b>평가 대상: </b>모델의 전반적인 문제 해결 능력</p><p><b>평가 방식: </b>코딩, Agent, 일반 추론, 과학 추론 등 여러 평가 결과를 결합</p><p><b>해석: </b>여러 범주를 종합한 상대적 지수이며 정답률 자체를 의미하지 않음</p></div><div class="benchmark-usecase"><div class="usecase-row"><strong>평가 예시</strong><span>코딩, 과학 추론, 일반 문제 해결, Agent 작업 등 여러 평가 결과를 하나의 종합 지수로 비교한다.</span></div><div class="usecase-row"><strong>이 지표가 중요한 경우</strong><span>코딩 외 영역까지 포함해 모델 자체의 전반적인 능력 수준을 비교할 때 참고하는 지표이며, Coding Agent 성능만 판단할 때는 보조적으로 보는 것이 적절하다.</span></div></div>
+</div>
+</section>
+<footer class="footer">Benchmark definitions and interpretations are provided for reference. Benchmark versions and evaluation configurations may change over time.</footer>
+</article>
+</main>
+<aside class="toc">
+<div class="toc-title">On this page</div>
+<a class="toc-link active" href="#overview">벤치마크 요약</a>
+<a class="toc-link" href="#aa-coding-agent">AA Coding Agent</a>
+<a class="toc-link sub" href="#deepswe">DeepSWE</a>
+<a class="toc-link sub" href="#terminal-bench">Terminal-Bench</a>
+<a class="toc-link sub" href="#swe-atlas">SWE-Atlas</a>
+<a class="toc-link sub" href="#swe-bench">SWE-bench</a>
+<a class="toc-link" href="#aider-polyglot">Aider Polyglot</a>
+<a class="toc-link sub" href="#livecodebench">LiveCodeBench</a>
+<a class="toc-link sub" href="#bigcodebench">BigCodeBench</a>
+<a class="toc-link" href="#bfcl">BFCL</a>
+<a class="toc-link sub" href="#aa-intelligence">AA Intelligence</a>
+</aside>
+</div>
+<script>
+    (() => {
+      const root = document.documentElement;
+      const themeBtn = document.getElementById('themeBtn');
+      const savedTheme = localStorage.getItem('llm-doc-theme');
+
+      if (savedTheme) {
+        root.dataset.theme = savedTheme;
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.dataset.theme = 'dark';
+      }
+
+      function updateThemeIcon() {
+        themeBtn.textContent = root.dataset.theme === 'dark' ? '☀' : '◐';
+      }
+
+      updateThemeIcon();
+
+      themeBtn.addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('llm-doc-theme', root.dataset.theme);
+        updateThemeIcon();
+      });
+
+      const sidebar = document.getElementById('sidebar');
+      const menuBtn = document.getElementById('menuBtn');
+
+      menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+      });
+
+      sidebar.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => sidebar.classList.remove('open'));
+      });
+
+      const sectionEls = [...document.querySelectorAll('section[id], .benchmark[id]')];
+      const navLinks = [...document.querySelectorAll('.nav-link')];
+      const tocLinks = [...document.querySelectorAll('.toc-link')];
+
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+        if (!visible) return;
+        const id = visible.target.id;
+
+        [...navLinks, ...tocLinks].forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }, {
+        rootMargin: '-15% 0px -75% 0px',
+        threshold: 0
+      });
+
+      sectionEls.forEach(el => observer.observe(el));
+
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+
+      const searchable = sectionEls.map(el => {
+        const titleEl = el.querySelector('h2, h3');
+        return {
+          id: el.id,
+          title: titleEl ? titleEl.textContent.trim() : el.id,
+          text: el.innerText.replace(/\s+/g, ' ').trim()
+        };
+      });
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, c => ({
+          '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+        }[c]));
+      }
+
+      function doSearch(q) {
+        q = q.trim().toLowerCase();
+        if (!q) {
+          searchResults.classList.remove('open');
+          searchResults.innerHTML = '';
+          return;
+        }
+
+        const hits = searchable
+          .filter(x => x.title.toLowerCase().includes(q) || x.text.toLowerCase().includes(q))
+          .slice(0, 8);
+
+        if (!hits.length) {
+          searchResults.innerHTML = '<div class="empty">검색 결과가 없습니다.</div>';
+        } else {
+          searchResults.innerHTML = hits.map(x => {
+            const idx = x.text.toLowerCase().indexOf(q);
+            const snippet = idx >= 0
+              ? x.text.slice(Math.max(0, idx - 45), idx + q.length + 80)
+              : x.text.slice(0, 120);
+
+            return `
+              <a class="search-result" href="#${escapeHtml(x.id)}">
+                <b>${escapeHtml(x.title)}</b>
+                <span>${escapeHtml(snippet)}...</span>
+              </a>`;
+          }).join('');
+        }
+        searchResults.classList.add('open');
+      }
+
+      searchInput.addEventListener('input', e => doSearch(e.target.value));
+
+      searchResults.addEventListener('click', e => {
+        if (e.target.closest('a')) {
+          searchResults.classList.remove('open');
+          searchInput.blur();
+        }
+      });
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.search-wrap')) searchResults.classList.remove('open');
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === '/' && document.activeElement !== searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+        }
+        if (e.key === 'Escape') {
+          searchInput.blur();
+          searchResults.classList.remove('open');
+          sidebar.classList.remove('open');
+        }
+      });
+    
+      const summaryLinks = [...document.querySelectorAll('.summary-link')];
+      const summaryTargets = summaryLinks
+        .map(link => document.getElementById(link.dataset.target))
+        .filter(Boolean);
+
+      summaryLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          const id = link.dataset.target;
+          const target = document.getElementById(id);
+          if (!target) return;
+
+          e.preventDefault();
+          history.replaceState(null, '', '#' + id);
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      const summaryObserver = new IntersectionObserver(entries => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+        if (!visible) return;
+
+        const id = visible.target.id;
+        summaryLinks.forEach(link => {
+          link.classList.toggle('active', link.dataset.target === id);
+        });
+      }, {
+        rootMargin: '-18% 0px -72% 0px',
+        threshold: 0
+      });
+
+      summaryTargets.forEach(el => summaryObserver.observe(el));
+    
+})();
+  </script>
+</body>
+</html>
