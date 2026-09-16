@@ -30,5 +30,9 @@
   "llm_coding_benchmark_reference_company_v6.html": {
     "sha256": "2c4451e646046a68af605e17c0c94f392729cf7c415ae6bd35bfc0f8c6229e97",
     "updatedAt": "2026-09-15T03:21:56.115Z"
+  },
+  "Windows_Codex_Max_사용_안내.html": {
+    "sha256": "f77b911f7fca1e39c5fa0d60558d9c321ae093937a184b4bba919d65b7ca0498",
+    "updatedAt": "2026-09-15T02:15:17.390Z"
   }
 }

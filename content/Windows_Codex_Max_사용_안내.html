@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Windows Codex 앱에서 Max reasoning effort를 선택하도록 요청하는 간단한 안내문">
+  <title>Windows Codex 앱에서 Max 사용하기</title>
+  <style>
+    :root {
+      --paper: #ffffff;
+      --page: #ececea;
+      --ink: #171717;
+      --sub: #626262;
+      --line: #d6d6d3;
+      --soft: #f5f5f3;
+      --navy: #193b5a;
+      --navy-soft: #eef3f7;
+      --sans: "Malgun Gothic", "Noto Sans KR", "Segoe UI", Arial, sans-serif;
+      --mono: Consolas, "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.75;
+      letter-spacing: -0.015em;
+      word-break: keep-all;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 32px));
+      margin: 38px auto 72px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+
+    .document-header { padding: 42px 48px 30px; }
+    .document-type { margin: 0 0 20px; color: var(--sub); font-size: 11px; letter-spacing: 0.11em; }
+    h1 { margin: 0; font-size: clamp(28px, 5vw, 37px); line-height: 1.22; font-weight: 700; letter-spacing: -0.045em; }
+    .subtitle { max-width: 640px; margin: 13px 0 0; color: #464646; font-size: 15px; }
+
+    .metadata {
+      display: grid;
+      grid-template-columns: 110px 1fr 110px 1fr;
+      margin-top: 27px;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .metadata div { padding: 9px 10px; border-bottom: 1px solid var(--line); }
+    .metadata div:nth-last-child(-n+4) { border-bottom: 0; }
+    .metadata .label { background: var(--soft); color: var(--sub); font-weight: 700; }
+
+    main { padding: 0 48px 46px; }
+    section { display: grid; grid-template-columns: 140px 1fr; gap: 28px; padding: 30px 0; border-top: 1px solid var(--line); }
+    section:first-child { border-top: 2px solid var(--ink); }
+    .section-side { padding-top: 2px; }
+    .section-number { display: block; color: var(--sub); font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; }
+    h2 { margin: 5px 0 0; font-size: 17px; line-height: 1.35; letter-spacing: -0.025em; }
+    .section-content > :first-child { margin-top: 0; }
+    p { margin: 0 0 12px; }
+
+    .plain-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .plain-list li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .plain-list b { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--sub); }
+    .plain-list span { color: #353535; }
+
+    .prompt-box { border: 1px solid var(--line); background: var(--soft); }
+    .prompt-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    .prompt-top strong { font-size: 12px; }
+    .copy-button {
+      min-width: 70px;
+      padding: 6px 10px;
+      border: 1px solid #333;
+      border-radius: 0;
+      background: #fff;
+      color: #222;
+      font: 700 12px var(--sans);
+      cursor: pointer;
+    }
+    .copy-button:hover { background: #222; color: #fff; }
+    .copy-button:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+    pre {
+      margin: 0;
+      padding: 17px 18px;
+      overflow: auto;
+      color: #222;
+      font: 12px/1.72 var(--mono);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .copy-status { min-height: 20px; margin: 8px 0 0; color: var(--sub); font-size: 12px; }
+
+    .note { margin-top: 16px; padding: 13px 15px; border-left: 3px solid var(--navy); background: var(--navy-soft); color: #29445d; font-size: 13px; }
+    .note strong { color: #193b5a; }
+
+    .small-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .small-table th, .small-table td { padding: 10px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .small-table th { width: 130px; background: var(--soft); color: var(--sub); font-weight: 700; }
+    .small-table tr:first-child th, .small-table tr:first-child td { border-top: 1px solid var(--ink); }
+
+    a { color: var(--navy); }
+    footer { padding: 17px 48px; border-top: 1px solid var(--line); color: var(--sub); font-size: 11px; }
+
+    @media (max-width: 680px) {
+      .page { width: 100%; margin: 0; border: 0; }
+      .document-header, main, footer { padding-right: 22px; padding-left: 22px; }
+      .metadata { grid-template-columns: 90px 1fr; }
+      .metadata div:nth-last-child(-n+4) { border-bottom: 1px solid var(--line); }
+      .metadata div:nth-last-child(-n+2) { border-bottom: 0; }
+      section { grid-template-columns: 1fr; gap: 9px; }
+      .section-side { display: flex; align-items: baseline; gap: 11px; }
+      h2 { margin: 0; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { width: 100%; margin: 0; border: 0; }
+      .copy-button, .copy-status { display: none; }
+      section { break-inside: avoid; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header class="document-header">
+      <p class="document-type">USER GUIDE · WINDOWS CODEX</p>
+      <h1>Windows Codex 앱에서 Max 사용하기</h1>
+      <p class="subtitle">아래 요청 문구를 복사해 Codex의 새 작업에 붙여 넣으면 됩니다. Codex가 이 PC의 실제 모델 지원 여부를 확인한 뒤, 가능한 경우에만 Max 선택 항목을 설정합니다.</p>
+      <div class="metadata" aria-label="문서 정보">
+        <div class="label">대상</div><div>Windows의 ChatGPT Desktop / Codex</div>
+        <div class="label">소요 시간</div><div>약 2~3분</div>
+        <div class="label">필요 사항</div><div>Codex 로그인 및 로컬 설정 파일 접근</div>
+        <div class="label">마지막 검토</div><div>2026-09-15</div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="section-side"><span class="section-number">01</span><h2>방법</h2></div>
+        <div class="section-content">
+          <ol class="plain-list">
+            <li><b>1.</b><span>Windows Codex 앱에서 <strong>새 작업</strong>을 엽니다.</span></li>
+            <li><b>2.</b><span>아래 <strong>요청 문구 복사</strong> 버튼을 누른 뒤, 새 작업에 붙여 넣고 실행합니다.</span></li>
+            <li><b>3.</b><span>Codex가 안내하면 앱을 완전히 종료 후 다시 열고, 새 작업에서 reasoning effort에 <strong>Max</strong>가 보이는지 확인합니다.</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-side"><span class="section-number">02</span><h2>Codex에 보낼 문구</h2></div>
+        <div class="section-content">
+          <div class="prompt-box">
+            <div class="prompt-top">
+              <strong>Windows Codex Desktop · Max 활성화 요청</strong>
+              <button id="copy-button" class="copy-button" type="button">요청 문구 복사</button>
+            </div>
+            <pre id="codex-prompt">Windows Codex Desktop에서 reasoning effort의 Max를 선택할 수 있게 설정해줘.
+
+먼저 현재 앱/계정의 라이브 model/list와 %USERPROFILE%\.codex\config.toml을 읽기 전용으로 확인해서, 현재 선택 가능한 모델이 Max를 지원하는지 확인해줘.
+
+Max가 지원되는 경우에만 config.toml을 먼저 백업하고, 기존 [desktop] enabled-reasoning-efforts 목록에 "max"를 추가해줘. 기존 설정은 유지하고 중복 [desktop] 섹션은 만들지 마. 레지스트리, 앱 패키지, 실행 파일, CLI 백엔드는 수정하지 마.
+
+설정 후 Codex 앱을 재시작하도록 안내하고, 새 작업에서 Max가 실제로 선택되는지 확인해줘. Max를 지원하지 않으면 설정은 변경하지 말고 이유만 알려줘. 민감한 값은 출력하지 마.</pre>
+          </div>
+          <p id="copy-status" class="copy-status" aria-live="polite">버튼을 누르면 위 요청 문구가 클립보드에 복사됩니다.</p>
+          <aside class="note"><strong>중요:</strong> 설정 파일은 선택기 노출을 조정할 뿐입니다. 해당 PC의 앱 버전, 로그인 계정, 선택 모델이 Max를 지원하지 않으면 강제로 사용할 수 없습니다.</aside>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-side"><span class="section-number">03</span><h2>확인 기준</h2></div>
+        <div class="section-content">
+          <table class="small-table">
+            <tbody>
+              <tr><th>성공</th><td>재시작 후 새 작업의 reasoning 선택기에서 Max를 선택할 수 있고, 새 세션의 실제 effort 값도 <code>max</code>로 기록됩니다.</td></tr>
+              <tr><th>정상적인 제한</th><td>현재 계정 또는 선택한 모델의 라이브 카탈로그에 Max가 없으면 표시되지 않을 수 있습니다. 이 경우 설정 변경으로 권한을 만들 수는 없습니다.</td></tr>
+              <tr><th>참고</th><td>모델 선택기는 라이브 <code>model/list</code>가 반환하는 모델별 지원 reasoning 옵션을 기준으로 확인하는 것이 안전합니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer>Windows Codex 앱에서 Max 사용하기 · 배포용 간단 안내문 · 공식 동작 기준: <a href="https://learn.chatgpt.com/docs/app-server" target="_blank" rel="noopener">OpenAI Docs — Codex App Server</a></footer>
+  </article>
+
+  <script>
+    (function () {
+      const button = document.getElementById("copy-button");
+      const prompt = document.getElementById("codex-prompt");
+      const status = document.getElementById("copy-status");
+
+      function updateStatus(message) {
+        status.textContent = message;
+      }
+
+      function fallbackCopy(text) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const copied = document.execCommand("copy");
+        document.body.removeChild(area);
+        return copied;
+      }
+
+      button.addEventListener("click", async function () {
+        const text = prompt.textContent.trim();
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+          } else if (!fallbackCopy(text)) {
+            throw new Error("copy failed");
+          }
+          updateStatus("복사했습니다. Windows Codex 앱의 새 작업에 붙여 넣으세요.");
+          button.textContent = "복사됨";
+          window.setTimeout(function () { button.textContent = "요청 문구 복사"; }, 1600);
+        } catch (error) {
+          updateStatus("복사에 실패했습니다. 요청 문구를 직접 선택해 복사해 주세요.");
+        }
+      });
+    }());
+  </script>
+</body>
+</html>
