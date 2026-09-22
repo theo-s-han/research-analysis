@@ -124,6 +124,7 @@ table.data strong{font-size:13px}
 .metric-tip{
   display:inline-block;
   position:relative;
+  z-index:20;
   border-bottom:1px dotted #8a94a3;
   cursor:help;
   outline:none;
@@ -131,7 +132,7 @@ table.data strong{font-size:13px}
 .metric-tip::after{
   content:attr(data-tip);
   position:absolute;
-  z-index:50;
+  z-index:999;
   left:50%;
   top:calc(100% + 8px);
   transform:translateX(-50%);
@@ -203,6 +204,12 @@ table.data strong{font-size:13px}
 }
 
 /* v6 report polish */
+
+.summary-card:hover,
+.summary-card:focus-within{
+  z-index:100;
+}
+
 :root{
   --navy:#17345f;
   --navy-soft:#edf3fb;
@@ -242,7 +249,7 @@ h2::before{
 }
 .summary-card{
   position:relative;
-  overflow:hidden;
+  overflow:visible;
   border-color:#dce4ee;
 }
 .summary-card::before{
