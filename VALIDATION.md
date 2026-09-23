@@ -105,3 +105,10 @@
 - 원문 SHA-256: `9253c50e12791ea268e868db62b36b51b709e05810dd414854bec1135af453aa`. 서버 파일, 게시용 원문과 빌드 산출물의 바이트가 같습니다.
 - `npm run build`와 `npm run check` 통과: 자료 11개/3개 분류, 원문 해시 동일, 내부 연결 84개 유효.
 - 원문은 독립 HTML로 별도 파일 리소스가 없으며, 기존 자료나 메인 화면의 문구·디자인은 변경하지 않았습니다. 원문 내용의 사실관계는 재조사하지 않았습니다.
+
+## 2026-09-23 GPT-6 Codex 전체 비교 개발 지표 보강·재배포
+
+- 사용자가 갱신한 `Codex_6_model.html`을 기준으로 전체 비교 표에 DeepSWE v1.1, Terminal-Bench 4.0, SWE-Atlas-QnA 3개 열을 추가했습니다. 동일 모델·reasoning 설정의 Artificial Analysis Coding Agent Index v1.5 실측값이 있는 6개 행만 채웠고, 나머지는 추정 없이 `—`로 표시했습니다.
+- 출처는 [Artificial Analysis의 Codex/Grok Build 비교](https://artificialanalysis.ai/agents/coding-agents/comparisons/codex-vs-grok-build)이며, 두 에이전트의 harness가 다를 수 있음을 원문에도 명시했습니다. GPT-6 Astra xHigh와 GPT-6 Sol xHigh 등 비측정 행에 Max 값을 대입하지 않았습니다.
+- `npm run build`와 `npm run check` 통과: 자료 11개/3개 분류, 원문 해시 동일, 내부 연결 84개 유효. 전체 비교 33개 데이터 행과 각 9개 열의 일치도 확인했습니다.
+- 원문·게시용 파일·빌드 산출물의 SHA-256은 모두 `621398a65a13c6bd00348bee996390645320f538c45fa38a1596bf227f76aa33`입니다. 기존 자료 주소와 위키 iframe 대상 URL은 유지합니다.
