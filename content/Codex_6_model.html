@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>GPT-6 Codex 모델 선택 가이드</title>
+<style>
+:root{--bg:#f3f6fa;--paper:#fff;--text:#172033;--muted:#687386;--line:#dce4ee;--navy:#17345f;--nav-bg:#e9f0f8;--nav-line:#c8d6e7;--blue:#2f6fed;--blue-soft:#edf4ff;--teal:#0f766e;--teal-soft:#eaf8f5;--purple:#6941c6;--purple-soft:#f4f0ff;--amber:#a16207;--amber-soft:#fff7e8;--red:#b42318;--red-soft:#fff2f0;--radius:15px;--shadow:0 8px 24px rgba(23,52,95,.055)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo",sans-serif;line-height:1.62;word-break:keep-all}a{color:inherit}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+header{width:min(1840px,calc(100vw - 32px));margin:0 auto;padding:44px 16px 24px;border-bottom:1px solid var(--line)}.eyebrow{margin-bottom:7px;color:var(--navy);font-size:12px;font-weight:850;letter-spacing:.08em}h1{margin:0;color:#14213a;font-size:40px;line-height:1.15;letter-spacing:-.04em}
+.layout{width:min(1840px,calc(100vw - 32px));margin:22px auto 0;padding:0 16px 72px;display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px}main{min-width:0}.side-nav{position:sticky;top:18px;align-self:start;padding:15px 11px 14px;background:var(--nav-bg);border:1px solid var(--nav-line);border-radius:13px;box-shadow:0 5px 18px rgba(32,65,106,.05)}.side-nav strong{display:block;padding:2px 9px 10px;color:var(--navy);font-size:12px;font-weight:900;letter-spacing:.04em}.side-nav a{display:block;margin:1px 0;padding:8px 9px;color:#53647b;border-left:3px solid transparent;border-radius:5px;font-size:12.5px;font-weight:700;text-decoration:none}.side-nav a:hover{color:var(--navy);background:#f6f9fd;border-left-color:var(--blue)}
+section{margin-bottom:20px;padding:27px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}h2{display:flex;align-items:center;gap:9px;margin:0 0 18px;color:#172b4d;font-size:24px;letter-spacing:-.03em}h2::before{content:"";width:4px;height:22px;flex:0 0 auto;border-radius:999px;background:linear-gradient(180deg,var(--blue),var(--teal))}p{margin:8px 0}.muted{color:var(--muted)}.note{margin-top:11px;color:var(--muted);font-size:12px;line-height:1.65}
+.metric-tip{
+  position:relative;z-index:20;display:inline-flex;align-items:center;gap:4px;
+  padding:0;border:0!important;box-shadow:none!important;text-decoration:none!important;
+  cursor:help;outline:none;
+}
+.metric-tip::after{
+  content:"ⓘ";display:inline-block;color:#7d8ba0;font-size:10px;font-weight:700;line-height:1;
+  text-decoration:none!important;border:0!important;box-shadow:none!important;
+}
+.metric-tip::before{
+  content:attr(data-tip);position:absolute;z-index:9999;bottom:calc(100% + 9px);left:50%;
+  width:310px;max-width:75vw;padding:11px 12px;transform:translateX(-50%);
+  color:#fff;background:#1f2937;border-radius:9px;box-shadow:0 8px 22px rgba(0,0,0,.22);
+  font-size:12px;font-weight:550;line-height:1.55;text-align:left;white-space:normal;
+  opacity:0;visibility:hidden;pointer-events:none;
+}
+.metric-tip:hover::before,.metric-tip:focus::before{opacity:1;visibility:visible}
+.metric-tip.left::before{left:0;transform:none}
+.metric-tip.right::before{left:auto;right:0;transform:none}
+th .metric-tip::before{bottom:auto;top:calc(100% + 9px)}
+tr:has(.metric-tip:hover),tr:has(.metric-tip:focus){position:relative;z-index:500}
+td:has(.metric-tip:hover),td:has(.metric-tip:focus),th:has(.metric-tip:hover),th:has(.metric-tip:focus){position:relative;z-index:1000}
+
+.summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.summary-card{position:relative;z-index:1;padding:18px;overflow:visible;background:#fff;border:1px solid var(--line);border-radius:13px}.summary-card:hover,.summary-card:focus-within{z-index:100}.summary-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;border-radius:13px 13px 0 0;background:#dce3eb}.summary-card.release::before{background:var(--navy)}.summary-card.luna::before{background:var(--teal)}.summary-card.sol::before{background:var(--blue)}.summary-card.astra::before{background:var(--purple)}.summary-card .k{margin-bottom:6px;color:var(--muted);font-size:12px;font-weight:850}.summary-card .v{font-size:18px;font-weight:900;line-height:1.4;letter-spacing:-.025em}.summary-card p{margin-top:7px;color:#4e5968;font-size:13px}.callout{margin-top:16px;padding:16px 18px;background:linear-gradient(90deg,#f3f7fc,#fbfcfe);border:1px solid #d8e2ee;border-left:4px solid var(--navy);border-radius:11px}.callout strong{font-weight:900}
+.table-wrap{width:100%;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:11px}table{width:100%;border-collapse:collapse;font-size:12.5px}table.medium{min-width:1080px}table.wide{min-width:1380px}th,td{padding:11px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}th{position:sticky;top:0;z-index:5;color:#46546a;background:#eef3f8;font-size:11px;font-weight:850;white-space:nowrap}tbody tr:last-child td{border-bottom:0}tbody tr:hover{filter:brightness(.985)}.model{min-width:190px;font-weight:850;white-space:nowrap}.company{display:block;margin-top:1px;color:var(--muted);font-size:10.5px;font-weight:600}.setting,.num,.money,.score{white-space:nowrap;font-variant-numeric:tabular-nums}.score{color:#173f7a;font-weight:900}.money{color:#214c86;font-weight:850}.na{color:#a0a8b4}.positive{color:#087b6d;font-weight:850;white-space:nowrap}.negative{color:#ad4435;font-weight:850;white-space:nowrap}.neutral{color:#596578;font-weight:800;white-space:nowrap}
+.sol-group-head{background:#dfeaff!important;color:#214f99!important}.luna-group-head{background:#dff3ef!important;color:#126a63!important}.sol-old{background:#f5f8fe}.sol-new{background:#eaf2ff}.luna-old{background:#f4faf8}.luna-new{background:#e8f7f3}
+.family-opus{background:#faf7ff}.family-fable{background:#fff9f2}.family-astra{background:#f5f1ff}.family-sol6{background:#edf4ff}.family-sol56{background:#f5f8fd}.family-terra56{background:#f7f8fa}.family-luna6{background:#ebf8f5}.family-luna56{background:#f4faf8}.family-grok{background:#f5f6f8}.family-opus td:first-child{box-shadow:inset 5px 0 0 #8d63d5}.family-fable td:first-child{box-shadow:inset 5px 0 0 #d99a45}.family-astra td:first-child{box-shadow:inset 5px 0 0 var(--purple)}.family-sol6 td:first-child{box-shadow:inset 5px 0 0 var(--blue)}.family-sol56 td:first-child{box-shadow:inset 5px 0 0 #8aa7d7}.family-terra56 td:first-child{box-shadow:inset 5px 0 0 #7d8a9a}.family-luna6 td:first-child{box-shadow:inset 5px 0 0 var(--teal)}.family-luna56 td:first-child{box-shadow:inset 5px 0 0 #80afa9}.family-grok td:first-child{box-shadow:inset 5px 0 0 #222b38}
+.tag{display:inline-block;margin-left:5px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:850;white-space:nowrap}.tag.blue{color:#2356a8;background:var(--blue-soft)}.tag.green{color:#0d665f;background:var(--teal-soft)}.tag.purple{color:#5c37aa;background:var(--purple-soft)}.tag.amber{color:#875409;background:var(--amber-soft)}.tag.gray{color:#626c79;background:#eef1f5}.tag.red{color:#9f3027;background:var(--red-soft)}
+.explain-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}.explain-card{padding:15px 16px;background:#fff;border:1px solid var(--line);border-radius:11px}.explain-card strong{display:block;margin-bottom:5px;font-size:14px}.explain-card p{margin:0;color:#4e5968;font-size:13px}
+.strategy-table{width:100%;border-collapse:collapse;border:1px solid var(--line);font-size:13.5px}.strategy-table th,.strategy-table td{padding:13px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.strategy-table th{background:#edf3f8;color:#596577;font-size:11.5px}.strategy-table td:first-child{width:230px;font-weight:900}.strategy-table td:nth-child(2){width:190px;font-weight:900;white-space:nowrap}.strategy-table tr:last-child td{border-bottom:0}.route{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:17px}.route-item{padding:15px;background:#fff;border:1px solid var(--line);border-radius:11px}.route-item.luna{border-top:4px solid var(--teal)}.route-item.sol{border-top:4px solid var(--blue)}.route-item.astra{border-top:4px solid var(--purple)}.route-item .label{margin-bottom:5px;color:var(--muted);font-size:11px;font-weight:850}.route-item .name{margin-bottom:7px;font-size:18px;font-weight:950}.route-item p{margin:0;color:#4d5867;font-size:13px}
+.sources{color:var(--muted);font-size:12.5px}.sources ul{margin:0;padding-left:19px}.sources li{margin:5px 0}.sources a{color:#3d5f90;text-underline-offset:3px}
+
+/* 전체 비교: 실제 대표 선택만 강하게 강조 */
+#compare tbody tr{background:#fff;}
+#compare tbody tr:hover{background:#f8faff;}
+
+#compare tr.pick-luna{
+  background:linear-gradient(90deg,#e7f7f3 0%,#f5fcfa 76%,#fff 100%);
+}
+#compare tr.pick-sol{
+  background:linear-gradient(90deg,#e7f0ff 0%,#f4f8ff 76%,#fff 100%);
+}
+#compare tr.pick-astra{
+  background:linear-gradient(90deg,#f0eaff 0%,#f8f5ff 76%,#fff 100%);
+}
+
+#compare tr.pick-luna td:first-child{box-shadow:inset 5px 0 0 var(--teal);}
+#compare tr.pick-sol td:first-child{box-shadow:inset 5px 0 0 var(--blue);}
+#compare tr.pick-astra td:first-child{box-shadow:inset 5px 0 0 var(--purple);}
+
+#compare tr.pick-luna .score,
+#compare tr.pick-luna .money{color:#0b6b63;font-weight:900;}
+#compare tr.pick-sol .score,
+#compare tr.pick-sol .money{color:#2158a8;font-weight:900;}
+#compare tr.pick-astra .score,
+#compare tr.pick-astra .money{color:#5c3aa5;font-weight:900;}
+
+/* 구형/비추천은 강조 대신 한 단계 낮춤 */
+#compare tr.deemphasize{color:#657083;background:#fafbfc;}
+#compare tr.deemphasize .score,
+#compare tr.deemphasize .money{color:#657083;}
+
+@media(max-width:1180px){.layout{grid-template-columns:1fr}.side-nav{display:none}.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.route{grid-template-columns:1fr}}@media(max-width:720px){header,.layout{width:100%;padding-left:14px;padding-right:14px}h1{font-size:31px}section{padding:20px}.summary-grid,.explain-grid{grid-template-columns:1fr}}
+
+
+/* Expandable detailed comparison */
+.detail-panel{
+  margin-top:16px;
+  overflow:visible;
+  background:#fbfcfe;
+  border:1px solid var(--line);
+  border-radius:12px;
+}
+.detail-panel>summary{
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+  padding:14px 16px;
+  color:#233b60;
+  font-size:13.5px;
+  font-weight:900;
+  background:#f1f5fa;
+  border-radius:12px;
+}
+.detail-panel>summary::-webkit-details-marker{display:none}
+.detail-panel>summary::after{
+  content:'＋';
+  float:right;
+  color:#65758c;
+  font-size:15px;
+}
+.detail-panel[open]>summary{
+  border-bottom:1px solid var(--line);
+  border-radius:12px 12px 0 0;
+}
+.detail-panel[open]>summary::after{content:'－'}
+.detail-body{padding:16px}
+.detail-title{
+  margin:2px 0 10px;
+  color:#405069;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.detail-body .table-wrap + .detail-title{margin-top:18px}
+.reason-sol{background:#edf4ff!important}
+.reason-luna{background:#eaf8f5!important}
+.reason-terra{background:#f3f5f8!important}
+
+.priority-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px;}
+.legend-chip{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:850;border:1px solid transparent;}
+.legend-chip.luna{color:#0b6b63;background:#e7f7f3;border-color:#cbe9e2;}
+.legend-chip.sol{color:#2158a8;background:#e7f0ff;border-color:#cddcff;}
+.legend-chip.astra{color:#5c3aa5;background:#f0eaff;border-color:#dfd2ff;}
+
+
+/* v5: 전체 비교는 독립 노출 + 대표 행만 강조 */
+#compare{overflow:visible;}
+#compare .table-wrap{overflow:auto;}
+#compare tbody tr{background:transparent !important;}
+#compare tbody tr:hover{background:#f7f9fc !important;}
+#compare tbody tr td:first-child{box-shadow:none;}
+#compare tbody tr.pick-luna{background:linear-gradient(90deg,rgba(15,118,110,.16),rgba(15,118,110,.045) 72%,transparent) !important;}
+#compare tbody tr.pick-sol{background:linear-gradient(90deg,rgba(47,111,237,.17),rgba(47,111,237,.045) 72%,transparent) !important;}
+#compare tbody tr.pick-astra{background:linear-gradient(90deg,rgba(105,65,198,.17),rgba(105,65,198,.045) 72%,transparent) !important;}
+#compare tbody tr.pick-luna td:first-child{box-shadow:inset 5px 0 0 var(--teal);}
+#compare tbody tr.pick-sol td:first-child{box-shadow:inset 5px 0 0 var(--blue);}
+#compare tbody tr.pick-astra td:first-child{box-shadow:inset 5px 0 0 var(--purple);}
+#compare tbody tr.pick-luna td,#compare tbody tr.pick-luna56 td,#compare tbody tr.pick-sol td,#compare tbody tr.pick-astra td{font-weight:700;}
+#compare tbody tr.pick-luna56{background:linear-gradient(90deg,rgba(69,145,137,.13),rgba(69,145,137,.03) 72%,transparent)!important;}
+#compare tbody tr.pick-luna56 td:first-child{box-shadow:inset 5px 0 0 #57978f;}
+#compare tbody tr.pick-luna56 .score,#compare tbody tr.pick-luna56 .money{color:#376f69;font-weight:900;}
+
+#compare tbody tr.deemphasize{color:#7a8492;}
+#compare table.wide{min-width:1510px;}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">CODEX MODEL GUIDE · GPT-6 UPDATE · 2026.09</div><h1>GPT-6 Codex 모델 선택 가이드</h1></header>
+<div class="layout">
+<nav aria-label="목차" class="side-nav"><strong>목차</strong><a href="#summary">요약</a><a href="#generation">GPT-5.6 vs GPT-6</a><a href="#compare">전체 비교</a><a href="#coding">코딩 평가</a><a href="#official-dev">GPT-6 Reasoning별 개발</a><a href="#strategy">Codex 운영 결론</a><a href="#sources">자료 기준</a></nav>
+<main>
+<section id="summary">
+<h2>요약</h2>
+<div class="summary-grid">
+<article class="summary-card release">
+<div class="k">출시</div><div class="v">2026.09.23 03:12 KST</div>
+<p>GPT-6 Sol과 Luna가 Codex, ChatGPT Work, API에 추가됐다.</p>
+</article>
+<article class="summary-card luna">
+<div class="k">최저비용 실행</div>
+<div class="v"><span class="metric-tip left" data-tip="GPT-6 Luna Max: AA Intelligence 37 · Coding Agent Index 41 · SWE-Atlas 44% · AA Cost/task $0.07. 정확히 지정된 반복 실행에 비용 효율이 가장 높다." tabindex="0">GPT-6 Luna Max</span></div>
+<p>범위와 방법이 이미 정해진 반복 수정·실행 작업에 적합.</p>
+</article>
+<article class="summary-card luna">
+<div class="k">저비용 코딩</div>
+<div class="v"><span class="metric-tip left" data-tip="GPT-5.6 Luna Max: AA Intelligence 37 · Coding Agent Index 43 · SWE-Atlas 49% · DeepSWE 66%. GPT-6 Luna보다 코딩 종합과 코드베이스 이해가 더 높다." tabindex="0">GPT-5.6 Luna Max</span></div>
+<p>비용보다 코드베이스 이해·방향 안정성을 조금 더 우선할 때.</p>
+</article>
+<article class="summary-card sol">
+<div class="k">기본 개발 구간</div>
+<div class="v"><span class="metric-tip left" data-tip="GPT-6 Sol xHigh: AA Intelligence 44 · AA Cost/task $0.53. Max는 48 / $1.06. 대부분의 어려운 개발에서 비용과 성능의 균형점이다." tabindex="0">GPT-6 Sol xHigh</span></div>
+<p>원인 추적, 여러 파일 수정, 일반적인 복잡한 개발의 기본값.</p>
+</article>
+<article class="summary-card astra">
+<div class="k">최고 난도 구간</div>
+<div class="v"><span class="metric-tip right" data-tip="GPT-6 Astra xHigh: AA Intelligence 52 · $2.31/task. Max는 53 · $3.26/task. 구조 판단과 문제 정의가 어려운 작업에 적합하다." tabindex="0">GPT-6 Astra xHigh</span></div>
+<p>문제 정의·아키텍처·전체 구조 판단 자체가 어려울 때.</p>
+</article>
+</div>
+<div class="callout">
+<strong>이번 세대에서 가장 크게 바뀐 역할은 Terra와 Luna다.</strong><br/><br/>
+<strong>GPT-5.6 Terra Max</strong>는 예전의 중간 기본 모델 역할이 사실상 사라졌다. AA 기준 Terra Max는 42 / $1.40인데 GPT-6 Sol High가 43 / $0.37로 더 강하면서 훨씬 저렴하다.<br/><br/>
+<strong>GPT-6 Luna Max</strong>는 5.6 Luna보다 전체 Intelligence는 같지만 코딩 방향성 지표가 나빠졌다. 따라서 “싸면서 알아서 코딩하는 모델”보다는 <strong>정확히 지시한 일을 매우 싸게 수행하는 실행자</strong>로 보는 편이 맞다.
+</div>
+</section>
+<section id="generation"><h2>GPT-5.6 vs GPT-6</h2><div class="table-wrap"><table class="wide"><thead><tr><th rowspan="2">지표</th><th class="sol-group-head" colspan="3">Sol</th><th class="luna-group-head" colspan="3">Luna</th></tr><tr><th class="sol-group-head">GPT-5.6</th><th class="sol-group-head">GPT-6</th><th class="sol-group-head">변화</th><th class="luna-group-head">GPT-5.6</th><th class="luna-group-head">GPT-6</th><th class="luna-group-head">변화</th></tr></thead><tbody>
+<tr><td class="model"><span class="metric-tip left" data-tip="Artificial Analysis의 여러 평가를 합친 종합 점수입니다. 높을수록 전반적인 문제 해결 능력이 강합니다." tabindex="0">AA Intelligence Index</span></td><td class="num sol-old">47</td><td class="num sol-new"><strong>48</strong></td><td class="positive sol-new">+1</td><td class="num luna-old">37</td><td class="num luna-new">37</td><td class="neutral luna-new">사실상 동일</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="여러 업무 도구를 사용해 긴 작업 흐름을 처리하는 능력입니다." tabindex="0">AutomationBench-AA</span></td><td class="num sol-old">60%</td><td class="num sol-new"><strong>62%</strong></td><td class="positive sol-new">+2%p</td><td class="num luna-old">50%</td><td class="num luna-new"><strong>53%</strong></td><td class="positive luna-new">+3%p</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="터미널 명령, 파일, 빌드 도구 등을 이용해 복잡한 여러 단계 문제를 끝까지 해결하는 능력입니다." tabindex="0">Terminal-Bench 4.0</span></td><td class="num sol-old">40%</td><td class="num sol-new"><strong>44%</strong></td><td class="positive sol-new">+4%p</td><td class="num luna-old">12%</td><td class="num luna-new"><strong>13%</strong></td><td class="positive luna-new">+1%p</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="DeepSWE, Terminal-Bench, SWE-Atlas-QnA를 합친 실제 코딩 에이전트 종합 점수입니다." tabindex="0">Coding Agent Index</span></td><td class="num sol-old">55</td><td class="num sol-new"><strong>57</strong></td><td class="positive sol-new">+2</td><td class="num luna-old"><strong>43</strong></td><td class="num luna-new">41</td><td class="negative luna-new">-2</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="큰 코드베이스를 읽고 구조, 동작, 관계를 정확히 파악하는 평가입니다." tabindex="0">SWE-Atlas-QnA</span></td><td class="num sol-old">54%</td><td class="num sol-new"><strong>58%</strong></td><td class="positive sol-new">+4%p</td><td class="num luna-old"><strong>49%</strong></td><td class="num luna-new">44%</td><td class="negative luna-new">-5%p</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="Artificial Analysis Intelligence Index 문제 1건을 해결할 때 실제 사용 토큰에 API 가격을 적용한 평균 비용입니다." tabindex="0">AA Cost / task</span></td><td class="money sol-old">$1.99</td><td class="money sol-new"><strong>$1.06</strong></td><td class="positive sol-new">약 -47%</td><td class="money luna-old">$0.18</td><td class="money luna-new"><strong>$0.07</strong></td><td class="positive luna-new">약 -60%</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="Intelligence Index 문제 1건을 처리하면서 생성한 평균 출력 토큰입니다." tabindex="0">Output / task</span></td><td class="num sol-old">29K</td><td class="num sol-new">31K</td><td class="negative sol-new">약 +7%</td><td class="num luna-old">41K</td><td class="num luna-new">51K</td><td class="negative luna-new">약 +24%</td></tr>
+<tr><td class="model"><span class="metric-tip left" data-tip="표준 API에서 입력/출력 토큰 100만 개당 가격입니다. 실제 작업비는 사용 토큰량에 따라 달라집니다." tabindex="0">API Input / Output</span></td><td class="money sol-old">$4 / $20</td><td class="money sol-new"><strong>$2 / $10</strong></td><td class="positive sol-new">약 -50%</td><td class="money luna-old">$0.20 / $1.20</td><td class="money luna-new"><strong>$0.10 / $0.50</strong></td><td class="positive luna-new">-50% / -58%</td></tr>
+</tbody></table></div><div class="callout">
+<strong>Sol:</strong> 성능은 조금 좋아졌지만 가장 큰 변화는 비용이다. Max 기준 AA 작업당 비용이 <strong>$1.99 → $1.06</strong>으로 내려갔다.<br/><br/>
+<strong>Luna:</strong> “전체적으로 더 멍청해졌다”기보다는 <strong>코딩에서 스스로 방향을 잡는 능력이 약해졌다</strong>고 보는 편이 정확하다. Intelligence는 37 → 37로 같고 AutomationBench는 50% → 53%, Terminal은 12% → 13%, AA-Omniscience는 -10 → 1로 좋아졌다. 반면 Coding Agent Index는 43 → 41, SWE-Atlas는 49% → 44%, DeepSWE는 66% → 64%로 내려갔다.<br/><br/>
+<strong>실전 해석:</strong> 비용 차이가 중요하지 않은 저비용 코딩이라면 <strong>GPT-5.6 Luna Max가 더 낫다</strong>. GPT-6 Luna Max는 대량 반복 수정, 명확한 패치, 테스트 실행처럼 모델이 방향을 정할 필요가 거의 없는 작업에 더 적합하다.
+    </div><details class="detail-panel">
+<summary>Reasoning 설정별 상세 비교 펼치기</summary>
+<div class="detail-body">
+<div class="detail-title">Sol · Luna — 동일 Reasoning 기준 비교</div>
+<div class="table-wrap">
+<table class="wide">
+<thead>
+<tr>
+<th rowspan="2">Reasoning</th>
+<th class="sol-group-head" colspan="3">Sol</th>
+<th class="luna-group-head" colspan="3">Luna</th>
+</tr>
+<tr>
+<th class="sol-group-head">GPT-5.6<br>AA Intelligence / Cost</br></th>
+<th class="sol-group-head">GPT-6<br>AA Intelligence / Cost</br></th>
+<th class="sol-group-head">변화</th>
+<th class="luna-group-head">GPT-5.6<br>AA Intelligence / Cost</br></th>
+<th class="luna-group-head">GPT-6<br>AA Intelligence / Cost</br></th>
+<th class="luna-group-head">변화</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="setting">Low</td>
+<td class="reason-sol"><strong>34</strong> / $0.26</td>
+<td class="reason-sol"><strong>34</strong> / $0.13</td>
+<td class="reason-sol">성능 동일 · 비용 약 50%↓</td>
+<td class="reason-luna"><strong>21</strong> / $0.01</td>
+<td class="reason-luna"><strong>21</strong> / $0.0045</td>
+<td class="reason-luna">성능 동일 · 비용 감소</td>
+</tr>
+<tr>
+<td class="setting">Medium</td>
+<td class="reason-sol"><strong>39</strong> / $0.50</td>
+<td class="reason-sol"><strong>40</strong> / $0.25</td>
+<td class="reason-sol">+1 · 비용 50%↓</td>
+<td class="reason-luna"><strong>25</strong> / $0.02</td>
+<td class="reason-luna"><strong>29</strong> / $0.02</td>
+<td class="reason-luna">+4 · 비용 동일 수준</td>
+</tr>
+<tr>
+<td class="setting">High</td>
+<td class="reason-sol"><strong>42</strong> / $0.81</td>
+<td class="reason-sol"><strong>43</strong> / $0.37</td>
+<td class="reason-sol">+1 · 비용 약 54%↓</td>
+<td class="reason-luna"><strong>32</strong> / $0.04</td>
+<td class="reason-luna"><strong>32</strong> / $0.03</td>
+<td class="reason-luna">성능 동일 · 비용 감소</td>
+</tr>
+<tr>
+<td class="setting">xHigh</td>
+<td class="reason-sol"><strong>44</strong> / $1.18</td>
+<td class="reason-sol"><strong>44</strong> / $0.53</td>
+<td class="reason-sol">성능 동일 · 비용 약 55%↓</td>
+<td class="reason-luna"><strong>35</strong> / $0.09</td>
+<td class="reason-luna"><strong>34</strong> / $0.04</td>
+<td class="reason-luna">-1 · 비용 약 56%↓</td>
+</tr>
+<tr>
+<td class="setting">Max</td>
+<td class="reason-sol"><strong>47</strong> / $1.99</td>
+<td class="reason-sol"><strong>48</strong> / $1.06</td>
+<td class="reason-sol">+1 · 비용 약 47%↓</td>
+<td class="reason-luna"><strong>37</strong> / $0.18</td>
+<td class="reason-luna"><strong>37</strong> / $0.07</td>
+<td class="reason-luna">성능 동일 · 비용 약 61%↓</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="note">
+      AA Intelligence / Cost는 Artificial Analysis Intelligence Index v4.3.2의 점수와 작업당 평균 비용이다.
+      Max끼리만 비교하면 reasoning별 차이를 놓칠 수 있어 동일 설정끼리 나란히 표시했다.
+    </p>
+</div></details></section><section id="compare">
+<h2>전체 비교</h2>
+<p class="muted">모든 reasoning 설정에 공통으로 공개된 <strong>AA Intelligence · AA Cost/task · Context</strong>만 사용했다. 코딩·방향 설정 지표는 아래의 별도 실측 표에서 비교한다.</p>
+<div class="table-wrap">
+<table class="medium">
+<thead>
+<tr>
+<th>모델</th>
+<th>설정</th>
+<th><span class="metric-tip" data-tip="Artificial Analysis Intelligence Index v4.3.2. 여러 추론·지식·에이전트 평가를 합친 종합 점수입니다. 높을수록 좋습니다." tabindex="0">AA Intelligence</span></th>
+<th><span class="metric-tip" data-tip="Artificial Analysis Intelligence Index 문제 1건을 실행할 때 실제 토큰 사용량에 API 가격을 적용한 평균 비용입니다. 낮을수록 좋습니다." tabindex="0">AA Cost / task</span></th>
+<th><span class="metric-tip" data-tip="모델이 한 요청에서 참고할 수 있는 최대 문맥 크기입니다. 공식 API/Artificial Analysis 공개 사양을 기준으로 표시합니다." tabindex="0">Context</span></th>
+<th><span class="metric-tip right" data-tip="성능과 비용을 함께 본 실사용 위치입니다. 벤치마크 자체 점수가 아니라 보고서의 선택 판단입니다." tabindex="0">선택 판단</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="family-opus"><td class="model">Claude Opus 5.5<span class="company">Anthropic</span></td><td class="setting">Max</td><td class="score">58</td><td class="money">$5.98</td><td class="num">1M</td><td>외부 최고 성능 기준</td></tr>
+<tr class="family-fable"><td class="model">Claude Fable 5.1<span class="company">Anthropic</span></td><td class="setting">Max</td><td class="score">53</td><td class="money">$7.63</td><td class="num">1M</td><td>외부 상위 기준</td></tr>
+<tr class="family-astra"><td class="model">GPT-6 Astra<span class="tag amber">최고성능</span><span class="company">OpenAI</span></td><td class="setting">Max</td><td class="score">53</td><td class="money">$3.26</td><td class="num">1.05M</td><td>마지막 성능이 중요할 때</td></tr>
+<tr class="family-astra" style="background:#e8defd"><td class="model">GPT-6 Astra<span class="tag purple">대표</span><span class="company">OpenAI</span></td><td class="setting">xHigh</td><td class="score">52</td><td class="money">$2.31</td><td class="num">1.05M</td><td><strong>최고 난도 기본 선택</strong></td></tr>
+<tr class="family-astra"><td class="model">GPT-6 Astra<span class="company">OpenAI</span></td><td class="setting">High</td><td class="score">51</td><td class="money">$1.73</td><td class="num">1.05M</td><td>상위 추론</td></tr>
+<tr class="family-astra"><td class="model">GPT-6 Astra<span class="company">OpenAI</span></td><td class="setting">Medium</td><td class="score">50</td><td class="money">$1.54</td><td class="num">1.05M</td><td>비용을 낮춘 Astra</td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="tag amber">특수</span><span class="company">OpenAI</span></td><td class="setting">Max</td><td class="score">48</td><td class="money">$1.06</td><td class="num">1.05M</td><td>Sol 최고 성공률</td></tr>
+<tr class="family-sol56"><td class="model">GPT-5.6 Sol<span class="tag gray">구형</span><span class="company">OpenAI</span></td><td class="setting">Max</td><td class="score">47</td><td class="money">$1.99</td><td class="num">1M</td><td>6 Sol에 사실상 대체</td></tr>
+<tr class="family-astra"><td class="model">GPT-6 Astra<span class="company">OpenAI</span></td><td class="setting">Low</td><td class="score">46</td><td class="money">$0.82</td><td class="num">1.05M</td><td>저비용 Astra</td></tr>
+<tr class="family-grok"><td class="model">Grok 4.7<span class="company">SpaceXAI</span></td><td class="setting">xHigh</td><td class="score">46</td><td class="money">$3.74</td><td class="num">500K</td><td>외부 비교 기준</td></tr>
+<tr class="family-sol6" style="background:#dce9ff"><td class="model">GPT-6 Sol<span class="tag blue">대표</span><span class="company">OpenAI</span></td><td class="setting">xHigh</td><td class="score">44</td><td class="money">$0.53</td><td class="num">1.05M</td><td><strong>일반 개발 기본 선택</strong></td></tr>
+<tr class="family-sol56"><td class="model">GPT-5.6 Sol<span class="company">OpenAI</span></td><td class="setting">xHigh</td><td class="score">44</td><td class="money">$1.18</td><td class="num">1M</td><td>6 Sol xHigh보다 비쌈</td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="company">OpenAI</span></td><td class="setting">High</td><td class="score">43</td><td class="money">$0.37</td><td class="num">1.05M</td><td>저렴한 일반 추론</td></tr>
+<tr class="family-sol56"><td class="model">GPT-5.6 Sol<span class="company">OpenAI</span></td><td class="setting">High</td><td class="score">42</td><td class="money">$0.81</td><td class="num">1M</td><td>6 Sol High에 대체</td></tr>
+<tr class="family-terra56"><td class="model">GPT-5.6 Terra<span class="tag gray">구형</span><span class="company">OpenAI</span></td><td class="setting">Max</td><td class="score">42</td><td class="money">$1.40</td><td class="num">1M</td><td><strong>중간 역할 소멸</strong></td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="company">OpenAI</span></td><td class="setting">Medium</td><td class="score">40</td><td class="money">$0.25</td><td class="num">1.05M</td><td>저비용 Sol</td></tr>
+<tr class="family-sol56"><td class="model">GPT-5.6 Sol<span class="company">OpenAI</span></td><td class="setting">Medium</td><td class="score">39</td><td class="money">$0.50</td><td class="num">1M</td><td>6 Sol Medium에 대체</td></tr>
+<tr class="family-terra56"><td class="model">GPT-5.6 Terra<span class="company">OpenAI</span></td><td class="setting">xHigh</td><td class="score">38</td><td class="money">$0.63</td><td class="num">1M</td><td>Sol 계열 대비 애매</td></tr>
+<tr class="family-luna6" style="background:#d9f1eb"><td class="model">GPT-6 Luna<span class="tag green">실행 대표</span><span class="company">OpenAI</span></td><td class="setting">Max</td><td class="score">37</td><td class="money">$0.07</td><td class="num">1.05M</td><td><strong>정해진 작업 초저가 실행</strong></td></tr>
+<tr class="family-luna56" style="background:#edf8f5"><td class="model">GPT-5.6 Luna<span class="tag green">코딩 참고</span><span class="company">OpenAI</span></td><td class="setting">Max</td><td class="score">37</td><td class="money">$0.18</td><td class="num">1M</td><td><strong>저비용 코드 탐색은 6보다 우수</strong></td></tr>
+<tr class="family-luna56"><td class="model">GPT-5.6 Luna<span class="company">OpenAI</span></td><td class="setting">xHigh</td><td class="score">35</td><td class="money">$0.09</td><td class="num">1M</td><td>저비용 구형</td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="tag red">비추천</span><span class="company">OpenAI</span></td><td class="setting">Low</td><td class="score">34</td><td class="money">$0.13</td><td class="num">1.05M</td><td>Luna Max보다 약하고 비쌈</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI</span></td><td class="setting">xHigh</td><td class="score">34</td><td class="money">$0.04</td><td class="num">1.05M</td><td>Max 대비 절약폭 작음</td></tr>
+<tr class="family-terra56"><td class="model">GPT-5.6 Terra<span class="company">OpenAI</span></td><td class="setting">High</td><td class="score">34</td><td class="money">$0.34</td><td class="num">1M</td><td>Sol High보다 약함</td></tr>
+<tr class="family-sol56"><td class="model">GPT-5.6 Sol<span class="company">OpenAI</span></td><td class="setting">Low</td><td class="score">34</td><td class="money">$0.26</td><td class="num">1M</td><td>6 Sol Low보다 비쌈</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI</span></td><td class="setting">High</td><td class="score">32</td><td class="money">$0.03</td><td class="num">1.05M</td><td>저비용 실행</td></tr>
+<tr class="family-luna56"><td class="model">GPT-5.6 Luna<span class="company">OpenAI</span></td><td class="setting">High</td><td class="score">32</td><td class="money">$0.04</td><td class="num">1M</td><td>6 High보다 비쌈</td></tr>
+<tr class="family-terra56"><td class="model">GPT-5.6 Terra<span class="company">OpenAI</span></td><td class="setting">Medium</td><td class="score">30</td><td class="money">$0.18</td><td class="num">1M</td><td>Luna/Sol 사이 이유 약함</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI</span></td><td class="setting">Medium</td><td class="score">29</td><td class="money">$0.02</td><td class="num">1.05M</td><td>극저가 실행</td></tr>
+<tr class="family-terra56"><td class="model">GPT-5.6 Terra<span class="company">OpenAI</span></td><td class="setting">Low</td><td class="score">28</td><td class="money">$0.14</td><td class="num">1M</td><td>Luna Max보다 약하고 비쌈</td></tr>
+<tr class="family-luna56"><td class="model">GPT-5.6 Luna<span class="company">OpenAI</span></td><td class="setting">Medium</td><td class="score">25</td><td class="money">$0.02</td><td class="num">1M</td><td>6 Luna Medium보다 약함</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI</span></td><td class="setting">Low</td><td class="score">21</td><td class="money">$0.0045</td><td class="num">1.05M</td><td>최저 비용</td></tr>
+<tr class="family-luna56"><td class="model">GPT-5.6 Luna<span class="company">OpenAI</span></td><td class="setting">Low</td><td class="score">21</td><td class="money">$0.01</td><td class="num">1M</td><td>6 Luna Low보다 비쌈</td></tr>
+</tbody>
+</table>
+</div>
+<p class="note">전체 비교는 <strong>모든 reasoning 설정에서 동일하게 공개된 독립 지표</strong>만 사용해 빈칸을 없앴다. 코딩·코드베이스 이해처럼 일부 설정만 실측된 지표는 아래 별도 표에 분리했다.</p>
+</section><section id="coding">
+<h2>Codex 실제 코딩 비교</h2>
+<p class="muted">Artificial Analysis Coding Agent Index의 <strong>실측 완료 조합만</strong> 나열했다. 이 표에서는 모든 셀이 실제 측정값이며 추정값을 넣지 않았다.</p>
+<div class="table-wrap">
+<table class="wide">
+<thead>
+<tr>
+<th>모델</th>
+<th><span class="metric-tip" data-tip="DeepSWE, Terminal-Bench 4.0, SWE-Atlas-QnA를 합친 실제 코딩 에이전트 종합 점수입니다." tabindex="0">Coding Agent Index</span></th>
+<th><span class="metric-tip" data-tip="실제 저장소에서 장시간 기능 구현과 버그 수정 작업을 수행하는 평가입니다." tabindex="0">DeepSWE</span></th>
+<th><span class="metric-tip" data-tip="터미널·빌드·도구 사용을 포함한 복잡한 개발 작업을 끝까지 수행하는 평가입니다." tabindex="0">Terminal-Bench 4.0</span></th>
+<th><span class="metric-tip" data-tip="큰 코드베이스를 읽고 구조·관계·동작을 이해하는 평가입니다. '어디를 봐야 하는지' 방향을 잡는 능력에 특히 참고할 만합니다." tabindex="0">SWE-Atlas-QnA</span></th>
+<th><span class="metric-tip" data-tip="코딩 에이전트 작업 1건을 실행할 때 실제 사용 토큰을 API 가격으로 환산한 평균 비용입니다." tabindex="0">Cost / task</span></th>
+<th><span class="metric-tip" data-tip="코딩 작업 1건을 완료하는 데 걸린 평균 활성 시간입니다." tabindex="0">Time / task</span></th>
+<th><span class="metric-tip right" data-tip="코딩 작업 1건에서 사용된 평균 총 토큰량입니다." tabindex="0">Tokens / task</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="family-astra" style="background:#e8defd"><td class="model">GPT-6 Astra Max<span class="company">Codex</span></td><td class="score">62</td><td class="num">68%</td><td class="num">56%</td><td class="num"><strong>62%</strong></td><td class="money">$7.47</td><td class="num">29.4분</td><td class="num">3.3M</td></tr>
+<tr class="family-sol6" style="background:#dce9ff"><td class="model">GPT-6 Sol Max<span class="company">Codex</span></td><td class="score">57</td><td class="num">69%</td><td class="num">43%</td><td class="num"><strong>58%</strong></td><td class="money">$2.99</td><td class="num">22.3분</td><td class="num">9.8M</td></tr>
+<tr class="family-grok"><td class="model">Grok 4.7 xHigh<span class="company">Grok Build</span></td><td class="score">56</td><td class="num"><strong>73%</strong></td><td class="num">33%</td><td class="num"><strong>63%</strong></td><td class="money">$8.82</td><td class="num">39.2분</td><td class="num">14.3M</td></tr>
+<tr class="family-sol56"><td class="model">GPT-5.6 Sol Max<span class="company">Codex</span></td><td class="score">55</td><td class="num"><strong>72%</strong></td><td class="num">37%</td><td class="num">54%</td><td class="money">$6.35</td><td class="num">20.6분</td><td class="num">10.2M</td></tr>
+<tr class="family-luna56" style="background:#edf8f5"><td class="model">GPT-5.6 Luna Max<span class="company">Codex</span></td><td class="score"><strong>43</strong></td><td class="num"><strong>66%</strong></td><td class="num">15%</td><td class="num"><strong>49%</strong></td><td class="money">$0.44</td><td class="num">23.5분</td><td class="num">14.9M</td></tr>
+<tr class="family-luna6" style="background:#d9f1eb"><td class="model">GPT-6 Luna Max<span class="company">Codex</span></td><td class="score">41</td><td class="num">64%</td><td class="num">15%</td><td class="num">44%</td><td class="money"><strong>$0.18</strong></td><td class="num">21.4분</td><td class="num">10.2M</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout"><strong>Luna 해석:</strong> GPT-6 Luna는 더 싸고 가볍지만, Codex 실측에서는 Coding Agent 43→41, DeepSWE 66→64, SWE-Atlas 49→44로 하락했다. 특히 <strong>코드베이스를 읽고 방향을 잡는 SWE-Atlas 하락이 크다.</strong> 따라서 정해진 작업 실행은 6 Luna, 저비용으로 탐색·판단까지 맡길 때는 5.6 Luna가 현재 데이터상 더 낫다.</div>
+</section><section id="official-dev">
+<h2>GPT-6 Sol · Luna Reasoning별 개발 평가</h2>
+<p class="muted"><strong>OpenAI 출시 공식 평가</strong>다. 아래는 같은 OpenAI 평가 안에서 reasoning 단계가 올라갈 때 개발·에이전트 성능이 어떻게 변하는지 보는 표이며, 위 Artificial Analysis 표와 숫자를 직접 섞어 순위를 만들면 안 된다.</p>
+<div class="table-wrap">
+<table class="wide">
+<thead>
+<tr>
+<th>모델</th><th>설정</th>
+<th><span class="metric-tip" data-tip="47개 업무 도구를 사용해 영업·운영·지원·재무 등 실제 SaaS 업무 흐름을 끝까지 수행하는 평가입니다." tabindex="0">AutomationBench</span></th>
+<th><span class="metric-tip" data-tip="경제적 가치가 높은 장기 전문 업무를 여러 단계에 걸쳐 완료하는 평가입니다. 방향 설정과 장기 계획 능력에 참고할 만합니다." tabindex="0">Agents' Last Exam</span></th>
+<th><span class="metric-tip" data-tip="실제 코드베이스에서 만든 변경이 정확할 뿐 아니라 테스트·스타일·범위 측면에서도 바로 병합 가능한지를 평가합니다." tabindex="0">FrontierCode</span></th>
+<th><span class="metric-tip" data-tip="실제 코드베이스의 장시간 기능 구현·버그 수정 작업을 평가합니다." tabindex="0">DeepSWE</span></th>
+<th><span class="metric-tip" data-tip="브라우저와 데스크톱 앱을 직접 조작해 긴 컴퓨터 작업을 수행하는 평가입니다." tabindex="0">OSWorld 2.0</span></th>
+<th><span class="metric-tip right" data-tip="OpenAI 내부 factuality 평가의 오류율입니다. 이 열은 낮을수록 좋습니다." tabindex="0">Factual error ↓</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="company">OpenAI 공식</span></td><td class="setting">Low</td><td class="num">21.2%</td><td class="num">48.7%</td><td class="num">37.3%</td><td class="num">37.2%</td><td class="num">43.9%</td><td class="num">11.4%</td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="company">OpenAI 공식</span></td><td class="setting">Medium</td><td class="num">26.9%</td><td class="num">53.1%</td><td class="num">45.9%</td><td class="num">56.6%</td><td class="num">54.0%</td><td class="num">6.9%</td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="company">OpenAI 공식</span></td><td class="setting">High</td><td class="num">31.2%</td><td class="num">52.6%</td><td class="num">47.7%</td><td class="num">65.3%</td><td class="num">58.3%</td><td class="num">5.1%</td></tr>
+<tr class="family-sol6" style="background:#dce9ff"><td class="model">GPT-6 Sol<span class="tag blue">대표</span><span class="company">OpenAI 공식</span></td><td class="setting">xHigh</td><td class="num"><strong>33.2%</strong></td><td class="num">55.4%</td><td class="num">48.4%</td><td class="num">66.6%</td><td class="num">60.5%</td><td class="num"><strong>4.5%</strong></td></tr>
+<tr class="family-sol6"><td class="model">GPT-6 Sol<span class="company">OpenAI 공식</span></td><td class="setting">Max</td><td class="num">32.0%</td><td class="num"><strong>56.4%</strong></td><td class="num"><strong>49.3%</strong></td><td class="num"><strong>68.8%</strong></td><td class="num"><strong>64.4%</strong></td><td class="num">4.6%</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI 공식</span></td><td class="setting">Low</td><td class="num">1.2%</td><td class="num">36.3%</td><td class="num">25.7%</td><td class="num">2.4%</td><td class="num">8.3%</td><td class="num">27.7%</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI 공식</span></td><td class="setting">Medium</td><td class="num">9.4%</td><td class="num">46.8%</td><td class="num">35.5%</td><td class="num">44.5%</td><td class="num">31.5%</td><td class="num">17.5%</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI 공식</span></td><td class="setting">High</td><td class="num">14.5%</td><td class="num">43.6%</td><td class="num">37.3%</td><td class="num">59.3%</td><td class="num">41.4%</td><td class="num">12.5%</td></tr>
+<tr class="family-luna6"><td class="model">GPT-6 Luna<span class="company">OpenAI 공식</span></td><td class="setting">xHigh</td><td class="num">12.6%</td><td class="num">47.9%</td><td class="num">37.1%</td><td class="num">61.3%</td><td class="num">46.7%</td><td class="num">10.2%</td></tr>
+<tr class="family-luna6" style="background:#d9f1eb"><td class="model">GPT-6 Luna<span class="tag green">실행 대표</span><span class="company">OpenAI 공식</span></td><td class="setting">Max</td><td class="num"><strong>20.7%</strong></td><td class="num"><strong>50.9%</strong></td><td class="num"><strong>42.4%</strong></td><td class="num"><strong>66.6%</strong></td><td class="num"><strong>52.7%</strong></td><td class="num"><strong>7.6%</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p class="note">OpenAI 공식 DeepSWE에서는 GPT-6 Luna Max가 강하게 나오지만, Artificial Analysis의 Codex-harness 종합평가에서는 5.6 Luna보다 낮다. <strong>평가 harness가 다르므로 모순이라기보다 측정 대상 차이</strong>로 보는 것이 맞다. 실제 Codex에서 방향 설정 능력을 판단할 때는 위의 Coding Agent Index와 SWE-Atlas-QnA를 함께 보는 편이 안전하다.</p>
+</section><section id="strategy">
+<h2>Codex 운영 결론</h2>
+<table class="strategy-table">
+<thead><tr><th>작업</th><th>대표 선택</th><th>이유</th></tr></thead>
+<tbody>
+<tr><td>정확히 지정된 반복 수정·테스트·단순 패치</td><td>GPT-6 Luna Max</td><td>가장 싼 실행 구간. AA Intelligence 37 / $0.07. 다만 Coding Agent 41, SWE-Atlas 44%로 5.6 Luna보다 코드베이스 이해·방향 설정은 약하다.</td></tr>
+<tr><td>저비용 코딩 + 어느 정도 스스로 탐색해야 하는 작업</td><td>GPT-5.6 Luna Max</td><td>GPT-6 Luna와 종합 Intelligence는 같지만 Coding Agent 43 vs 41, SWE-Atlas 49% vs 44%, DeepSWE 66% vs 64%로 코딩 쪽은 5.6이 더 안정적이다. 둘 다 절대비용이 낮아 품질 우선이면 5.6이 낫다.</td></tr>
+<tr><td>일반 기능 구현·원인 추적·여러 파일 수정</td><td>GPT-6 Sol xHigh</td><td>AA Intelligence 44 / $0.53. Luna 계열보다 방향 설정과 복잡한 문제 해결이 강하고 Max보다 비용 대비 효율이 좋다.</td></tr>
+<tr><td>실패 비용이 큰 장기 리팩터링</td><td>GPT-6 Sol Max</td><td>xHigh보다 비싸지만 마지막 성공률이 추가 추론 비용보다 중요한 경우에만 사용.</td></tr>
+<tr><td>구조 판단·아키텍처 변경·문제 정의</td><td>GPT-6 Astra xHigh</td><td>AA Intelligence 52 / $2.31. 전체 구조와 해결 방향 자체를 정해야 하는 최고 난도 작업의 균형점.</td></tr>
+<tr><td>성공률을 가능한 한 최대화하는 최상위 작업</td><td>GPT-6 Astra Max</td><td>비용보다 마지막 성능을 우선할 때만 사용. AA Intelligence 53, Coding Agent Index 62.</td></tr>
+</tbody>
+</table>
+<div class="route">
+<div class="route-item luna"><div class="label">명확한 실행</div><div class="name">6 Luna Max</div><p>시키는 범위와 방법을 알고 있을 때 가장 싸게 수행.</p></div>
+<div class="route-item luna"><div class="label">저비용 코딩</div><div class="name">5.6 Luna Max</div><p>비용을 낮게 유지하면서도 6 Luna보다 코드 탐색·방향 안정성을 조금 더 확보.</p></div>
+<div class="route-item sol"><div class="label">일반적인 어려운 개발</div><div class="name">6 Sol xHigh</div><p>원인 추적과 여러 파일 수정이 필요한 Codex의 중심 구간.</p></div>
+<div class="route-item astra"><div class="label">문제 정의부터 어려움</div><div class="name">6 Astra xHigh</div><p>전체 구조와 해결 방향을 먼저 판단해야 하는 최고 난도 구간.</p></div>
+</div>
+<div class="callout">
+<strong>Terra Max의 기존 역할은 사실상 사라졌다.</strong> 예전에는 Luna와 Sol 사이의 일반 작업자로 썼지만, GPT-6 Sol High가 더 높은 Intelligence를 훨씬 낮은 작업비용에 제공한다.<br/><br/>
+<strong>Luna는 세대 교체가 곧 업그레이드는 아니다.</strong> GPT-6 Luna는 더 싸고 환각·자동화 일부 지표는 개선됐지만, 코딩에서 중요한 Coding Agent Index·SWE-Atlas·DeepSWE는 5.6 Luna보다 낮다. 따라서 “계획·탐색까지 맡기는 저가 코딩”에는 5.6 Luna Max, “정해진 작업의 초저가 실행”에는 6 Luna Max로 역할을 나누는 편이 현재 데이터에 더 잘 맞는다.
+</div>
+</section><section class="sources" id="sources"><h2>자료 기준</h2><ul><li>OpenAI — GPT-6 Sol · Luna 출시 발표</li><li>OpenAI API — GPT-6 Sol / Luna 모델 사양 및 가격</li><li>Artificial Analysis Intelligence Index v4.3.2</li><li>Artificial Analysis Coding Agent Index</li><li>Artificial Analysis — GPT-6 Astra reasoning variants</li><li>수치 확인 기준: 2026.09.23 KST</li><li>Artificial Analysis — GPT-6 Sol/Luna Intelligence release pages (reasoning별 Intelligence·Cost)</li><li>Artificial Analysis — GPT-6 Sol/Luna Coding Agent Index 분석 (Codex harness)</li><li>OpenAI — GPT-6 Sol and Luna 출시 공식 평가 (AutomationBench, Agents' Last Exam, FrontierCode, DeepSWE, OSWorld)</li></ul></section></main></div></body></html>
