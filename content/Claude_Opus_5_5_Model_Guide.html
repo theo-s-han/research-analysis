@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Claude Opus 5.5 모델 선택 가이드</title>
+<style>
+:root{
+  --bg:#f4f6f9;
+  --paper:#ffffff;
+  --text:#1f2733;
+  --muted:#687386;
+  --line:#dfe4eb;
+
+  --opus:#bd5f46;
+  --opus-soft:#fff3ef;
+  --opus-mid:#f6d7cd;
+
+  --astra:#6d4cc2;
+  --astra-soft:#f3efff;
+
+  --old:#7c8796;
+  --old-soft:#f3f5f7;
+
+  --fable:#b37928;
+  --fable-soft:#fff8e9;
+
+  --medium:#0f766e;
+  --medium-soft:#eaf8f5;
+  --high:#2e67d1;
+  --high-soft:#edf4ff;
+  --max:#7047b7;
+  --max-soft:#f3efff;
+
+  --green:#087b6d;
+  --red:#b44838;
+  --amber:#95600b;
+
+  --nav-bg:#f4ece6;
+  --nav-line:#dfd0c4;
+  --nav-text:#694c3b;
+
+  --radius:15px;
+  --shadow:0 8px 24px rgba(28,39,58,.055);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  line-height:1.62;
+  word-break:keep-all;
+}
+
+a{color:inherit}
+
+header{
+  width:min(1840px,calc(100vw - 32px));
+  margin:0 auto;
+  padding:44px 16px 24px;
+  border-bottom:1px solid var(--line);
+}
+
+.eyebrow{
+  margin-bottom:7px;
+  color:#8d4d38;
+  font-size:12px;
+  font-weight:850;
+  letter-spacing:.08em;
+}
+
+h1{
+  margin:0;
+  color:#2f2931;
+  font-size:40px;
+  line-height:1.15;
+  letter-spacing:-.04em;
+}
+
+.header-sub{
+  margin-top:11px;
+  color:#5f6a7a;
+  font-size:14px;
+}
+
+.layout{
+  width:min(1840px,calc(100vw - 32px));
+  margin:22px auto 0;
+  padding:0 16px 72px;
+  display:grid;
+  grid-template-columns:194px minmax(0,1fr);
+  gap:22px;
+}
+
+main{min-width:0}
+
+.side-nav{
+  position:sticky;
+  top:18px;
+  align-self:start;
+  padding:15px 11px 14px;
+  background:var(--nav-bg);
+  border:1px solid var(--nav-line);
+  border-radius:13px;
+  box-shadow:0 5px 18px rgba(81,54,35,.045);
+}
+
+.side-nav strong{
+  display:block;
+  padding:2px 9px 10px;
+  color:var(--nav-text);
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+
+.side-nav a{
+  display:block;
+  margin:1px 0;
+  padding:8px 9px;
+  color:#765c4c;
+  border-left:3px solid transparent;
+  border-radius:5px;
+  font-size:12.5px;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.side-nav a:hover{
+  color:#553828;
+  background:#fff9f5;
+  border-left-color:var(--opus);
+}
+
+section{
+  margin-bottom:20px;
+  padding:27px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+h2{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:0 0 18px;
+  color:#343044;
+  font-size:24px;
+  letter-spacing:-.03em;
+}
+
+h2::before{
+  content:"";
+  width:4px;
+  height:22px;
+  flex:0 0 auto;
+  border-radius:999px;
+  background:linear-gradient(180deg,var(--opus),#8c4b8f);
+}
+
+p{margin:8px 0}
+.muted{color:var(--muted)}
+.note{margin-top:11px;color:var(--muted);font-size:12px;line-height:1.65}
+
+/* Tooltip: no underline / no hyperlink-like decoration */
+.tip{
+  position:relative;
+  display:inline-grid;
+  place-items:center;
+  width:15px;
+  height:15px;
+  margin-left:3px;
+  border:1px solid #9ea7b4;
+  border-radius:50%;
+  color:#6f7b8c;
+  background:#fff;
+  font-size:9px;
+  font-weight:900;
+  line-height:1;
+  cursor:help;
+  vertical-align:1px;
+  text-decoration:none;
+}
+.tip:focus-visible{outline:2px solid #2e67d1;outline-offset:2px}
+
+.tip::after{
+  content:attr(data-tip);
+  position:absolute;
+  z-index:9999;
+  top:calc(100% + 9px);
+  left:50%;
+  width:320px;
+  max-width:76vw;
+  padding:10px 11px;
+  transform:translateX(-50%);
+  color:#fff;
+  background:#202733;
+  border-radius:9px;
+  box-shadow:0 9px 24px rgba(0,0,0,.20);
+  font-size:12px;
+  font-weight:550;
+  line-height:1.5;
+  text-align:left;
+  white-space:normal;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.tip:hover::after,.tip:focus::after{opacity:1;visibility:visible}
+.tip.left::after{left:0;transform:none}
+.tip.right::after{left:auto;right:0;transform:none}
+
+/* Summary */
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+
+.summary-card{
+  position:relative;
+  z-index:1;
+  padding:18px;
+  overflow:visible;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:13px;
+}
+
+.summary-card:hover,.summary-card:focus-within{z-index:100}
+
+.summary-card::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:4px;
+  border-radius:13px 13px 0 0;
+  background:#dce3eb;
+}
+
+.summary-card.release::before{background:var(--opus)}
+.summary-card.change::before{background:var(--medium)}
+.summary-card.peer::before{background:var(--astra)}
+.summary-card.default::before{background:var(--high)}
+
+.summary-card .k{
+  margin-bottom:6px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:850;
+}
+
+.summary-card .v{
+  font-size:18px;
+  font-weight:900;
+  line-height:1.4;
+  letter-spacing:-.025em;
+}
+
+.summary-card p{
+  margin-top:7px;
+  color:#4e5968;
+  font-size:13px;
+}
+
+.callout{
+  margin-top:16px;
+  padding:16px 18px;
+  background:linear-gradient(90deg,#fff4ef,#fdfbfa);
+  border:1px solid #ead8d1;
+  border-left:4px solid var(--opus);
+  border-radius:11px;
+}
+
+.callout strong{font-weight:900}
+
+.callout.blue{
+  background:linear-gradient(90deg,#eef5ff,#fafcff);
+  border-color:#d4e0f5;
+  border-left-color:var(--high);
+}
+
+.callout.gray{
+  background:#f7f8fa;
+  border-color:#e2e6eb;
+  border-left-color:#8f99a7;
+}
+
+/* Tables */
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:11px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12.5px;
+}
+
+table.medium{min-width:1060px}
+table.wide{min-width:1450px}
+
+th,td{
+  padding:11px 11px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  vertical-align:middle;
+}
+
+th{
+  position:sticky;
+  top:0;
+  z-index:5;
+  color:#4b5567;
+  background:#f1f3f7;
+  font-size:11px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{filter:brightness(.988)}
+
+.model{
+  min-width:188px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.company{
+  display:block;
+  margin-top:1px;
+  color:var(--muted);
+  font-size:10.5px;
+  font-weight:600;
+}
+
+.setting,.num,.money,.score,.delta{
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+
+.score{color:#5e407e;font-weight:900}
+.money{color:#285a8d;font-weight:850}
+.na{color:#a3aab5}
+.positive{color:var(--green);font-weight:850}
+.negative{color:var(--red);font-weight:850}
+.neutral{color:#596578;font-weight:800}
+
+.group-row td{
+  padding:8px 11px;
+  background:#eceff3;
+  color:#596477;
+  font-size:10.5px;
+  font-weight:900;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+
+.row-opus-medium{
+  background:linear-gradient(90deg,rgba(15,118,110,.17),rgba(15,118,110,.03) 76%,transparent);
+}
+.row-opus-high{
+  background:linear-gradient(90deg,rgba(46,103,209,.19),rgba(46,103,209,.03) 76%,transparent);
+}
+.row-opus-max{
+  background:linear-gradient(90deg,rgba(112,71,183,.17),rgba(112,71,183,.03) 76%,transparent);
+}
+.row-astra{background:#f7f4ff}
+.row-old{background:#f5f6f8}
+.row-fable{background:#fff9ed}
+
+.row-opus-medium td:first-child{box-shadow:inset 5px 0 0 var(--medium)}
+.row-opus-high td:first-child{box-shadow:inset 5px 0 0 var(--high)}
+.row-opus-max td:first-child{box-shadow:inset 5px 0 0 var(--max)}
+.row-astra td:first-child{box-shadow:inset 4px 0 0 var(--astra)}
+.row-old td:first-child{box-shadow:inset 4px 0 0 #9aa4b2}
+.row-fable td:first-child{box-shadow:inset 4px 0 0 #c08a39}
+
+.tag{
+  display:inline-block;
+  margin-left:5px;
+  padding:2px 7px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.tag.medium{color:#0a655e;background:var(--medium-soft)}
+.tag.high{color:#2656a8;background:var(--high-soft)}
+.tag.max{color:#5b3ca2;background:var(--max-soft)}
+.tag.gray{color:#667085;background:#eceff3}
+.tag.amber{color:#85590d;background:#fff3d7}
+
+/* highlight numbers */
+.metric-win{
+  display:inline-block;
+  padding:2px 6px;
+  border-radius:6px;
+  background:#e8f6f2;
+  color:#0d6c63;
+  font-weight:900;
+}
+
+.metric-strong{
+  font-weight:900;
+  color:#334155;
+}
+
+/* cards */
+.insight-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:15px;
+}
+
+.insight-card{
+  padding:15px 16px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:11px;
+}
+
+.insight-card strong{
+  display:block;
+  margin-bottom:5px;
+  font-size:14px;
+}
+
+.insight-card p{
+  margin:0;
+  color:#4e5968;
+  font-size:13px;
+}
+
+/* review */
+.review-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.review-card{
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#fff;
+}
+
+.review-card.good{border-top:4px solid var(--green)}
+.review-card.mixed{border-top:4px solid var(--amber)}
+.review-card.warn{border-top:4px solid var(--red)}
+.review-card h3{
+  margin:0 0 8px;
+  font-size:15px;
+}
+.review-card p{
+  margin:0;
+  color:#4d5867;
+  font-size:13px;
+}
+
+/* Strategy */
+.strategy-table{
+  width:100%;
+  border-collapse:collapse;
+  border:1px solid var(--line);
+  font-size:13.5px;
+}
+
+.strategy-table th,.strategy-table td{
+  padding:13px 12px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  vertical-align:top;
+}
+
+.strategy-table th{
+  background:#f1f3f7;
+  color:#596577;
+  font-size:11.5px;
+}
+
+.strategy-table td:first-child{
+  width:230px;
+  font-weight:900;
+}
+
+.strategy-table td:nth-child(2){
+  width:210px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.strategy-table tr:last-child td{border-bottom:0}
+
+.route{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:17px;
+}
+
+.route-item{
+  padding:15px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:11px;
+}
+
+.route-item.medium{border-top:4px solid var(--medium)}
+.route-item.high{border-top:4px solid var(--high)}
+.route-item.max{border-top:4px solid var(--max)}
+
+.route-item .label{
+  margin-bottom:5px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:850;
+}
+
+.route-item .name{
+  margin-bottom:7px;
+  font-size:18px;
+  font-weight:950;
+}
+
+.route-item p{
+  margin:0;
+  color:#4d5867;
+  font-size:13px;
+}
+
+.sources{color:var(--muted);font-size:12.5px}
+.sources ul{margin:0;padding-left:19px}
+.sources li{margin:6px 0}
+.sources a{color:#855038;text-underline-offset:3px}
+
+@media(max-width:1180px){
+  .layout{grid-template-columns:1fr}
+  .side-nav{display:none}
+  .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .insight-grid{grid-template-columns:1fr}
+  .route{grid-template-columns:1fr}
+}
+
+@media(max-width:760px){
+  header,.layout{width:100%;padding-left:14px;padding-right:14px}
+  h1{font-size:31px}
+  section{padding:20px}
+  .summary-grid,.review-grid{grid-template-columns:1fr}
+}
+</style>
+<style>
+/* v5: restore original report structure */
+.generation-head-old{background:#f0f2f5!important;color:#667085!important}
+.generation-head-new{background:#fff0eb!important;color:#934c36!important}
+.generation-old{background:#f8f9fa}
+.generation-new{background:#fff6f2}
+
+.compare-legend{
+  display:flex;flex-wrap:wrap;gap:7px;margin:0 0 12px;
+}
+.legend-chip{
+  display:inline-flex;align-items:center;padding:5px 9px;
+  border:1px solid var(--line);border-radius:999px;
+  font-size:11px;font-weight:850;
+}
+.legend-chip.medium{background:#e9f8f5;color:#0a655e;border-color:#c6e9e1}
+.legend-chip.high{background:#edf4ff;color:#2656a8;border-color:#cadbf8}
+.legend-chip.max{background:#f3efff;color:#5b3ca2;border-color:#d9cdf4}
+.legend-chip.peer{background:#f2f3f6;color:#667085;border-color:#dfe3e8}
+
+#compare tbody tr{background:transparent}
+#compare tr.rep-medium{
+  background:linear-gradient(90deg,rgba(15,118,110,.18),rgba(15,118,110,.045) 72%,transparent);
+}
+#compare tr.rep-high{
+  background:linear-gradient(90deg,rgba(46,103,209,.19),rgba(46,103,209,.045) 72%,transparent);
+}
+#compare tr.rep-max{
+  background:linear-gradient(90deg,rgba(112,71,183,.18),rgba(112,71,183,.045) 72%,transparent);
+}
+#compare tr.peer-row{
+  background:linear-gradient(90deg,rgba(102,112,133,.095),rgba(102,112,133,.018) 72%,transparent);
+}
+#compare tr.rep-medium td:first-child{box-shadow:inset 5px 0 0 var(--medium)}
+#compare tr.rep-high td:first-child{box-shadow:inset 5px 0 0 var(--high)}
+#compare tr.rep-max td:first-child{box-shadow:inset 5px 0 0 var(--max)}
+#compare tr.peer-row td:first-child{box-shadow:inset 4px 0 0 #9aa4b2}
+
+.role-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+}
+.role-card{
+  padding:16px;border:1px solid var(--line);border-radius:11px;background:#fff;
+}
+.role-card strong{display:block;margin-bottom:6px;font-size:14px}
+.role-card p{margin:0;color:#4e5968;font-size:13px}
+
+.reasoning-row-medium{
+  background:linear-gradient(90deg,rgba(15,118,110,.16),rgba(15,118,110,.03) 75%,transparent);
+}
+.reasoning-row-high{
+  background:linear-gradient(90deg,rgba(46,103,209,.18),rgba(46,103,209,.03) 75%,transparent);
+}
+.reasoning-row-max{
+  background:linear-gradient(90deg,rgba(112,71,183,.15),rgba(112,71,183,.03) 75%,transparent);
+}
+</style>
+
+
+<style>
+/* v6 extended comparison */
+.mega-compare{min-width:1580px}
+.not-measured{
+  color:#9aa3af;
+  font-size:10.5px;
+  font-weight:750;
+  white-space:nowrap;
+}
+#compare tbody tr{background:transparent}
+#compare tr.family-claude:not(.rep-medium):not(.rep-high):not(.rep-max){
+  background:rgba(189,95,70,.025);
+}
+#compare tr.family-astra:not(.peer-row){
+  background:rgba(109,76,194,.030);
+}
+#compare tr.family-sol:not(.sol-pick){
+  background:rgba(40,112,216,.022);
+}
+#compare tr.family-luna:not(.luna-pick){
+  background:rgba(15,118,110,.018);
+}
+#compare tr.family-grok{
+  background:rgba(40,49,61,.028);
+}
+#compare tr.sol-pick{
+  background:linear-gradient(90deg,rgba(40,112,216,.10),rgba(40,112,216,.018) 72%,transparent);
+}
+#compare tr.luna-pick{
+  background:linear-gradient(90deg,rgba(15,118,110,.10),rgba(15,118,110,.018) 72%,transparent);
+}
+#compare tr.sol-pick td:first-child{box-shadow:inset 4px 0 0 #2870d8}
+#compare tr.luna-pick td:first-child{box-shadow:inset 4px 0 0 #0f766e}
+</style>
+
+</head>
+
+<body>
+<header>
+  <div class="eyebrow">CLAUDE MODEL GUIDE · OPUS 5.5 UPDATE · 2026.09.28</div>
+  <h1>Claude Opus 5.5 모델 선택 가이드</h1>
+  <div class="header-sub">성능 향상, 비용 효율, GPT-6 Astra와의 동급 비교, Claude Code에서의 실사용 설정을 한 번에 정리한다.</div>
+</header>
+
+<div class="layout">
+<nav class="side-nav" aria-label="목차">
+  <strong>목차</strong>
+  <a href="#summary">요약</a>
+  <a href="#generation">Opus 5 vs 5.5</a>
+  <a href="#compare">전체 비교</a>
+  <a href="#coding">코딩 상세</a>
+  <a href="#roles">기존 모델 정리</a>
+  <a href="#strategy">운영 결론</a>
+  <a href="#sources">자료 기준</a>
+</nav>
+
+<main>
+
+<section id="summary">
+  <h2>요약</h2>
+  <div class="summary-grid">
+    <article class="summary-card release">
+      <div class="k">출시</div>
+      <div class="v">Claude Opus 5.5</div>
+      <p>2026.09.22 출시. Claude 5.5 제품군의 첫 모델.</p>
+    </article>
+
+    <article class="summary-card change">
+      <div class="k">이번 세대의 핵심</div>
+      <div class="v">이전 Max의 AA 종합점수를 Medium으로</div>
+      <p>Opus 5 Max와 같은 AA Intelligence 51을 5.5 Medium이 더 낮은 작업비용에 제공한다. 개별 평가까지 모두 동등하다는 뜻은 아니다.</p>
+    </article>
+
+    <article class="summary-card peer">
+      <div class="k">동급 GPT 비교</div>
+      <div class="v">Astra급에서 가격 경쟁력 확보</div>
+      <p>5.5 Medium은 Astra High와 같은 51점, 5.5 High는 Astra Max보다 1점 높으면서 작업비용은 더 낮다.</p>
+    </article>
+
+    <article class="summary-card default">
+      <div class="k">코딩 권장 설정</div>
+      <div class="v">Opus 5.5 High</div>
+      <p>CursorBench 4.0에서는 xHigh와 같은 56.0%이며 작업당 비용은 $3.97 vs $6.98이다. 실제 기본 effort는 Medium이다.</p>
+    </article>
+  </div>
+
+  <div class="callout">
+    <strong>Opus 5.5에서 달라진 점:</strong>
+    최고 성능이 올라간 것보다 <strong>AA 종합점수 기준으로 이전 상위 모델에 가까운 점수를 Medium·High에서 더 낮은 비용으로 얻는 변화</strong>가 더 크다.
+    토큰 단가는 Opus 5 대비 20% 낮아졌고, Anthropic은 일반적인 workload 비용이 약 40% 감소했다고 설명한다.
+  </div>
+</section>
+
+
+<section id="generation">
+  <h2>Opus 5 vs Opus 5.5</h2>
+  <p class="muted">
+    Max끼리만 비교하면 효율 변화가 잘 보이지 않는다. 그래서 <strong>이전 Opus 5 Max</strong>와,
+    같은 종합점수를 내는 <strong>Opus 5.5 Medium</strong>, 그리고 새 최고점인 <strong>Opus 5.5 Max</strong>를 함께 비교한다.
+  </p>
+
+  <div class="table-wrap">
+    <table class="medium">
+      <thead>
+        <tr>
+          <th>지표</th>
+          <th class="generation-head-old">Opus 5 Max</th>
+          <th class="generation-head-new">Opus 5.5 Medium</th>
+          <th class="generation-head-new">Opus 5.5 Max</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="model">AA Intelligence <span class="tip left" tabindex="0" data-tip="Artificial Analysis 종합 성능 지수. 높을수록 좋습니다.">i</span></td>
+          <td class="score generation-old">51점</td>
+          <td class="score generation-new"><strong>51점</strong></td>
+          <td class="score generation-new"><strong>58점</strong></td>
+        </tr>
+        <tr>
+          <td class="model">AA-Briefcase <span class="tip left" tabindex="0" data-tip="많은 자료와 파일을 바탕으로 장기 전문 업무를 수행하는 능력을 Elo로 평가합니다.">i</span></td>
+          <td class="num generation-old">1,673 Elo</td>
+          <td class="num generation-new">1,642 Elo</td>
+          <td class="num generation-new"><strong>1,822 Elo</strong></td>
+        </tr>
+        <tr>
+          <td class="model">AutomationBench-AA <span class="tip left" tabindex="0" data-tip="여러 업무 앱의 REST API를 이용해 자동화 목표를 달성하는지 평가합니다. 보호 조건을 어기면 해당 작업은 0점입니다. 높을수록 좋습니다.">i</span></td>
+          <td class="num generation-old">57%</td>
+          <td class="num generation-new">61%</td>
+          <td class="num generation-new"><strong>70%</strong></td>
+        </tr>
+        <tr>
+          <td class="model">Terminal-Bench 4.0 <span class="tip left" tabindex="0" data-tip="터미널에서 소프트웨어 개발·시스템 관리 등의 과제를 해결하고 테스트 통과율로 평가합니다. 이 표는 모델 평가용 에이전트 환경의 점수입니다. 높을수록 좋습니다.">i</span></td>
+          <td class="num generation-old">49%</td>
+          <td class="num generation-new">53%</td>
+          <td class="num generation-new"><strong>60%</strong></td>
+        </tr>
+        <tr>
+          <td class="model">SciCode <span class="tip left" tabindex="0" data-tip="과학 계산 문제에 필요한 Python 코드를 작성하고 단위 테스트 통과 여부를 평가합니다. 높을수록 좋습니다.">i</span></td>
+          <td class="num generation-old">56%</td>
+          <td class="num generation-new">59%</td>
+          <td class="num generation-new"><strong>67%</strong></td>
+        </tr>
+        <tr>
+          <td class="model">AA Cost / task <span class="tip left" tabindex="0" data-tip="Artificial Analysis Intelligence Index 문제 1건당 실제 평균 API 비용입니다.">i</span></td>
+          <td class="money generation-old">$5.86</td>
+          <td class="money generation-new"><strong>$1.34</strong></td>
+          <td class="money generation-new">$5.98</td>
+        </tr>
+        <tr>
+          <td class="model">CursorBench 4.0 <span class="tip left" tabindex="0" data-tip="실제 Cursor 사용 사례에서 가져온 모호한 다중 파일 코딩 과제를 에이전트가 해결하는지 평가합니다. 높을수록 좋습니다.">i</span></td>
+          <td class="num generation-old">46.6%</td>
+          <td class="num generation-new"><strong>52.5%</strong></td>
+          <td class="num generation-new"><strong>57.8%</strong></td>
+        </tr>
+        <tr>
+          <td class="model">Cursor Cost / task <span class="tip left" tabindex="0" data-tip="CursorBench 과제 1건당 평균 비용(USD)입니다. 성능 점수와 함께 해석하며, 낮을수록 비용이 적습니다.">i</span></td>
+          <td class="money generation-old">$11.95</td>
+          <td class="money generation-new"><strong>$2.91</strong></td>
+          <td class="money generation-new">$13.43</td>
+        </tr>
+        <tr>
+          <td class="model">API Input / Output <span class="tip left" tabindex="0" data-tip="입력 토큰과 출력 토큰 각각 100만 개당 API 정가(USD)입니다. 벤치마크 점수가 아닌 가격 지표입니다.">i</span></td>
+          <td class="money generation-old">$5 / $25</td>
+          <td class="money generation-new">$4 / $20</td>
+          <td class="money generation-new">$4 / $20</td>
+        </tr>
+        <tr>
+          <td class="model">Cache read <span class="tip left" tabindex="0" data-tip="캐시에서 재사용한 입력 토큰 100만 개당 API 요금(USD)입니다. 벤치마크 점수가 아닌 가격 지표입니다.">i</span></td>
+          <td class="money generation-old">$0.50 / 1M</td>
+          <td class="money generation-new">$0.20 / 1M</td>
+          <td class="money generation-new">$0.20 / 1M</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <strong>가장 큰 변화:</strong>
+    같은 AA Intelligence 51을 기준으로 보면
+    <strong>Opus 5 Max $5.86 → Opus 5.5 Medium $1.34</strong>로 작업당 비용이 약 77% 낮아졌다.
+    CursorBench도 46.6% → 52.5%로 올라갔다.
+    다만 AA-Briefcase는 1,673 → 1,642 Elo로 낮아 개별 작업 성능까지 같다고 볼 수는 없다.
+    이 평가들에서 확인한 효율 개선은 단순한 20% 토큰 가격 인하보다 크다.
+  </div>
+</section>
+
+
+
+<section id="compare">
+  <h2>전체 비교</h2>
+
+  <p class="muted">
+    Opus 5.5의 <strong>Low / Medium / High / xHigh / Max를 이 표에 통합</strong>하고,
+    이전 보고서에서 자주 비교했던 GPT-6 Astra·Sol·Luna와 GPT-5.6 대표 모델까지 함께 넣었다.
+    정렬은 <strong>AA Intelligence 내림차순</strong>이다.
+  </p>
+
+  <div class="compare-legend">
+    <span class="legend-chip medium">Opus 5.5 Medium · 가성비</span>
+    <span class="legend-chip high">Opus 5.5 High · 코딩 권장</span>
+    <span class="legend-chip max">Opus 5.5 Max · 최고성능</span>
+    <span class="legend-chip peer">이전 세대 / 직접 비교</span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="wide mega-compare">
+      <thead>
+        <tr>
+          <th>모델</th>
+          <th>설정</th>
+          <th>AA Intelligence
+            <span class="tip" tabindex="0" data-tip="Artificial Analysis Intelligence Index v4.3.2. 여러 추론·지식·업무·코딩 평가를 합친 종합 점수입니다. 높을수록 좋습니다.">i</span>
+          </th>
+          <th>AA-Briefcase
+            <span class="tip" tabindex="0" data-tip="여러 파일과 자료를 바탕으로 긴 전문 업무를 수행하는 평가입니다. 방향 설정과 결과물 품질을 함께 봅니다.">i</span>
+          </th>
+          <th>Automation
+            <span class="tip" tabindex="0" data-tip="여러 SaaS·업무 도구를 사용해 복잡한 작업 흐름을 수행하는 성공률입니다.">i</span>
+          </th>
+          <th>AA Terminal 4.0
+            <span class="tip" tabindex="0" data-tip="Artificial Analysis Intelligence Index의 모델 평가입니다. 아래 Coding Agent Index의 Claude Code/Codex 에이전트 평가와 조건이 달라 수치를 직접 비교하면 안 됩니다.">i</span>
+          </th>
+          <th>SciCode
+            <span class="tip" tabindex="0" data-tip="과학·기술 코딩 문제 해결 능력을 평가합니다.">i</span>
+          </th>
+          <th>AA Cost / task
+            <span class="tip" tabindex="0" data-tip="AA Intelligence 문제 1건을 처리할 때 실제 사용 토큰을 API 가격으로 환산한 평균 비용입니다. 낮을수록 좋습니다.">i</span>
+          </th>
+          <th>CursorBench 4.0
+            <span class="tip" tabindex="0" data-tip="실제 Cursor 사용자의 모호한 multi-file 코딩 작업을 기반으로 한 평가입니다. 현재 Opus 계열 등 일부 모델에만 공개 결과가 있습니다.">i</span>
+          </th>
+          <th>Cursor Cost
+            <span class="tip" tabindex="0" data-tip="CursorBench 작업 1건당 평균 비용입니다. 미측정은 동일 평가의 공개 결과가 없다는 뜻입니다.">i</span>
+          </th>
+          <th>Context <span class="tip" tabindex="0" data-tip="Claude는 공식 1M, 표의 GPT-5.6·GPT-6 모델은 OpenAI 공식 1.05M입니다.">i</span></th>
+          <th>비교 의미</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="rep-max family-claude">
+          <td class="model">Claude Opus 5.5 <span class="tag max">최고성능</span><span class="company">Anthropic</span></td>
+          <td class="setting">Max</td>
+          <td class="score">58</td>
+          <td class="num">1,822</td>
+          <td class="num">70%</td>
+          <td class="num">60%</td>
+          <td class="num">67%</td>
+          <td class="money">$5.98</td>
+          <td class="num">57.8%</td>
+          <td class="money">$13.43</td>
+          <td class="num">1M</td>
+          <td>최고성능</td>
+        </tr>
+        <tr class="family-claude">
+          <td class="model">Claude Opus 5.5 <span class="company">Anthropic</span></td>
+          <td class="setting">xHigh</td>
+          <td class="score">56</td>
+          <td class="num">1,780</td>
+          <td class="num">65%</td>
+          <td class="num">60%</td>
+          <td class="num">65%</td>
+          <td class="money">$3.46</td>
+          <td class="num">56.0%</td>
+          <td class="money">$6.98</td>
+          <td class="num">1M</td>
+          <td>추론 강화 · CursorBench에서는 High 대비 점수 이득 없음</td>
+        </tr>
+        <tr class="rep-high family-claude">
+          <td class="model">Claude Opus 5.5 <span class="tag high">코딩 권장</span><span class="company">Anthropic</span></td>
+          <td class="setting">High</td>
+          <td class="score">54</td>
+          <td class="num">1,705</td>
+          <td class="num">63%</td>
+          <td class="num">57%</td>
+          <td class="num">60%</td>
+          <td class="money">$1.82</td>
+          <td class="num">56.0%</td>
+          <td class="money">$3.97</td>
+          <td class="num">1M</td>
+          <td>이 보고서의 코딩 권장 설정</td>
+        </tr>
+        <tr class="peer-row family-astra">
+          <td class="model">GPT-6 Astra <span class="company">OpenAI</span></td>
+          <td class="setting">Max</td>
+          <td class="score">53</td>
+          <td class="num">1,569</td>
+          <td class="num">68%</td>
+          <td class="num">59%</td>
+          <td class="num">56%</td>
+          <td class="money">$3.26</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>Opus High 직접 비교</td>
+        </tr>
+        <tr class="peer-row family-fable">
+          <td class="model">Claude Fable 5.1 <span class="company">Anthropic</span></td>
+          <td class="setting">Max</td>
+          <td class="score">53</td>
+          <td class="num">1,678</td>
+          <td class="num">59%</td>
+          <td class="num">52%</td>
+          <td class="num">63%</td>
+          <td class="money">$7.63</td>
+          <td class="num">51.8%</td>
+          <td class="money">$17.28</td>
+          <td class="num">1M</td>
+          <td>이전 최고난도 Claude</td>
+        </tr>
+        <tr class="peer-row family-astra">
+          <td class="model">GPT-6 Astra <span class="company">OpenAI</span></td>
+          <td class="setting">xHigh</td>
+          <td class="score">52</td>
+          <td class="num">1,544</td>
+          <td class="num">67%</td>
+          <td class="num">60%</td>
+          <td class="num">56%</td>
+          <td class="money">$2.31</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>Astra 균형 상위</td>
+        </tr>
+        <tr class="rep-medium family-claude">
+          <td class="model">Claude Opus 5.5 <span class="tag medium">가성비</span><span class="company">Anthropic</span></td>
+          <td class="setting">Medium</td>
+          <td class="score">51</td>
+          <td class="num">1,642</td>
+          <td class="num">61%</td>
+          <td class="num">53%</td>
+          <td class="num">59%</td>
+          <td class="money">$1.34</td>
+          <td class="num">52.5%</td>
+          <td class="money">$2.91</td>
+          <td class="num">1M</td>
+          <td>가성비 대표</td>
+        </tr>
+        <tr class="peer-row family-astra">
+          <td class="model">GPT-6 Astra <span class="company">OpenAI</span></td>
+          <td class="setting">High</td>
+          <td class="score">51</td>
+          <td class="num">1,507</td>
+          <td class="num">67%</td>
+          <td class="num">54%</td>
+          <td class="num">55%</td>
+          <td class="money">$1.73</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>Opus Medium 직접 비교</td>
+        </tr>
+        <tr class="peer-row family-old">
+          <td class="model">Claude Opus 5 <span class="tag gray">이전 비교</span><span class="company">Anthropic</span></td>
+          <td class="setting">Max</td>
+          <td class="score">51</td>
+          <td class="num">1,673</td>
+          <td class="num">57%</td>
+          <td class="num">49%</td>
+          <td class="num">56%</td>
+          <td class="money">$5.86</td>
+          <td class="num">46.6%</td>
+          <td class="money">$11.95</td>
+          <td class="num">1M</td>
+          <td>이전 세대 비교</td>
+        </tr>
+        <tr class="family-astra">
+          <td class="model">GPT-6 Astra <span class="company">OpenAI</span></td>
+          <td class="setting">Medium</td>
+          <td class="score">50</td>
+          <td class="num">1,459</td>
+          <td class="num">65%</td>
+          <td class="num">49%</td>
+          <td class="num">54%</td>
+          <td class="money">$1.54</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>비용 낮춘 Astra</td>
+        </tr>
+        <tr class="family-sol">
+          <td class="model">GPT-6 Sol <span class="company">OpenAI</span></td>
+          <td class="setting">Max</td>
+          <td class="score">48</td>
+          <td class="num">1,483</td>
+          <td class="num">62%</td>
+          <td class="num">44%</td>
+          <td class="num">58%</td>
+          <td class="money">$1.06</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>저렴한 상위 GPT</td>
+        </tr>
+        <tr class="peer-row family-old">
+          <td class="model">GPT-5.6 Sol <span class="tag gray">이전 비교</span><span class="company">OpenAI</span></td>
+          <td class="setting">Max</td>
+          <td class="score">47</td>
+          <td class="num">1,487</td>
+          <td class="num">60%</td>
+          <td class="num">40%</td>
+          <td class="num">57%</td>
+          <td class="money">$1.99</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>이전 Sol 비교</td>
+        </tr>
+        <tr class="family-astra">
+          <td class="model">GPT-6 Astra <span class="company">OpenAI</span></td>
+          <td class="setting">Low</td>
+          <td class="score">46</td>
+          <td class="num">1,261</td>
+          <td class="num">59%</td>
+          <td class="num">42%</td>
+          <td class="num">54%</td>
+          <td class="money">$0.82</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>저비용 Astra</td>
+        </tr>
+        <tr class="family-grok">
+          <td class="model">Grok 4.7 <span class="company">SpaceXAI</span></td>
+          <td class="setting">xHigh</td>
+          <td class="score">46</td>
+          <td class="num">1,657</td>
+          <td class="num">66%</td>
+          <td class="num">26%</td>
+          <td class="num">57%</td>
+          <td class="money">$3.74</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">500K</td>
+          <td>외부 비교</td>
+        </tr>
+        <tr class="family-sol sol-pick">
+          <td class="model">GPT-6 Sol <span class="tag high">GPT 대표</span><span class="company">OpenAI</span></td>
+          <td class="setting">xHigh</td>
+          <td class="score">44</td>
+          <td class="num">1,364</td>
+          <td class="num">62%</td>
+          <td class="num">30%</td>
+          <td class="num">55%</td>
+          <td class="money">$0.53</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>GPT 일반 개발 대표</td>
+        </tr>
+        <tr class="family-sol">
+          <td class="model">GPT-6 Sol <span class="company">OpenAI</span></td>
+          <td class="setting">High</td>
+          <td class="score">43</td>
+          <td class="num">1,289</td>
+          <td class="num">60%</td>
+          <td class="num">26%</td>
+          <td class="num">55%</td>
+          <td class="money">$0.37</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>저비용 일반 개발</td>
+        </tr>
+        <tr class="family-claude">
+          <td class="model">Claude Opus 5.5 <span class="company">Anthropic</span></td>
+          <td class="setting">Low</td>
+          <td class="score">42</td>
+          <td class="num">1,285</td>
+          <td class="num">53%</td>
+          <td class="num">31%</td>
+          <td class="num">59%</td>
+          <td class="money">$0.55</td>
+          <td class="num">43.7%</td>
+          <td class="money">$1.17</td>
+          <td class="num">1M</td>
+          <td>작고 명확한 작업</td>
+        </tr>
+        <tr class="peer-row family-old">
+          <td class="model">GPT-5.6 Terra <span class="tag gray">이전 비교</span><span class="company">OpenAI</span></td>
+          <td class="setting">Max</td>
+          <td class="score">42</td>
+          <td class="num">1,334</td>
+          <td class="num">60%</td>
+          <td class="num">35%</td>
+          <td class="num">55%</td>
+          <td class="money">$1.40</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>기존 중간 모델</td>
+        </tr>
+        <tr class="family-sol">
+          <td class="model">GPT-6 Sol <span class="company">OpenAI</span></td>
+          <td class="setting">Medium</td>
+          <td class="score">40</td>
+          <td class="num">1,142</td>
+          <td class="num">58%</td>
+          <td class="num">19%</td>
+          <td class="num">54%</td>
+          <td class="money">$0.25</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>저비용 Sol</td>
+        </tr>
+        <tr class="family-luna luna-pick">
+          <td class="model">GPT-6 Luna <span class="tag medium">초저가</span><span class="company">OpenAI</span></td>
+          <td class="setting">Max</td>
+          <td class="score">37</td>
+          <td class="num">1,299</td>
+          <td class="num">53%</td>
+          <td class="num">13%</td>
+          <td class="num">55%</td>
+          <td class="money">$0.07</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>초저가 실행 대표</td>
+        </tr>
+        <tr class="peer-row family-old">
+          <td class="model">GPT-5.6 Luna <span class="tag gray">이전 비교</span><span class="company">OpenAI</span></td>
+          <td class="setting">Max</td>
+          <td class="score">37</td>
+          <td class="num">1,342</td>
+          <td class="num">50%</td>
+          <td class="num">12%</td>
+          <td class="num">54%</td>
+          <td class="money">$0.18</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>이전 Luna 비교</td>
+        </tr>
+        <tr class="family-sol">
+          <td class="model">GPT-6 Sol <span class="company">OpenAI</span></td>
+          <td class="setting">Low</td>
+          <td class="score">34</td>
+          <td class="num">905</td>
+          <td class="num">54%</td>
+          <td class="num">9%</td>
+          <td class="num">50%</td>
+          <td class="money">$0.13</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>Luna Max와 역할 겹침</td>
+        </tr>
+        <tr class="family-luna">
+          <td class="model">GPT-6 Luna <span class="company">OpenAI</span></td>
+          <td class="setting">xHigh</td>
+          <td class="score">34</td>
+          <td class="num">1,217</td>
+          <td class="num">48%</td>
+          <td class="num">8%</td>
+          <td class="num">52%</td>
+          <td class="money">$0.04</td>
+          <td class="not-measured">미측정</td>
+          <td class="not-measured">미측정</td>
+          <td class="num">1.05M</td>
+          <td>초저가 추론</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout blue">
+    <strong>Opus 5.5 reasoning은 별도 표로 분리하지 않는다.</strong>
+    전체 비교 안에서 보면 Medium 51 / $1.34 → High 54 / $1.82 → xHigh 56 / $3.46 → Max 58 / $5.98로 올라간다.
+    CursorBench 4.0에서는 High와 xHigh가 모두 56.0%인데 비용이 $3.97 → $6.98로 증가한다.
+    따라서 <strong>이 보고서의 코딩 권장 설정은 High, 가격 대비 성능 선택은 Medium, 최고 성능 선택은 Max</strong>로 구분한다. 다른 코딩 작업에서 High와 xHigh가 항상 동등하다는 뜻은 아니다.
+  </div>
+
+  <p class="note">
+    '미측정'은 성능이 0이라는 뜻이 아니라 동일 CursorBench 4.0 결과가 공개되지 않은 경우다.
+    AA Intelligence·AA-Briefcase·AutomationBench·Terminal-Bench·SciCode·Cost/task는 같은 Artificial Analysis Intelligence Index 평가 체계의 공개값으로 비교했다.
+    이 표의 Opus 5.5 AA 수치는 Artificial Analysis의 'Adaptive Reasoning, Default Fallback' 조건을 따른다. 아래 Coding Agent Index의 Terminal-Bench는 에이전트·harness가 포함된 별도 평가이므로 수치가 다르다.
+  </p>
+</section>
+
+
+
+
+<section id="coding">
+  <h2>코딩 상세</h2>
+
+  <p class="muted">
+    전체 비교의 CursorBench는 Cursor 환경에서 Opus 5.5 effort별 코딩 결과를 보여준다. 여기서는 별도로 Artificial Analysis Coding Agent Index에서 측정한 Claude Code와 Codex의 에이전트 결과를 비교한다. 두 표의 Terminal-Bench는 평가 환경이 달라 백분율을 직접 대조할 수 없다.
+  </p>
+
+  <div class="table-wrap">
+    <table class="wide">
+      <thead>
+        <tr>
+          <th>모델 / Agent</th>
+          <th>Coding Agent Index <span class="tip" tabindex="0" data-tip="DeepSWE, Terminal-Bench 4.0, SWE-Atlas-QnA를 합친 실제 코딩 에이전트 종합 점수입니다.">i</span></th>
+          <th>DeepSWE <span class="tip" tabindex="0" data-tip="기존 코드 저장소의 장기 개발·버그 수정 과제를 수행하고 수정 결과를 별도 검증 환경에서 테스트합니다. 통과율이며 높을수록 좋습니다.">i</span></th>
+          <th>Agent Terminal-Bench 4.0 <span class="tip" tabindex="0" data-tip="Claude Code·Codex 같은 코딩 에이전트가 터미널 과제를 수행하는 평가입니다. 위 모델 단독 평가와 실행 환경이 달라 점수를 직접 비교할 수 없습니다. 높을수록 좋습니다.">i</span></th>
+          <th>SWE-Atlas-QnA <span class="tip" tabindex="0" data-tip="큰 코드베이스를 읽고 구조·관계·동작을 정확히 이해하는 평가입니다.">i</span></th>
+          <th>Cost / task <span class="tip" tabindex="0" data-tip="코딩 에이전트 평가 과제 1회당 평균 API 토큰 비용(USD)입니다. 구독료나 운영 인건비는 포함하지 않습니다. 낮을수록 좋습니다.">i</span></th>
+          <th>Time / task <span class="tip" tabindex="0" data-tip="코딩 에이전트가 평가 과제 1회를 완료하는 데 걸린 평균 실제 경과 시간입니다. 낮을수록 빠릅니다.">i</span></th>
+          <th>Tokens / task <span class="tip" tabindex="0" data-tip="코딩 에이전트 평가 과제 1회당 평균 사용 토큰 수입니다. 입력·캐시·추론·출력을 포함하며, 적다고 반드시 결과가 좋은 것은 아닙니다.">i</span></th>
+          <th>해석</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-opus-max">
+          <td class="model">Opus 5.5 Max<span class="company">Claude Code</span></td>
+          <td class="score">66</td><td class="num">68%</td><td class="num"><strong>63%</strong></td><td class="num"><strong>66%</strong></td>
+          <td class="money">$13.04</td><td class="num">1.1h</td><td class="num">15.6M</td>
+          <td>이 표에서 종합 Index 최고. 특히 Terminal과 코드베이스 이해 점수가 높음.</td>
+        </tr>
+
+        <tr class="peer-row">
+          <td class="model">GPT-6 Astra Max<span class="company">Codex</span></td>
+          <td class="score">62</td><td class="num"><strong>68%</strong></td><td class="num">56%</td><td class="num">62%</td>
+          <td class="money"><strong>$7.47</strong></td><td class="num"><strong>29.4m</strong></td><td class="num"><strong>3.3M</strong></td>
+          <td>Opus Max보다 저렴하고 빠르지만 종합 Index·Terminal·SWE-Atlas는 낮음.</td>
+        </tr>
+
+        <tr class="peer-row">
+          <td class="model">Fable 5.1 Max<span class="company">Claude Code</span></td>
+          <td class="score">62</td><td class="num">64%</td><td class="num">58%</td><td class="num">65%</td>
+          <td class="money">$12.39</td><td class="num">34.8m</td><td class="num">5.7M</td>
+          <td>기존 Claude 최고난도 역할. Opus 5.5가 종합 성능에서 앞섬.</td>
+        </tr>
+
+        <tr class="peer-row">
+          <td class="model">Opus 5 Max<span class="company">Claude Code</span></td>
+          <td class="score">60</td><td class="num">63%</td><td class="num">55%</td><td class="num">62%</td>
+          <td class="money">$10.79</td><td class="num">41.9m</td><td class="num">11.4M</td>
+          <td>5.5에서 코딩 성공률과 코드베이스 이해가 모두 상승.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <strong>실사용 해석:</strong>
+    Anthropic의 초기 테스트 사례에서는 Opus 5.5의 긴 코드베이스 작업과 더 명료한 설명이 개선점으로 소개됐다.
+    위 에이전트 지표에서는 Opus 5.5 Max + Claude Code가 종합 Index·Terminal·SWE-Atlas에서,
+    GPT-6 Astra Max + Codex가 작업당 비용·시간에서 앞선다. 이는 모델 단독 우열이 아니라 서로 다른 에이전트 환경을 포함한 결과다.
+  </div>
+</section>
+
+
+<section id="roles">
+  <h2>기존 모델 정리</h2>
+
+  <div class="role-grid">
+    <article class="role-card">
+      <strong>Claude Opus 5 <span class="tag gray">사실상 대체</span></strong>
+      <p>
+        Opus 5 Max는 AA Intelligence 51 / $5.86.
+        Opus 5.5 Medium이 같은 51점을 $1.34에 제공하고 CursorBench도 52.5% vs 46.6%로 높다.
+        일반적으로 5를 유지할 이유가 크게 줄었다.
+      </p>
+    </article>
+
+    <article class="role-card">
+      <strong>Claude Fable 5.1 <span class="tag gray">비용 기준 재평가</span></strong>
+      <p>
+        Fable Max는 53 / $7.63, Opus 5.5 High는 54 / $1.82.
+        AA 종합점수와 비용만 보면 Opus 5.5 High가 유리하다.
+        다만 Anthropic은 어려운 추론·장기 에이전트 작업 또는 Opus 5.5가 자체 평가에서 부족한 경우 Fable 5.1을 여전히 권장한다.
+      </p>
+    </article>
+
+    <article class="role-card">
+      <strong>GPT-6 Astra <span class="tag gray">직접 경쟁</span></strong>
+      <p>
+        성능대가 가장 가까운 외부 비교군.
+        Opus 5.5는 Medium·High에서 가격 경쟁력이 강하고,
+        이 표에서는 Astra Max가 Opus 5.5 High보다 Automation과 AA Terminal 점수가 높다.
+      </p>
+    </article>
+  </div>
+</section>
+
+
+<section id="strategy">
+  <h2>운영 결론</h2>
+
+  <table class="strategy-table">
+    <thead>
+      <tr>
+        <th>작업</th>
+        <th>대표 선택</th>
+        <th>이유</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>비용을 낮추면서 상위 모델 판단력이 필요함</td>
+        <td>Opus 5.5 Medium</td>
+        <td>
+          이전 Opus 5 Max와 같은 AA Intelligence 51을 약 77% 낮은 task 비용으로 제공.
+          Astra High와도 같은 51점인데 $1.34 vs $1.73으로 더 저렴하다.
+        </td>
+      </tr>
+
+      <tr>
+        <td>일반적인 어려운 코딩 · Claude Code 권장 설정</td>
+        <td>Opus 5.5 High</td>
+        <td>
+          CursorBench 56.0% / $3.97.
+          이 CursorBench 평가에서 xHigh와 점수는 같고 비용은 낮다.
+          AA Intelligence 54로 Astra Max 53보다 높으면서 AA task 비용도 $1.82 vs $3.26으로 낮다.
+        </td>
+      </tr>
+
+      <tr>
+        <td>일반 추론을 더 끌어올리고 싶음</td>
+        <td>Opus 5.5 xHigh</td>
+        <td>
+          AA Intelligence 56. High보다 종합점수는 높지만 CursorBench 결과는 같았다.
+          더 깊은 추론이 필요한 작업에서 고려하되 실제 작업으로 검증해야 한다.
+        </td>
+      </tr>
+
+      <tr>
+        <td>비용보다 최고 성공률이 중요함</td>
+        <td>Opus 5.5 Max</td>
+        <td>
+          AA Intelligence 58, Coding Agent Index 66, CursorBench 57.8%.
+          현재 최고 성능 구간이지만 High 대비 추가 비용이 매우 커 기본값으로는 과하다.
+        </td>
+      </tr>
+
+      <tr>
+        <td>Astra와 선택이 고민됨</td>
+        <td>성능대와 작업 성격으로 선택</td>
+        <td>
+          AA 종합점수 51점에서는 Opus Medium ↔ Astra High,
+          53~54점대에서는 Opus High ↔ Astra Max가 비교 대상이다.
+          Opus는 AA-Briefcase와 Coding Agent Index에서, Astra는 AA Automation·일부 Terminal에서 상대적으로 강하다.
+          Coding Agent Index는 Claude Code와 Codex의 에이전트 환경도 함께 비교한 결과다.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="route">
+    <div class="route-item medium">
+      <div class="label">가격 대비 성능</div>
+      <div class="name">Opus 5.5 Medium</div>
+      <p>이전 최고급 Claude 성능을 현실적인 비용으로 사용하는 이번 세대의 핵심 sweet spot.</p>
+    </div>
+
+    <div class="route-item high">
+      <div class="label">Claude Code 코딩 권장</div>
+      <div class="name">Opus 5.5 High</div>
+      <p>복잡한 구현·원인 추적·대규모 코드베이스 작업에서 이 보고서가 권장하는 설정. Opus 5.5의 실제 기본 effort는 Medium.</p>
+    </div>
+
+    <div class="route-item max">
+      <div class="label">최고 성공률</div>
+      <div class="name">Opus 5.5 Max</div>
+      <p>비용보다 한 번의 성공률과 최종 품질이 더 중요한 작업.</p>
+    </div>
+  </div>
+</section>
+
+
+<section id="sources" class="sources">
+  <h2>자료 기준</h2>
+  <ul>
+    <li><a href="https://www.anthropic.com/claude-opus-5-5" target="_blank" rel="noreferrer">Anthropic — Claude Opus 5.5</a> · 출시, 가격, 40% typical workload 비용 절감, 공식 성능 비교</li>
+    <li><a href="https://artificialanalysis.ai/models/releases/claude-opus-5-5" target="_blank" rel="noreferrer">Artificial Analysis — Claude Opus 5.5 reasoning variants</a></li>
+    <li><a href="https://artificialanalysis.ai/models/comparisons/claude-opus-5-5-medium-vs-gpt-6-astra-high" target="_blank" rel="noreferrer">Artificial Analysis — Opus 5.5 Medium vs GPT-6 Astra High</a></li>
+    <li><a href="https://artificialanalysis.ai/models/comparisons/claude-opus-5-5-high-vs-gpt-6-astra" target="_blank" rel="noreferrer">Artificial Analysis — Opus 5.5 High vs GPT-6 Astra Max</a></li>
+    <li><a href="https://artificialanalysis.ai/models/comparisons/claude-opus-5-5-high-vs-claude-fable-5-1" target="_blank" rel="noreferrer">Artificial Analysis — Opus 5.5 High vs Fable 5.1 Max</a></li>
+    <li><a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex" target="_blank" rel="noreferrer">Artificial Analysis — Claude Code vs Codex Coding Agent Index</a></li>
+
+    <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-astra" target="_blank" rel="noreferrer">Artificial Analysis — GPT-6 Astra reasoning variants</a></li>
+    <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-sol" target="_blank" rel="noreferrer">Artificial Analysis — GPT-6 Sol reasoning variants</a></li>
+    <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-luna" target="_blank" rel="noreferrer">Artificial Analysis — GPT-6 Luna reasoning variants</a></li>
+    <li><a href="https://prod.cursor.com/evals" target="_blank" rel="noreferrer">CursorBench 4.0</a></li>
+    <li><a href="https://platform.claude.com/docs/en/build-with-claude/effort" target="_blank" rel="noreferrer">Anthropic — Effort</a> · Opus 5.5의 실제 기본 effort는 Medium</li>
+    <li><a href="https://platform.claude.com/docs/en/models/overview" target="_blank" rel="noreferrer">Anthropic — 모델 선택 안내</a> · Fable 5.1이 여전히 적합한 작업 범위</li>
+    <li><a href="https://artificialanalysis.ai/models/comparisons/claude-opus-5-5-medium-vs-claude-opus-5" target="_blank" rel="noreferrer">Artificial Analysis — Opus 5.5 Medium vs Opus 5 Max</a> · 종합점수 동률과 개별 평가 차이</li>
+    <li><a href="https://developers.openai.com/api/docs/models" target="_blank" rel="noreferrer">OpenAI Docs — GPT-6 모델 사양</a> 및 <a href="https://developers.openai.com/api/docs/models/gpt-5.6-sol" target="_blank" rel="noreferrer">GPT-5.6 Sol</a>·<a href="https://developers.openai.com/api/docs/models/gpt-5.6-terra" target="_blank" rel="noreferrer">Terra</a>·<a href="https://developers.openai.com/api/docs/models/gpt-5.6-luna" target="_blank" rel="noreferrer">Luna</a> · 공식 Context 1.05M</li>
+    <li>수치 확인 기준: 2026.09.28 KST</li>
+  </ul>
+</section>
+
+</main>
+</div>
+<script>
+  document.querySelectorAll('.tip[data-tip]').forEach((tip) => {
+    tip.setAttribute('role', 'img');
+    tip.setAttribute('aria-label', tip.dataset.tip);
+  });
+</script>
+</body>
+
+</html>
