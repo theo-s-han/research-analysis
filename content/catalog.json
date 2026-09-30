@@ -1,4 +1,12 @@
 {
+  "GPT_6_1_Sol_Model_Guide.html": {
+    "slug": "gpt-6-1-sol-model-guide",
+    "title": "GPT-6.1 Sol 모델 선택 가이드",
+    "description": "이전 Sol 대비 성능·비용 변화와 기존 모델의 전체 평가 지표를 비교합니다. 모델 계열 필터와 비교 근거 툴팁을 제공합니다.",
+    "category": "모델 리서치",
+    "tags": ["GPT-6.1 Sol", "Codex", "모델 비교"],
+    "referenceDate": "2026-09-30"
+  },
   "Claude_Opus_5_5_Model_Guide.html": {
     "slug": "claude-opus-5-5-model-guide",
     "category": "모델 리서치"
