@@ -70,6 +70,28 @@
     #comparison-table tr.aa-cost-dominated .model-evidence:focus-visible{outline:2px solid #45556b;outline-offset:3px}
     .dominated-swatch{background:#e9ebef;border-color:#c1c8d2}
     @media print{#comparison-table tr.aa-cost-dominated td{background:#e9ebef!important;color:#4b5563!important}#comparison-table tr.aa-cost-dominated .model-evidence{text-decoration:none}}
+    /* 필요한 지표만 표시: 행 선택과 독립적인 열 선택 */
+    #intro{scroll-margin-top:24px}.purpose-label{font-weight:650;color:#45556b;margin-right:8px}
+    .column-filter{margin-top:14px;border-top:1px solid #e5e9ef;padding-top:12px}
+    .column-filter summary{display:list-item;list-style-position:inside;width:fit-content;max-width:100%;cursor:pointer;font-size:12px;font-weight:650;color:#405674;padding:5px 0}
+    .column-filter summary span{font-weight:400;color:#6b7788;margin-left:8px;white-space:nowrap}
+    .column-filter summary:focus-visible,.column-options input:focus-visible{outline:2px solid #5d7ba3;outline-offset:3px}
+    .column-options{border:1px solid #dce2eb;border-radius:5px;margin:8px 0 0;padding:13px 15px;background:#f9fafc;min-width:0}
+    .column-options label{display:flex;align-items:center;gap:7px;font-size:12px;color:#4b5b70;cursor:pointer;line-height:1.7}
+    .column-options input{width:15px;height:15px;margin:0;flex:none;accent-color:#607a9e}
+    .column-all{padding-bottom:9px;border-bottom:1px solid #e2e7ef;font-weight:600}
+    .column-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px 16px;padding-top:11px}
+    .column-help{font-size:11px;color:#647185;margin:11px 0 0}
+    .column-status{margin-top:2px}
+    #comparison-table .effort-cell{left:var(--model-column-width,170px)}
+    .conclusion-list{list-style:none;margin:0;padding:0}
+    .conclusion-list li{padding:17px 0;border-bottom:1px solid #e3e8ee}
+    .conclusion-list li:first-child{padding-top:0}
+    .conclusion-list h3{font-size:15px;font-weight:650;color:#41536c;margin:0 0 7px}
+    .conclusion-list p{font-size:14px;line-height:1.85;color:#5e6b7c;margin:0;max-width:1000px}
+    .conclusion-note{font-size:12px;line-height:1.75;color:#657182;margin:14px 0 0;max-width:1000px}
+    @media(max-width:680px){.column-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.column-options{padding:12px}.column-options label{font-size:11px}.conclusion-list p{font-size:13px}}
+    @media print{.column-filter,.column-status{display:none}.conclusion-list li{break-inside:avoid}}
   </style>
 </head>
 <body>
@@ -77,18 +99,15 @@
   <div class="shell">
     <nav class="side" aria-label="문서 목차">
       <p class="side-label">CONTENTS</p>
-      <a href="#summary">핵심 요약</a><a href="#delta">Sol 6.0과 차이</a><a href="#comparison">전체 비교</a><a href="#coding-agent">코딩 에이전트 비교</a><a href="#developer">개발자 관점</a><a href="#spec">모델·가격 정보</a><a href="#sources">자료 기준</a>
-      <div class="side-note">공개 자료를 정리한 조사 문서입니다.<br>제품 권장안은 실제 저장소 작업으로 검증해야 합니다.</div>
+      <a href="#intro">제목 / 목적</a><a href="#summary">핵심 요약</a><a href="#delta">Sol 6.0 vs Sol 6.1</a><a href="#comparison">전체 비교표</a><a href="#conclusion">결론</a>
     </nav>
     <main>
-      <header class="hero" data-ui-id="hero">
-        <div class="eyebrow">OpenAI model research / 2026.09</div>
+      <header id="intro" class="hero" data-ui-id="hero">
         <h1>GPT-6.1 Sol 모델 선택 가이드</h1>
-        <p>Sol 6.0에서 무엇이 달라졌는지, 개발 작업에 필요한 성능·비용·긴 문맥 근거를 같은 평가 기준으로 비교합니다.</p>
-        <div class="hero-tags"><span>독립 평가: Artificial Analysis v4.3.2</span><span>가격·기능: OpenAI 공식 문서</span><span>전체 비교 43개 모델 설정</span></div>
+        <p><span class="purpose-label">목적</span> Sol 6.0 대비 성능·비용 변화와 개발 작업의 기본 모델 선택 근거 확인.</p>
       </header>
       <section id="summary" data-ui-id="summary">
-        <div class="section-head"><div><div class="kicker">01 / 개요</div><h2>핵심 요약</h2></div><div class="aside">밑줄 문구에 마우스를 올리면 비교 근거가 나옵니다</div></div>
+        <div class="section-head"><div><div class="kicker">01 / 개요</div><h2>핵심 요약</h2></div></div>
         <div class="overview">
           <p class="overview-lead"><strong>Sol 6.1의 성능 향상과 비용 절감</strong></p>
           <ul class="overview-list">
@@ -96,7 +115,6 @@
             <li><strong>더 좋은 성능</strong><span><button type="button" class="summary-tip" data-summary-tip="summary-intelligence-evidence">기존 Sol 대비 동일 추론 설정의 종합 성능 향상</button>. 단계적 작업 수행 지표의 개선.</span></li>
             <li><strong>기본 권장 설정</strong><span><button type="button" class="summary-tip" data-summary-tip="summary-default-evidence">Codex 기본 모델의 Sol 6.1 통일 권장</button>. 종합 점수·비용 기준, Astra xHigh 이하·Opus Medium 이하의 선택 근거 축소.</span></li>
           </ul>
-          <p class="overview-note">공개 종합 평가·과제당 비용에 근거한 운영 권장안. 앱 설정의 자동 변경과는 무관. 밑줄 문구에서 비교표 확인 가능.</p>
         </div>
         <template id="summary-default-evidence">
           <div class="tip-title">동일 종합 점수에서의 Sol 6.1 우선 선택 근거</div>
@@ -137,12 +155,11 @@
       </section>
 
       <section id="delta" data-ui-id="delta">
-        <div class="section-head"><div><div class="kicker">02 / 동일 추론 단계 비교</div><h2>Sol 6.0 → Sol 6.1</h2></div><div class="aside">같은 설정의 전후 행을 붙여 비교</div></div>
-        <p class="lead">각 추론 단계에서 이전 행은 연한 회색, 이후 행은 연한 파란색으로 표시했습니다. 점수와 비용뿐 아니라 성공률의 차이도 함께 볼 수 있습니다.</p>
-        <div class="row-legend" aria-label="비교 행 색상 설명"><span><i class="swatch before-swatch" aria-hidden="true"></i>비교 전 · GPT-6 Sol</span><span><i class="swatch after-swatch" aria-hidden="true"></i>비교 후 · GPT-6.1 Sol</span><span><i class="swatch peer-swatch" aria-hidden="true"></i>동급 종합 점수 비교 · Astra / Opus</span></div>
+        <div class="section-head"><div><div class="kicker">02 / 동일 추론 단계 비교</div><h2>Sol 6.0 vs Sol 6.1</h2></div></div>
+        <div class="row-legend" aria-label="비교 행 색상 설명"><span><i class="swatch before-swatch" aria-hidden="true"></i>비교 전 · GPT-6 Sol</span><span><i class="swatch after-swatch" aria-hidden="true"></i>비교 후 · GPT-6.1 Sol</span></div>
         <div class="panel"><div class="table-scroll before-after-scroll" role="region" aria-label="Sol 6.0과 Sol 6.1 동일 추론 단계의 전후 비교" tabindex="0"><table id="before-after-table">
           <caption class="sr-only">같은 추론 단계의 Sol 6.0과 6.1을 인접한 두 행으로 비교</caption>
-          <thead><tr><th scope="col">구분</th><th scope="col">모델</th><th scope="col">설정</th><th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis Intelligence Index v4.3.2의 종합 점수입니다. 높을수록 좋습니다.">AA Intelligence <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AutomationBench-AA. 도구를 사용해 여러 단계의 업무를 수행한 성공률입니다.">Automation <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA 모델 평가의 터미널 기반 기술 과제 성공률입니다. 코딩 에이전트 표와 실행 환경이 다릅니다.">AA Terminal 4.0 <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA Intelligence 과제 1건의 가중 평균 API 비용입니다. 실제 개발 작업의 고정 비용이 아닙니다.">AA Cost / task <span aria-hidden="true">ⓘ</span></span></th><th scope="col">변화</th></tr></thead>
+          <thead><tr><th scope="col">구분</th><th scope="col">모델</th><th scope="col">설정</th><th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis Intelligence Index v4.3.2의 종합 점수입니다. 높을수록 좋습니다.">AA Intelligence <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AutomationBench-AA. 도구를 사용해 여러 단계의 업무를 수행한 성공률입니다.">Automation <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA 모델 평가의 터미널 기반 기술 과제 성공률입니다. 코딩 에이전트 환경의 평가와 실행 조건이 다릅니다.">AA Terminal 4.0 <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA Intelligence 과제 1건의 가중 평균 API 비용입니다. 실제 개발 작업의 고정 비용이 아닙니다.">AA Cost / task <span aria-hidden="true">ⓘ</span></span></th><th scope="col">변화</th></tr></thead>
           <tbody>
               <tr class="row-before"><td><span class="phase-label before-label">비교 전</span></td><td class="model-name">GPT-6 Sol</td><td>Max</td><td>48</td><td>62%</td><td>44%</td><td>$1.06</td><td class="change-note">기존 기준</td></tr><tr class="row-after"><td><span class="phase-label after-label">비교 후</span></td><td class="model-name">GPT-6.1 Sol</td><td>Max</td><td class="value-emphasis">52</td><td class="value-emphasis">65%</td><td class="value-emphasis">56%</td><td class="value-emphasis">$0.72</td><td class="change-note">AA +4 · 비용 약 32% 절감</td></tr>
               <tr class="row-before"><td><span class="phase-label before-label">비교 전</span></td><td class="model-name">GPT-6 Sol</td><td>xHigh</td><td>44</td><td>62%</td><td>30%</td><td>$0.53</td><td class="change-note">기존 기준</td></tr><tr class="row-after"><td><span class="phase-label after-label">비교 후</span></td><td class="model-name">GPT-6.1 Sol</td><td>xHigh</td><td class="value-emphasis">51</td><td class="value-emphasis">67%</td><td class="value-emphasis">54%</td><td class="value-emphasis">$0.39</td><td class="change-note">AA +7 · 비용 약 26% 절감</td></tr>
@@ -151,15 +168,13 @@
               <tr class="row-before"><td><span class="phase-label before-label">비교 전</span></td><td class="model-name">GPT-6 Sol</td><td>Low</td><td>34</td><td>54%</td><td>9%</td><td>$0.13</td><td class="change-note">기존 기준</td></tr><tr class="row-after"><td><span class="phase-label after-label">비교 후</span></td><td class="model-name">GPT-6.1 Sol</td><td>Low</td><td class="value-emphasis">42</td><td class="value-emphasis">53%</td><td class="value-emphasis">31%</td><td class="value-emphasis">$0.13</td><td class="change-note">AA +8 · 비용 동일</td></tr>
           </tbody>
         </table></div></div>
-        <div class="callout green"><strong>공식 API 요금:</strong> 일반 입력 $2·출력 $10은 유지됐고, 캐시 입력은 $0.20 → $0.10 / 1M 토큰으로 낮아졌습니다. 6.1 Sol의 추론 설정은 Low~Max이며, none·minimal은 미지원입니다.</div>
       </section>
 
       <section id="comparison" data-ui-id="comparison">
-        <div class="section-head"><div><div class="kicker">03 / 전체 모델 비교</div><h2>전체 비교</h2></div><div class="aside">이전 38행 + GPT-6.1 Sol 5행</div></div>
-        <p class="lead">이전 Sol·Opus 가이드의 모델과 추론 단계를 모두 포함했습니다. 모델 칩으로 계열을 선택하면 해당 모델의 추론 단계가 함께 표시됩니다. 지표에 마우스를 올리거나 키보드로 초점을 맞추면 설명을 볼 수 있습니다.</p>
+        <div class="section-head"><div><div class="kicker">03 / 전체 모델 비교</div><h2>전체 비교표</h2></div></div>
         <div class="row-legend" aria-label="비교 행 색상 설명"><span><i class="swatch before-swatch" aria-hidden="true"></i>비교 전 · GPT-6 Sol</span><span><i class="swatch after-swatch" aria-hidden="true"></i>비교 후 · GPT-6.1 Sol</span><span><i class="swatch peer-swatch" aria-hidden="true"></i>동급 종합 점수 비교 · Astra / Opus</span><span><i class="swatch dominated-swatch" aria-hidden="true"></i>연한 회색 · 같은 계열 대안 대비 AA·비용 불리</span></div>
-        <p class="dominance-explanation">연한 회색 행: 같은 제작사/계열에서 <b>AA는 같거나 높고 비용은 같거나 낮은 대안</b>이 존재하며, 둘 중 하나는 더 좋은 설정. 비교 근거는 해당 행의 <b>모델명 툴팁</b>에서 확인 가능. 필터와 무관하게 전체 기록에서 판단하며, 모든 개별 지표의 열위를 뜻하지 않습니다.</p>
-        <noscript><p class="dominance-explanation">AA·비용 판단과 모델 필터를 보려면 JavaScript를 활성화해야 합니다. 원본 비교값은 아래 표에서 확인할 수 있습니다.</p></noscript>
+        <p class="dominance-explanation">회색 판정: 같은 제작사의 대안이 AA·비용 중 하나 이상 우위이고 나머지와 Context가 동등 이상인 경우. 개별 지표와 실제 개발 작업의 우열은 별도.</p>
+        <noscript><p class="dominance-explanation">AA·비용 판단과 행·열 필터를 보려면 JavaScript를 활성화해야 합니다. 원본 비교값은 아래 표에서 확인할 수 있습니다.</p></noscript>
         <div class="panel">
           <div class="filter-wrap"><div class="filter-label">보이는 모델</div><div class="chips" role="group" aria-label="비교 표에 보이는 모델 계열">
             <button class="chip" type="button" data-family="sol61" aria-pressed="true">GPT-6.1 Sol</button>
@@ -173,16 +188,39 @@
             <button class="chip" type="button" data-family="fable51" aria-pressed="true">Claude Fable 5.1</button>
             <button class="chip" type="button" data-family="opus5" aria-pressed="true">Claude Opus 5</button>
             <button class="chip" type="button" data-family="grok47" aria-pressed="true">Grok 4.7</button>
-          </div><div class="filter-status" id="filter-status" aria-live="polite">43 / 43개 행 표시 중</div></div>
+          </div>
+            <details class="column-filter" id="column-filter" data-ui-id="column-filter" hidden>
+              <summary>표시 지표</summary>
+              <fieldset class="column-options">
+                <legend class="sr-only">전체 비교표에 표시할 지표 선택</legend>
+                <label class="column-all"><input type="checkbox" id="column-all"> 전체 지표 선택</label>
+                <div class="column-grid">
+                  <label><input type="checkbox" data-column="aa" checked> AA Intelligence</label>
+                  <label><input type="checkbox" data-column="briefcase"> AA-Briefcase</label>
+                  <label><input type="checkbox" data-column="automation" checked> Automation</label>
+                  <label><input type="checkbox" data-column="terminal" checked> AA Terminal 4.0</label>
+                  <label><input type="checkbox" data-column="scicode"> SciCode</label>
+                  <label><input type="checkbox" data-column="cost" checked> AA Cost / task</label>
+                  <label><input type="checkbox" data-column="cursor"> CursorBench 4.0</label>
+                  <label><input type="checkbox" data-column="cursorCost"> Cursor Cost</label>
+                  <label><input type="checkbox" data-column="context" checked> Context</label>
+                  <label><input type="checkbox" data-column="meaning"> 비교 의미</label>
+                  <label><input type="checkbox" data-column="lcr" checked> AA-LCR</label>
+                </div>
+              </fieldset>
+            </details>
+            <div class="sr-only" id="filter-status" aria-live="polite"></div>
+            <div class="sr-only" id="column-status" aria-live="polite"></div>
+          </div>
           <div class="table-scroll" role="region" aria-label="전체 모델 비교 표. 가로와 세로로 스크롤할 수 있습니다." tabindex="0"><table id="comparison-table">
             <caption class="sr-only">이전 38개 모델 설정과 GPT-6.1 Sol 5개 설정. Opus 가이드의 전체 비교 항목을 모두 포함합니다.</caption>
-            <colgroup><col style="width:170px"><col style="width:76px"><col span="9"><col style="width:250px"><col style="width:85px"></colgroup>
+            <colgroup id="comparison-columns"><col data-column-key="model" style="width:170px"><col data-column-key="effort" style="width:76px"><col data-column-key="aa" style="width:90px"><col data-column-key="briefcase" style="width:110px"><col data-column-key="automation" style="width:110px"><col data-column-key="terminal" style="width:120px"><col data-column-key="scicode" style="width:90px"><col data-column-key="cost" style="width:105px"><col data-column-key="cursor" style="width:110px"><col data-column-key="cursorCost" style="width:100px"><col data-column-key="context" style="width:90px"><col data-column-key="meaning" style="width:230px"><col data-column-key="lcr" style="width:90px"></colgroup>
             <thead><tr>
               <th scope="col" class="model-cell">모델</th><th scope="col" class="effort-cell">추론 설정</th>
               <th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis Intelligence Index v4.3.2. 추론·지식·전문 업무·에이전트 평가 10종을 합친 종합 점수입니다. 높을수록 좋습니다.">AA<br>Intelligence <span aria-hidden="true">ⓘ</span></span></th>
               <th scope="col"><span class="tip" tabindex="0" data-tip="AA-Briefcase v1.1. 문서와 자료를 활용해 복잡한 업무 결과물을 만드는 평가의 Elo 점수입니다. 코드베이스 이해 점수와 같지 않습니다.">AA-Briefcase <span aria-hidden="true">ⓘ</span></span></th>
               <th scope="col"><span class="tip" tabindex="0" data-tip="AutomationBench-AA. 도구를 사용해 여러 단계 작업을 자율적으로 처리하는 성공률입니다. 실제 팀 업무의 독립 수행률과 동일하지 않습니다.">Automation <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis 모델 평가의 Terminal-Bench 4.0. 터미널·파일·도구를 활용한 다단계 기술 과제의 성공률입니다. 아래 코딩 에이전트 표와 실행 환경이 다릅니다.">AA Terminal<br>4.0 <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis 모델 평가의 Terminal-Bench 4.0. 터미널·파일·도구를 활용한 다단계 기술 과제의 성공률입니다. 코딩 에이전트 환경의 평가와 실행 조건이 다릅니다.">AA Terminal<br>4.0 <span aria-hidden="true">ⓘ</span></span></th>
               <th scope="col"><span class="tip" tabindex="0" data-tip="과학·기술 코딩 문제의 해결률입니다. 일반 소프트웨어 저장소의 구현·수정 능력과 다른 평가입니다.">SciCode <span aria-hidden="true">ⓘ</span></span></th>
               <th scope="col"><span class="tip" tabindex="0" data-tip="AA Intelligence Index 과제 1건의 가중 평균 API 비용입니다. 실제 개발 업무의 비용이나 API의 고정 요금이 아닙니다. 낮을수록 좋습니다.">AA Cost<br>/ task <span aria-hidden="true">ⓘ</span></span></th>
               <th scope="col"><span class="tip" tabindex="0" data-tip="Cursor 환경에서 실제 소프트웨어 개발 과제를 해결한 비율입니다. 동일 CursorBench 4.0 평가가 있는 행만 수치를 표시합니다.">CursorBench<br>4.0 <span aria-hidden="true">ⓘ</span></span></th>
@@ -237,92 +275,20 @@
               <tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>21</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.01</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Luna Low보다 비쌈</td><td class="not-recorded">미확인</td></tr>
             </tbody>
           </table></div>
-          <div class="table-foot">첨부 Opus 가이드의 12개 전체 비교 항목을 모두 보존하고 AA-LCR을 추가했습니다. 연한 회색 행은 AA·비용 기준의 대안 존재를 표시합니다. AA 평가 점수·Cost/task·CursorBench와 ‘비교 의미’는 이전 문서의 기록이며, 이전 권장 문구는 당시 기준의 설명입니다. GPT-6.1 Sol은 2026-09-30 확인값입니다. ‘미기록/미확인’은 이전 자료에 값이 없거나 검증하지 못한 항목이며 0점이 아닙니다. Opus 5.5 AA 값은 Adaptive Reasoning · Default Fallback 조건입니다.</div>
-        </div>
-        <div id="coding-agent" data-ui-id="coding-agent" class="subsection">
-          <h3>코딩 에이전트 비교</h3>
-          <p class="lead">DeepSWE·Agent Terminal·SWE-Atlas 등 이전 개발자 지표도 함께 보존했습니다. 이 표는 모델과 에이전트 실행 환경을 함께 측정한 결과이며, 위 AA 모델 평가와 성공률·비용의 기준이 다릅니다.</p>
-          <div class="panel"><div class="table-scroll agent-scroll" role="region" aria-label="코딩 에이전트 비교 표" tabindex="0"><table id="agent-table">
-            <caption class="sr-only">기존 코딩 에이전트 평가 9행과 GPT-6.1 Sol의 미확인 평가 항목</caption>
-            <thead><tr>
-              <th scope="col">모델 / 추론 / 에이전트</th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis Coding Agent Index. DeepSWE, Terminal-Bench 4.0, SWE-Atlas-QnA를 합친 코딩 에이전트 종합 점수입니다.">Coding Agent<br>Index <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="실제 저장소에서 기능 구현·버그 수정 등 긴 소프트웨어 개발 과제를 완료하는 비율입니다. 모델·에이전트·harness 조건을 함께 봐야 합니다.">DeepSWE <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="코딩 에이전트가 터미널·빌드·도구를 활용해 다단계 개발 작업을 끝낸 비율입니다. 위 AA Terminal과 다른 실행 환경입니다.">Agent Terminal<br>4.0 <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="큰 코드베이스의 구조·관계·동작을 이해하는 평가입니다. 코드 탐색과 해결 방향 판단의 참고 지표입니다.">SWE-Atlas-QnA <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="코딩 에이전트 작업 1건의 평균 실행 비용입니다. 위 AA 및 Cursor 과제당 비용과 서로 다른 기준입니다.">Agent Cost<br>/ task <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="코딩 에이전트 작업 1건을 처리하는 평균 활성 시간입니다.">Time / task <span aria-hidden="true">ⓘ</span></span></th>
-              <th scope="col"><span class="tip" tabindex="0" data-tip="코딩 에이전트 작업 1건에 사용한 평균 총 토큰량입니다.">Tokens / task <span aria-hidden="true">ⓘ</span></span></th>
-            </tr></thead><tbody>
-              <tr data-family="opus55" data-model="Claude Opus 5.5" data-effort="Max"><td class="model-cell"><span class="model-name">Claude Opus 5.5</span><small>Max · Claude Code</small></td><td>66</td><td>68%</td><td>63%</td><td>66%</td><td>$13.04</td><td>1.1h</td><td>15.6M</td></tr>
-              <tr data-family="astra" data-model="GPT-6 Astra" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6 Astra</span><small>Max · Codex</small></td><td>62</td><td>68%</td><td>56%</td><td>62%</td><td>$7.47</td><td>29.4m</td><td>3.3M</td></tr>
-              <tr data-family="fable51" data-model="Claude Fable 5.1" data-effort="Max"><td class="model-cell"><span class="model-name">Claude Fable 5.1</span><small>Max · Claude Code</small></td><td>62</td><td>64%</td><td>58%</td><td>65%</td><td>$12.39</td><td>34.8m</td><td>5.7M</td></tr>
-              <tr data-family="opus5" data-model="Claude Opus 5" data-effort="Max"><td class="model-cell"><span class="model-name">Claude Opus 5</span><small>Max · Claude Code</small></td><td>60</td><td>63%</td><td>55%</td><td>62%</td><td>$10.79</td><td>41.9m</td><td>11.4M</td></tr>
-              <tr data-family="sol60" data-model="GPT-6 Sol" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6 Sol</span><small>Max · Codex</small></td><td>57</td><td>69%</td><td>43%</td><td>58%</td><td>$2.99</td><td>22.3분</td><td>9.8M</td></tr>
-              <tr data-family="grok47" data-model="Grok 4.7" data-effort="xHigh"><td class="model-cell"><span class="model-name">Grok 4.7</span><small>xHigh · Grok Build</small></td><td>56</td><td>73%</td><td>33%</td><td>63%</td><td>$8.82</td><td>39.2분</td><td>14.3M</td></tr>
-              <tr data-family="sol56" data-model="GPT-5.6 Sol" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-5.6 Sol</span><small>Max · Codex</small></td><td>55</td><td>72%</td><td>37%</td><td>54%</td><td>$6.35</td><td>20.6분</td><td>10.2M</td></tr>
-              <tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span><small>Max · Codex</small></td><td>43</td><td>66%</td><td>15%</td><td>49%</td><td>$0.44</td><td>23.5분</td><td>14.9M</td></tr>
-              <tr data-family="luna6" data-model="GPT-6 Luna" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6 Luna</span><small>Max · Codex</small></td><td>41</td><td>64%</td><td>15%</td><td>44%</td><td>$0.18</td><td>21.4분</td><td>10.2M</td></tr>
-              <tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="Max" class="new-row"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <span class="new-label">신규</span><small>Max · 미확인</small></td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td></tr>
-              <tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="xHigh" class="new-row"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <span class="new-label">신규</span><small>xHigh · 미확인</small></td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td></tr>
-              <tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="High" class="new-row"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <span class="new-label">신규</span><small>High · 미확인</small></td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td></tr>
-              <tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="Medium" class="new-row"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <span class="new-label">신규</span><small>Medium · 미확인</small></td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td></tr>
-              <tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="Low" class="new-row"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <span class="new-label">신규</span><small>Low · 미확인</small></td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td></tr>
-            </tbody>
-          </table></div><div class="table-foot">모델 칩 선택이 이 표에도 적용됩니다. GPT-6.1 Sol의 동일 조건 코딩 에이전트 결과는 확인되지 않아 기존 Sol 값으로 채우지 않았습니다.</div></div>
+          <div class="table-foot">GPT-6.1 Sol은 2026-09-30 확인값, 기존 모델은 이전 조사 기록. 미확인·미측정은 0점이 아님. ‘비교 의미’는 이전 가이드의 설명 포함. Opus 5.5는 Adaptive Reasoning · Default Fallback 조건. AA·Cursor의 비용과 성공률은 서로 다른 평가 기준.</div>
         </div>
       </section>
 
-      <section id="developer" data-ui-id="developer">
-        <div class="section-head"><div><div class="kicker">04 / Developer lens</div><h2>개발자 관점에서 읽기</h2></div></div>
-        <div class="two-col">
-          <div class="panel detail"><h3>여러 단계 작업을 알아서 진행하는가 <span class="badge inference">간접 지표</span></h3><p>6.1 xHigh는 Sol 6.0 xHigh보다 AutomationBench가 62% → 67%, Terminal-Bench가 30% → 54%로 높습니다. 도구 사용과 단계적 실행의 개선 신호입니다. 다만 테스트 환경의 성공률이므로 실제 제품 업무의 독립 수행률로 치환할 수 없습니다.</p></div>
-          <div class="panel detail"><h3>대규모 코드베이스를 이해하는가 <span class="badge unknown">별도 검증 필요</span></h3><p>공식 컨텍스트는 1,050,000 토큰이지만 “많이 입력할 수 있음”과 “저장소 구조를 정확히 이해함”은 다릅니다. AA-LCR Max는 6.0의 84%에서 6.1의 83%로 소폭 낮습니다. 6.1의 동일 조건 DeepSWE·SWE-Atlas 결과를 확인하지 못했습니다.</p></div>
-          <div class="panel detail"><h3>어느 추론 단계부터 쓸까 <span class="badge inference">운영 가설</span></h3><p>일반 구현은 High부터, 어려운 디버깅·도구 연쇄 작업은 xHigh를 비교 출발점으로 제안합니다. 6.1 High → xHigh는 AA 점수 50 → 51, 작업당 비용 $0.32 → $0.39입니다. Max는 52 / $0.72로 점수 증가에 비해 비용 증가가 큽니다.</p></div>
-          <div class="panel detail"><h3>어떻게 팀에서 검증할까 <span class="badge inference">권장 절차</span></h3><ul><li>동일한 저장소·이슈·도구 권한으로 Sol 6.0과 6.1을 비교</li><li>첫 유효 패치까지 시간, 테스트 통과, 재작업, 실수 복구, 비용 기록</li><li>큰 코드베이스에서는 탐색 경로의 정확성과 잘못된 변경 범위 확인</li><li>Astra와 비교할 때는 품질뿐 아니라 과제당 총 비용도 함께 확인</li></ul></div>
-        </div>
-        <div class="callout"><strong>비교 주의:</strong> 이 표의 Terminal-Bench 4.0은 Artificial Analysis의 모델 평가입니다. Codex 또는 Claude Code에서 에이전트 전체를 측정한 Coding Agent Index, 다른 Terminal-Bench 실행 환경의 수치와 섞어 비교하면 안 됩니다.</div>
+      <section id="conclusion" data-ui-id="conclusion">
+        <div class="section-head"><div><div class="kicker">04 / 선택 기준</div><h2>결론</h2></div></div>
+        <ul class="conclusion-list">
+          <li><h3>신규 모델의 개선 수준</h3><p>기존 Sol 대비 동일 추론 설정에서 향상된 종합 성능과 같거나 낮은 비용. 기존 Sol Max와 같은 종합 점수를 Sol 6.1 Medium에서 약 80% 낮은 평가 과제당 비용으로 달성. 이전의 높은 추론 설정을 더 저렴한 설정으로 대체할 수 있는 선택지 확대.</p></li>
+          <li><h3>기존 모델의 선택 근거 축소</h3><p>Sol 6.0·5.6 Sol, Astra xHigh 이하, Opus 5.5 Medium 이하는 현재 비교표의 종합 점수·비용 기준에서 우선 선택 근거 축소. 같거나 더 높은 종합 점수를 더 낮은 비용으로 제공하는 Sol 6.1 설정의 존재.</p><p>기존 모델 자체의 성능 저하가 아닌, 더 효율적인 대안 등장에 따른 상대적 경쟁력 하락. 개별 지표나 작업 환경의 이점이 없다면 기존 설정을 유지할 이유 감소.</p></li>
+          <li><h3>앞으로의 모델 선택 기준</h3><p>기본 모델은 Sol 6.1로 통일하는 방향. 일반 개발은 High, 복잡한 작업은 xHigh, 추가 성능이 필요한 경우 Max 선택.</p><p>Astra Max·Opus High 이상은 Sol 6.1보다 높은 종합 성능이 필요한 작업에서 검토. Luna는 최저 비용이 우선인 작업에서 활용 여지 유지. 특정 작업의 실제 품질 차이는 사용 과제별 비교 필요. <a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol" target="_blank" rel="noopener noreferrer">OpenAI 공식 안내</a></p></li>
+        </ul>
+        <p class="conclusion-note">실제 코딩 에이전트 성능·작업 시간·도구 호환성은 이 표의 AA 종합 점수로 확정할 수 없는 항목. 위 설정은 문서의 운영 제안이며 앱/API 기본값을 변경하는 기능이 아님.</p>
       </section>
-
-      <section id="spec" data-ui-id="spec">
-        <div class="section-head"><div><div class="kicker">05 / Official specification</div><h2>모델·가격 정보</h2></div><div class="aside">OpenAI API 공식 문서 기준</div></div>
-        <div class="panel spec-grid">
-          <div class="spec"><div class="label">API 모델 ID</div><div class="text"><code>gpt-6.1-sol</code></div><small>Responses API에서 도구 호출 가능. Chat Completions는 도구 없이 사용.</small></div>
-          <div class="spec"><div class="label">추론 설정</div><div class="text">Low · Medium · High · xHigh · Max</div><small>Medium 기본값. none, minimal 미지원.</small></div>
-          <div class="spec"><div class="label">컨텍스트 / 최대 출력</div><div class="text">1,050,000 / 128,000 토큰</div><small>입력 272K 초과 시 해당 요청 전체에 장문맥 요금이 적용됩니다.</small></div>
-          <div class="spec"><div class="label">표준 짧은 문맥 요금 · 1M 토큰</div><div class="text">입력 $2 · 캐시 $0.10 · 출력 $10</div><small>캐시 쓰기 $2.50. 가격은 API 과금 기준입니다.</small></div>
-          <div class="spec"><div class="label">표준 긴 문맥 요금 · 1M 토큰</div><div class="text">입력 $4 · 캐시 $0.20 · 출력 $15</div><small>입력 272K 초과 요청. 캐시 쓰기 $5.</small></div>
-          <div class="spec"><div class="label">입출력 및 지식 기준</div><div class="text">텍스트·이미지 입력 / 텍스트 출력</div><small>오디오·비디오 미지원. 지식 기준일 2026-04-30.</small></div>
-        </div>
-        <p class="price-note">Fast는 Standard의 2배, Batch·Flex는 50% 수준입니다. 지역 처리 가산 및 도구 호출 비용은 사용 조건에 따라 별도 확인해야 합니다.</p>
-      </section>
-
-      <section id="sources" data-ui-id="sources">
-        <div class="section-head"><div><div class="kicker">06 / Evidence</div><h2>자료 기준</h2></div><div class="aside">2026-09-30 확인</div></div>
-        <div class="panel sources"><ol>
-          <li><a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol" target="_blank" rel="noopener noreferrer">OpenAI · GPT-6.1 Sol 모델 문서</a> <span class="source-context">— 기능, 컨텍스트, 추론 설정, 공식 단가</span></li>
-          <li><a href="https://developers.openai.com/api/docs/models/gpt-6-sol" target="_blank" rel="noopener noreferrer">OpenAI · GPT-6 Sol 모델 문서</a> <span class="source-context">— 6.0 캐시 요금 및 none 지원 여부</span></li>
-          <li><a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noopener noreferrer">OpenAI · API Pricing</a> <span class="source-context">— 짧은/긴 문맥 요금 구분</span></li>
-          <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-1-sol" target="_blank" rel="noopener noreferrer">Artificial Analysis · GPT-6.1 Sol release</a> <span class="source-context">— 다섯 effort의 Intelligence, Cost/task</span></li>
-          <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-sol" target="_blank" rel="noopener noreferrer">Artificial Analysis · GPT-6 Sol release</a> <span class="source-context">— 이전 모델의 같은 지표</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-vs-gpt-6-sol" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 Max vs 6.0 Max</a> <span class="source-context">— 세부 평가 항목</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-xhigh-vs-gpt-6-sol-xhigh" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 xHigh vs 6.0 xHigh</a> <span class="source-context">— 같은 effort 비교</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-high-vs-gpt-6-sol-high" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 High vs 6.0 High</a> <span class="source-context">— 세부 평가 항목</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-medium-vs-gpt-6-sol-medium" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 Medium vs 6.0 Medium</a> <span class="source-context">— 세부 평가 항목</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-low-vs-gpt-6-sol-low" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 Low vs 6.0 Low</a> <span class="source-context">— 세부 평가 항목</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-vs-gpt-6-astra" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 Max vs Astra Max</a> <span class="source-context">— 상위 모델 비교</span></li>
-          <li><a href="https://artificialanalysis.ai/models/comparisons/gpt-6-1-sol-vs-claude-opus-5-5" target="_blank" rel="noopener noreferrer">Artificial Analysis · 6.1 Max vs Opus 5.5 Max</a> <span class="source-context">— 별도 공급사 비교</span></li>
-          <li><a href="https://artificialanalysis.ai/models/releases/claude-opus-5-5" target="_blank" rel="noopener noreferrer">Artificial Analysis · Claude Opus 5.5</a> <span class="source-context">— 기존 전체 추론 단계</span></li>
-          <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-astra" target="_blank" rel="noopener noreferrer">Artificial Analysis · GPT-6 Astra</a> <span class="source-context">— 기존 전체 추론 단계</span></li>
-          <li><a href="https://artificialanalysis.ai/models/releases/gpt-6-luna" target="_blank" rel="noopener noreferrer">Artificial Analysis · GPT-6 Luna</a> <span class="source-context">— 기존 전체 추론 단계</span></li>
-          <li><a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex" target="_blank" rel="noopener noreferrer">Artificial Analysis · Coding Agent Index</a> <span class="source-context">— 에이전트 환경의 별도 비교</span></li>
-          <li><a href="https://prod.cursor.com/evals" target="_blank" rel="noopener noreferrer">Cursor · CursorBench 4.0</a> <span class="source-context">— 기존 Cursor 성능·비용 기록의 출처</span></li>
-          <li><a href="https://learn.chatgpt.com/guides/best-practices#strong-first-use-context-and-prompts" target="_blank" rel="noopener noreferrer">OpenAI · Codex Best practices</a> <span class="source-context">— 사용할 수 있다면 Sol 6.1과 클라이언트 기본 추론 설정부터 시작하고, 작업에 맞게 조정. 이 가이드의 High 권장안은 비교값을 바탕으로 한 별도 운영 제안입니다.</span></li>
-          <li>이전 가이드의 기록: Codex 6 모델 비교(2026-09-23), Claude Opus 5.5 모델 가이드(2026-09-28). 중복 행은 통합하고 각 문서에만 있던 모델 설정도 모두 포함했습니다.</li>
-          <li>GPT-5.6 Context 표기: <a href="https://developers.openai.com/api/docs/models/gpt-5.6-sol" target="_blank" rel="noopener noreferrer">Sol</a> · <a href="https://developers.openai.com/api/docs/models/gpt-5.6-terra" target="_blank" rel="noopener noreferrer">Terra</a> · <a href="https://developers.openai.com/api/docs/models/gpt-5.6-luna" target="_blank" rel="noopener noreferrer">Luna</a> 공식 문서의 1,050,000 토큰으로 통일했습니다.</li>
-        </ol></div>
-      </section>
-      <div class="footer"><span>자료분석 · GPT-6.1 Sol 모델 조사</span><span>기존 비교값 기록 · 2026.09.23 / 09.28 · Sol 6.1 추가 · 2026.09.30</span></div>
+      <div class="footer"><span>자료 확인 · 2026.09.30 · 기존 비교값 기록 2026.09.23 / 09.28</span><span><a href="https://artificialanalysis.ai/models/releases/gpt-6-1-sol" target="_blank" rel="noopener noreferrer">AA 평가</a> · <a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol" target="_blank" rel="noopener noreferrer">OpenAI 공식 문서</a> · <a href="https://prod.cursor.com/evals" target="_blank" rel="noopener noreferrer">Cursor 평가</a></span></div>
     </main>
   </div>
   <div id="metric-tooltip" class="tooltip-pop" role="tooltip" hidden></div>
@@ -331,7 +297,6 @@
     (function(){
       const chips=[...document.querySelectorAll('.chip[data-family]')];
       const rows=[...document.querySelectorAll('#comparison-table tbody tr[data-family]')];
-      const relatedRows=[...document.querySelectorAll('#agent-table tbody tr[data-family]')];
       const status=document.getElementById('filter-status');
       // AA·비용의 2축 열위 판단. 제작사와 에이전트 평가를 섞지 않는다.
       function comparisonNumber(text){
@@ -431,12 +396,56 @@
         const visible=new Set(chips.filter(chip=>chip.getAttribute('aria-pressed')==='true').map(chip=>chip.dataset.family));
         let count=0;
         rows.forEach(row=>{row.hidden=!visible.has(row.dataset.family);if(!row.hidden)count++;});
-        relatedRows.forEach(row=>{row.hidden=!visible.has(row.dataset.family);});
-        const dominatedVisible=rows.filter(row=>!row.hidden&&row.dataset.dominated==='true').length;
-        status.textContent=count+' / '+rows.length+'개 행 표시 중'+(count===0?' · 위에서 모델을 선택하세요':' · AA·비용 열위 '+dominatedVisible+'개');
+        status.textContent=count+'개 모델 설정 표시';
       }
       chips.forEach(chip=>chip.addEventListener('click',()=>{chip.setAttribute('aria-pressed',chip.getAttribute('aria-pressed')==='true'?'false':'true');render();}));
       render();
+
+      const comparisonTable=document.getElementById('comparison-table');
+      const columnHeaders=[...comparisonTable.querySelectorAll('thead th')];
+      const columnGroup=document.getElementById('comparison-columns');
+      const columnFilter=document.getElementById('column-filter');
+      const columnChoices=[...document.querySelectorAll('input[data-column]')];
+      const columnAll=document.getElementById('column-all');
+      const columnStatus=document.getElementById('column-status');
+      const columnDefinitions=[{"key":"model","label":"모델","width":170,"index":0},{"key":"effort","label":"추론 설정","width":76,"index":1},{"key":"aa","label":"AA Intelligence","width":90,"index":2},{"key":"briefcase","label":"AA-Briefcase","width":110,"index":3},{"key":"automation","label":"Automation","width":110,"index":4},{"key":"terminal","label":"AA Terminal 4.0","width":120,"index":5},{"key":"scicode","label":"SciCode","width":90,"index":6},{"key":"cost","label":"AA Cost / task","width":105,"index":7},{"key":"cursor","label":"CursorBench 4.0","width":110,"index":8},{"key":"cursorCost","label":"Cursor Cost","width":100,"index":9},{"key":"context","label":"Context","width":90,"index":10},{"key":"meaning","label":"비교 의미","width":230,"index":11},{"key":"lcr","label":"AA-LCR","width":90,"index":12}];
+      function updateStickyModelWidth(){
+        const width=columnHeaders[0].getBoundingClientRect().width;
+        if(width>0)comparisonTable.style.setProperty('--model-column-width',width+'px');
+      }
+      function renderColumns(){
+        const selected=new Set(columnChoices.filter(input=>input.checked).map(input=>input.dataset.column));
+        const visibleDefinitions=columnDefinitions.filter(definition=>definition.index<2||selected.has(definition.key));
+        columnDefinitions.forEach(definition=>{
+          const hidden=definition.index>=2&&!selected.has(definition.key);
+          columnHeaders[definition.index].hidden=hidden;
+          rows.forEach(row=>{row.cells[definition.index].hidden=hidden;});
+        });
+        // Hidden cells retain their original indices and values. Rebuild colgroup to avoid empty column slots.
+        columnGroup.replaceChildren(...visibleDefinitions.map(definition=>{
+          const col=document.createElement('col');
+          col.dataset.columnKey=definition.key;
+          col.style.width=definition.width+'px';
+          return col;
+        }));
+        comparisonTable.style.minWidth=visibleDefinitions.reduce((total,definition)=>total+definition.width,0)+'px';
+        columnAll.checked=selected.size===columnChoices.length;
+        columnAll.indeterminate=selected.size>0&&selected.size<columnChoices.length;
+        columnStatus.textContent=visibleDefinitions.length+'개 열 표시';
+        updateStickyModelWidth();
+      }
+      columnFilter.hidden=false;
+      columnChoices.forEach(input=>input.addEventListener('change',()=>{renderColumns();tooltip.hidden=true;hideSummary();}));
+      columnAll.addEventListener('change',()=>{
+        columnChoices.forEach(input=>{input.checked=columnAll.checked;});
+        renderColumns();tooltip.hidden=true;hideSummary();
+      });
+      columnFilter.addEventListener('keydown',event=>{
+        if(event.key==='Escape'){columnFilter.open=false;columnFilter.querySelector('summary').focus();}
+      });
+      window.addEventListener('resize',updateStickyModelWidth);
+      if('ResizeObserver' in window){const observer=new ResizeObserver(updateStickyModelWidth);observer.observe(comparisonTable);}
+      renderColumns();
       const tooltip=document.getElementById('metric-tooltip');
       function showTip(el){
         tooltip.textContent=el.dataset.tip;
@@ -519,7 +528,7 @@
       },true);
       window.addEventListener('resize',hideSummary);
       const links=[...document.querySelectorAll('.side a[href^="#"]')];
-      if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.filter(entry=>entry.isIntersecting).forEach(entry=>{links.forEach(link=>link.classList.toggle('active',link.getAttribute('href')==='#'+entry.target.id));});},{rootMargin:'-20% 0px -65% 0px'});document.querySelectorAll('main section[id], #coding-agent').forEach(section=>observer.observe(section));}
+      if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.filter(entry=>entry.isIntersecting).forEach(entry=>{links.forEach(link=>link.classList.toggle('active',link.getAttribute('href')==='#'+entry.target.id));});},{rootMargin:'-20% 0px -65% 0px'});document.querySelectorAll('main > header[id], main > section[id]').forEach(section=>observer.observe(section));}
     })();
   </script>
 </body>
