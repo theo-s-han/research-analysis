@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>월 $200, 코딩 작업량 비교</title>
+<style>
+:root{color-scheme:light;--ink:#26313d;--muted:#606b78;--line:#dce1e6;--accent:#48657b;--claude:#f0f5f2;--old:#eef3f8;--new:#f4f1ec;--history:#f1f2f3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:28px}
+body{margin:0;background:#f5f6f7;color:var(--ink);font-family:"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere}
+a{color:#3e607b;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible,.scroll:focus-visible{outline:2px solid #526d84;outline-offset:4px}
+.skip{position:absolute;left:16px;top:-70px;padding:8px 16px;background:white;z-index:10}.skip:focus{top:12px}
+.report{max-width:1120px;margin:30px auto 60px;background:white;padding:44px 56px 54px}
+header{padding-bottom:24px;border-bottom:1px solid var(--line)}
+.date{margin:0 0 12px;color:var(--muted);font-size:13px}
+h1{margin:0 0 16px;font-size:32px;line-height:1.4;letter-spacing:-.04em;font-weight:700}
+.purpose{margin:0;max-width:850px;color:#525e6b}
+nav{display:flex;flex-wrap:wrap;gap:6px 24px;padding:17px 0 0;font-size:14px}
+nav a{text-decoration:none;color:#53616e}nav a:hover{text-decoration:underline}
+section{margin-top:38px;min-width:0}
+h2{font-size:23px;line-height:1.5;letter-spacing:-.03em;margin:0 0 18px}
+h3{font-size:17px;margin:28px 0 12px;line-height:1.6}
+p{margin:10px 0}
+.overview{list-style:none;margin:0;padding:0}
+.overview li{padding:12px 0;border-bottom:1px solid #e8ebee;display:grid;grid-template-columns:155px 1fr;gap:18px}
+.overview li:first-child{padding-top:0}.overview li:last-child{border-bottom:0}
+.overview strong{font-weight:650}
+.note{font-size:13px;color:var(--muted);line-height:1.7}
+.boundary{margin:20px 0;padding:12px 16px;background:#f5f6f7;border-left:3px solid #a4afb8;font-size:14px}
+.scroll{max-width:100%;overflow-x:auto;margin:12px 0;overscroll-behavior-x:contain}
+table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.65}
+caption{text-align:left;font-weight:600;color:#53616e;font-size:13px;padding:0 0 10px}
+th,td{padding:11px 13px;text-align:left;border-bottom:1px solid #e1e5e9;vertical-align:top}
+thead th{background:#f6f7f8;border-top:1px solid #bac4cc;border-bottom:1px solid #bac4cc;color:#495766;font-weight:600;white-space:nowrap}
+tbody th{font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.policy{min-width:660px}.capacity{min-width:830px}.benchmark{min-width:950px}.planning{min-width:860px}
+.claude>*{background:var(--claude)}.old>*{background:var(--old)}.new>*{background:var(--new)}.history>*{background:var(--history)}
+.legend{margin:10px 0 16px;color:var(--muted);font-size:12px}
+.legend span{display:inline-flex;align-items:center;margin:0 20px 6px 0}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:6px;border:1px solid #d3d9df}
+.metric{border:0;border-bottom:1px dotted #778694;background:transparent;padding:0;font:inherit;color:inherit;cursor:help;white-space:nowrap}
+.metric-info{inset:auto auto 24px 50%;transform:translateX(-50%);width:min(610px,calc(100vw - 32px));max-height:45vh;overflow:auto;margin:0;padding:16px 20px;border:1px solid #b9c3cc;border-radius:6px;box-shadow:0 8px 26px #26313d20;background:#fff;color:var(--ink);font:14px/1.75 "Segoe UI","Malgun Gothic",sans-serif}
+.metric-info strong{display:block;font-size:15px;margin-bottom:6px}
+details{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:24px 0;padding:14px 0}
+summary{font-weight:600;font-size:14px;cursor:pointer;list-style-position:outside;margin-left:17px}
+details[open]>summary{margin-bottom:16px}
+.sources{padding-left:20px;font-size:13px;color:var(--muted)}
+.sources li{margin:9px 0}
+.conclusion dl{margin:0}.conclusion dt{font-weight:650;margin:20px 0 6px}.conclusion dd{margin:0}
+footer{margin-top:42px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.matrix{min-width:710px;table-layout:fixed}.matrix th:first-child{width:190px}
+.matrix .model-claude{background:var(--claude)}.matrix .model-codex{background:var(--old)}
+.decision-table{min-width:650px}
+.policy-first h1{max-width:730px}.policy-first .report{max-width:1120px}
+.policy-first .lede{font-size:18px;color:#334454;margin:22px 0 0;padding-left:18px;border-left:3px solid #8194a3}
+.findings{display:grid;grid-template-columns:155px minmax(0,1fr);column-gap:22px}
+.findings dt{font-weight:650;padding:15px 0;border-bottom:1px solid #e3e7eb}
+.findings dd{margin:0;padding:15px 0;border-bottom:1px solid #e3e7eb}
+@media(max-width:740px){body{font-size:14px}.report{margin:0;padding:28px 20px 38px}h1{font-size:26px}h2{font-size:21px}.overview li{display:block;padding:14px 0}.overview strong{display:block;margin-bottom:5px}nav{gap:8px 18px}section{margin-top:30px}.findings{display:block}.findings dt{border-bottom:0;padding-bottom:0}.findings dd{padding-top:5px}.metric-info{bottom:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{body{background:#fff;font-size:11pt}.report{margin:0;padding:0;max-width:none}nav,.skip,.metric-info{display:none}.scroll{overflow:visible}table{min-width:0!important;font-size:9pt}th,td{padding:6px}section{break-inside:auto}tr{break-inside:avoid}h2,h3{break-after:avoid}.metric{border:0}a{color:inherit}details{display:block}details:not([open])>*:not(summary){display:block}}
+#data .workload-table{min-width:530px;table-layout:fixed;font-size:15px}
+#data .workload-table th:first-child{width:33%}
+#data .workload-table th:nth-child(2){width:37%}
+#data .workload-table th:last-child{width:30%}
+#data .workload-table tbody th,#data .workload-table tbody td{padding-top:18px;padding-bottom:18px;vertical-align:middle}
+#data .workload-value{font-size:23px;font-weight:650;line-height:1.45;font-variant-numeric:tabular-nums}
+#data .workload-value .unit{font-size:13px;font-weight:400;margin-left:6px}
+@media(max-width:740px){#data .workload-table{font-size:14px}#data .workload-value{font-size:21px}}
+@media print{#data .workload-value{font-size:12pt}#data .workload-table{font-size:10pt}}
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">본문으로</a>
+<main id="main" class="report">
+<header data-ui-id="title-purpose">
+<p class="date">조사 기준 · 2026.09.30 · 추가 과금 제외</p>
+<h1>월 $200, 코딩 작업량 비교</h1>
+<p class="purpose">Claude Max 20X, 기존 Codex 20X, 변경 후 Codex 10X의 포함 사용량 비교. 월 구독료만으로 가능한 작업량을 검토하되, 공식 정책·실사용 기록·월 환산 계산을 구분.</p>
+<nav aria-label="보고서 목차"><a href="#summary">요약</a><a href="#data">데이터</a><a href="#conclusion">결론</a></nav>
+</header>
+<section id="summary" data-ui-id="summary">
+<h2>핵심 요약</h2>
+<ul class="overview">
+<li><strong>Codex 한도 축소</strong><span>같은 모델·추론 설정·차감 방식이라면 <strong>20X → 10X 전환 후 처리 가능한 작업량은 약 절반</strong>. 현재 주간 한도의 절반 이하를 쓰는 경우, 기존 일감 유지 가능성.</span></li>
+<li><strong>Claude와의 차이</strong><span>Claude는 <strong>5시간·주간 한도</strong>, Codex Pro는 <strong>주간 한도 중심</strong>. Claude의 20X와 Codex의 20X는 서로 다른 기준으로, 동일 작업량을 의미하지 않는 배수.</span></li>
+<li><strong>모델 선택의 영향</strong><span>Sol·Astra·Opus 선택과 추론 설정에 따른 소모량 차이. 새 Sol 6.1은 코딩 벤치마크의 성능·API 비용 효율 개선. <strong>10X에서도 월 작업량을 얼마나 확보할지는 실제 구독 차감량 확인 필요</strong>.</span></li>
+<li><strong>달러 환산의 의미</strong><span>포함 사용량을 API 정가 기준으로 환산한 참고값. <strong>구독료·현금 잔액·보장 한도와는 별개의 값</strong>이며, 모델 단가가 달라 금액만으로 실제 작업량 비교 불가.</span></li>
+</ul>
+</section>
+<section id="data" data-ui-id="data">
+<h2>비교 데이터</h2>
+<div class="scroll" tabindex="0" role="region" aria-label="월 200달러 구독의 API 환산액 비교">
+<table class="workload-table" data-ui-id="monthly-table">
+<caption>월 구독료 $200 · API 정가 기준 월 환산액 추정 (USD)</caption>
+<thead><tr>
+<th scope="col">구독</th>
+<th scope="col">사용 모델·설정</th>
+<th scope="col" class="num"><button class="metric" type="button" popovertarget="def-monthly" aria-describedby="def-monthly">월 API 환산액</button></th>
+</tr></thead>
+<tbody>
+<tr class="claude" data-monthly="claude">
+<th scope="row">Claude Max 20X</th><td>Opus 5.5 중심</td>
+<td class="num"><button class="metric workload-value" type="button" popovertarget="def-monthly-claude" aria-describedby="def-monthly-claude">약 $9,400</button></td>
+</tr>
+<tr class="old" data-monthly="codex20">
+<th scope="row">Codex 기존 20X</th><td>GPT-6 Sol · Max</td>
+<td class="num"><button class="metric workload-value" type="button" popovertarget="def-monthly-codex20" aria-describedby="def-monthly-codex20">약 $6,700</button></td>
+</tr>
+<tr class="new" data-monthly="codex10">
+<th scope="row">Codex 변경 후 10X</th><td>GPT-6 Sol · Max</td>
+<td class="num"><button class="metric workload-value" type="button" popovertarget="def-monthly-codex10" aria-describedby="def-monthly-codex10">약 $3,300</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="note" data-ui-id="comparison-warning">구독료·현금 잔액·보장 한도 아님. Claude 요금제 미확정·Codex 간접 추정. 모델 단가가 달라 금액만으로 실제 작업량 비교 불가.</p>
+<details data-ui-id="sources">
+<summary>출처</summary>
+<ol class="sources">
+<li><a href="https://www.remakebench.com/capacity/plans/claude-max-20x">RemakeBench · Claude 사용량 기록</a> — 18과제·24실행. 자료의 요금제 표기는 “Pro”로, Max 20X 소속 미확정.</li>
+<li><a href="https://www.remakebench.com/capacity/plans/openai-pro-20x">RemakeBench · Codex 사용량 기록</a> — 18과제 중 기록된 17실행. 주간 차감률은 간접 추정.</li>
+<li><a href="https://help-lb.openai.com/en/articles/9793128-about-chatgpt-pro-tiers">OpenAI · Pro 전환 안내</a> / <a href="https://learn.chatgpt.com/docs/pricing#what-are-the-usage-limits-for-my-plan">Codex 공식 사용량 안내</a> — 포함 한도 축소, 주간 제한 및 모델별 차감 조건.</li>
+<li><a href="https://www.tradethenews.com/tweet?id=55254">포함 사용량 축소 관련 발언 기록</a> — 이번 10X 계산의 50% 한도 가정. 변경 후 모델별 실측 아님.</li>
+<li><a href="https://support.claude.com/en/articles/11049741-what-is-the-max-plan">Claude · Max 공식 안내</a> / <a href="https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan">Claude Code 한도</a> — $200 Max 20X의 세션·주간 제한과 사용량 공유.</li>
+<li><a href="https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex">Artificial Analysis · 코딩 에이전트 평가</a> — 결론의 코딩 성능·API 비용 비교 근거. 구독 작업량과 별도 평가.</li>
+</ol>
+</details>
+</section>
+<section id="conclusion" class="conclusion" data-ui-id="conclusion">
+<h2>결론</h2>
+<dl>
+<dt>기존 Codex 20X의 여유 감소</dt>
+<dd>20X와 10X를 비교할 때 가장 직접적인 판단 기준은 현재 주간 사용률. 같은 조건에서 20X의 한도를 매주 다 쓰는 사용자는 10X에서 같은 일감을 약 절반까지만 처리 가능한 시나리오. 반대로 현재 절반 이하를 쓰는 사용자는 한도 변경 후에도 일감 유지 가능성.</dd>
+<dt>변경 후 Codex 10X의 모델 선택</dt>
+<dd>Sol 6.1은 이전 Sol보다 같은 Max 설정에서 코딩 종합 점수가 높고 API 비용은 낮은 결과. 일상적인 개발 작업의 사용 후보이지만, API 비용 약 48% 감소가 구독 차감량 약 48% 감소를 보장하지는 않음. Astra 중심 사용자의 월 용량이나 6.1 전환 효과를 Sol 6의 관측값으로 대신 판단하지 않음.</dd>
+<dt>Claude Max 20X의 사용성</dt>
+<dd>이번 Max 벤치마크에서는 Opus 5.5의 코딩 종합 점수가 가장 높음. 다만 고난도 과제의 긴 추론·재시도에 따른 소모가 큰 사례도 존재하며, 5시간 제한과 주간 제한을 함께 고려할 필요. “$200이므로 한 달 내내 제한 없이 사용” 또는 “20X이므로 Codex 20X와 같은 양”이라는 해석은 부적절.</dd>
+<dt>월 업무량에 대한 최종 판단</dt>
+<dd>현재 공개 자료만으로 세 구독의 월 PR·기능·이슈 완료 개수를 확정할 수 없음. API 환산액은 포함 사용량을 API 정가로 환산한 참고값일 뿐. 현재 20X 계정에서 대표적인 일주일의 완료 작업과 주간 차감률을 확인하고, 10X는 동일 조건의 차감률 약 두 배를 적용해 필요한 업무량과 비교하는 방식이 가장 직접적인 판단 기준.</dd>
+</dl>
+</section>
+<footer>2026-09-30 기준 · 정책은 변경 가능 · 공식 조건과 단일 사례의 추정 분리</footer>
+</main>
+<div id="def-monthly" class="metric-info" popover role="tooltip"><strong>월 API 환산액 (USD)</strong>관측 토큰 사용량을 해당 모델의 API 정가로 환산한 비공식 주간 추정치 × 평균 월 4.348주. 별도로 측정한 월 한도나 제공자가 보장한 quota가 아님. 실제 청구액·크레딧 잔액·환급액이 아니며, 금액이 높다고 더 많은 실무 작업을 완료한다는 뜻도 아님. 표는 $100 단위로 반올림.</div>
+<div id="def-monthly-claude" class="metric-info" popover role="tooltip"><strong>Claude · 월 약 $9,400</strong>자료상 주간 API 환산 추정액 $2,155 × 4.348주 = $9,369.94 → 약 $9,400. 단일 계정·일부 주간 사용의 외삽. 자료는 Max 20X로 게시됐지만 실제 plan 문자열은 “Pro”로, Max 20X 소속 미확정. 확인된 Max 20X의 보장 한도가 아님. 모델 구성·API 가격·캐시에 따라 환산값 변화. <a href="https://www.remakebench.com/capacity/plans/claude-max-20x">관측 자료</a></div>
+<div id="def-monthly-codex20" class="metric-info" popover role="tooltip"><strong>기존 Codex 20X · 월 약 $6,700</strong>GPT-6 Sol Max의 추정 주간 API 환산액 $1,532 × 4.348주 = $6,661.14 → 약 $6,700. 기록·7일 사용량·크레딧 가중치를 결합한 간접 추정으로, 제공자가 공개한 고정 한도나 직접 측정한 월 사용량이 아님. GPT-6.1 Sol의 용량으로 대입 불가. <a href="https://www.remakebench.com/capacity/plans/openai-pro-20x">관측 자료</a></div>
+<div id="def-monthly-codex10" class="metric-info" popover role="tooltip"><strong>변경 후 Codex 10X · 월 약 $3,300</strong>기존 대비 포함 한도 50%, 같은 GPT-6 Sol Max·차감 방식이라는 가정. $1,532 × 0.5 = 주간 $766, $766 × 4.348주 = $3,330.57 → 약 $3,300. 변경 후 실측이 아닌 계산 시나리오. 반올림 전에는 기존 값의 정확히 절반. GPT-6.1 Sol의 효율 개선이나 추가 크레딧은 미반영.</div>
+<script>
+document.querySelectorAll('.metric').forEach(button=>{
+  const info=document.getElementById(button.getAttribute('popovertarget'));
+  if(!info||typeof info.showPopover!=='function')return;
+  let timer;
+  const show=()=>{clearTimeout(timer);if(!info.matches(':popover-open'))info.showPopover()};
+  const hide=()=>{clearTimeout(timer);timer=setTimeout(()=>{if(document.activeElement!==button&&!info.matches(':hover')&&info.matches(':popover-open'))info.hidePopover()},180)};
+  button.addEventListener('mouseenter',show);button.addEventListener('mouseleave',hide);
+  button.addEventListener('focus',show);button.addEventListener('blur',hide);
+  info.addEventListener('mouseenter',()=>clearTimeout(timer));info.addEventListener('mouseleave',hide);
+});
+</script>
+</body>
+</html>

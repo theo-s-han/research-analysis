@@ -1,4 +1,12 @@
 {
+  "Codex_vs_Claude_200USD_Capacity_Report.html": {
+    "slug": "codex-claude-200usd-capacity-report",
+    "title": "월 $200, 코딩 작업량 비교",
+    "description": "Claude Max 20X와 Codex 20X·10X의 사용량을 월 API 환산액으로 비교하고, 추정 조건과 실제 작업량 판단의 한계를 정리합니다.",
+    "category": "업무 활용",
+    "tags": ["Codex", "Claude", "사용량 비교"],
+    "referenceDate": "2026-09-30"
+  },
   "GPT_6_1_Sol_Model_Guide.html": {
     "slug": "gpt-6-1-sol-model-guide",
     "title": "GPT-6.1 Sol 모델 선택 가이드",
