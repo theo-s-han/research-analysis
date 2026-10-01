@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Gemini 4 Argon 모델 분석</title><meta name="description" content="Gemini 4 Argon의 성능·출시 할인·제한 공개 분석과 기존 모델 비교.">
+  <style>
+    :root{--ink:#25303d;--ink-soft:#596473;--line:#e0e4e9;--paper:#f6f7f9;--white:#fff;--green:#45648a;--green-dark:#344f73;--mint:#f1f4f8;--amber:#657284;--amber-bg:#f4f5f7;--shadow:none}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI","Malgun Gothic","맑은 고딕",Arial,sans-serif;line-height:1.7;font-size:14px}a{color:#3d5b81;text-underline-offset:3px}a:hover{color:#223f65}button{font:inherit}::selection{background:#dce6f3}[hidden]{display:none!important}
+    .masthead{background:#fff;border-bottom:1px solid var(--line)}.mast-inner{max-width:1520px;margin:auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:14px;font-weight:700}.mast-meta{font-size:12px;color:#687383}
+    .shell{max-width:1520px;margin:auto;padding:28px 32px 64px;display:grid;grid-template-columns:170px minmax(0,1fr);gap:32px}.side{position:sticky;top:22px;align-self:start;padding:14px 0}.side-label{font-size:11px;font-weight:700;color:#7b8592;letter-spacing:.08em;margin:0 0 12px}.side a{display:block;padding:8px 10px;margin:3px 0;border-left:2px solid transparent;color:#626d7b;text-decoration:none;font-size:13px}.side a:hover,.side a.active{color:#334f75;background:#eceff4;border-left-color:#6883a8}.side-note{border-top:1px solid var(--line);margin-top:18px;padding-top:15px;font-size:11px;color:#7a8490;line-height:1.65}
+    main{min-width:0}.hero{border:1px solid var(--line);border-radius:8px;background:#fff;padding:30px 34px;box-shadow:none}.hero:after{display:none}.eyebrow{font-size:11px;letter-spacing:.06em;color:#6c7786;font-weight:600}.eyebrow:before{display:none}.hero h1{font-size:32px;line-height:1.3;letter-spacing:-.045em;margin:10px 0 12px;font-weight:700;color:#273649}.hero p{font-size:14px;max-width:800px;margin:0;color:#637080}.hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.hero-tags span{border:1px solid #e1e5eb;border-radius:4px;padding:3px 9px;font-size:11px;color:#6b7684;background:#f9fafb}
+    .stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.stat{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 19px}.stat-label{font-size:12px;color:#657081;font-weight:600}.stat strong{display:block;font-size:25px;line-height:1.3;margin:6px 0;color:#354b67;font-weight:650;font-variant-numeric:tabular-nums}.stat small{font-size:11px;color:#788392}.stat:last-child strong{font-size:23px}
+    section{scroll-margin-top:24px;margin-top:34px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;border-bottom:1px solid #dce1e7;padding-bottom:12px;margin-bottom:16px}.kicker{font-size:11px;color:#788492;font-weight:600;letter-spacing:.05em}.section-head h2{font-size:22px;line-height:1.35;margin:3px 0 0;letter-spacing:-.025em;font-weight:700}.aside{font-size:12px;color:#798391}.lead{font-size:13px;color:#606d7c;margin:0 0 16px;line-height:1.75}.panel{background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden;box-shadow:none}
+    .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.summary-card{border:1px solid var(--line);border-radius:6px;padding:19px;background:#fff}.summary-card .number{font-size:11px;color:#7b8795;font-weight:700}.summary-card h3{margin:8px 0;font-size:16px;letter-spacing:-.02em}.summary-card p{font-size:13px;color:#616d7c;margin:0}.summary-card.warn{background:#fff;border-color:var(--line)}.summary-card.warn .number{color:#7b8795}
+    .delta-grid{display:grid;grid-template-columns:repeat(3,1fr)}.delta{padding:20px 22px;border-right:1px solid var(--line)}.delta:last-child{border:0}.delta .small{font-size:12px;color:#6a7686}.delta .value{font-size:23px;font-weight:650;color:#3d5574;margin:6px 0;font-variant-numeric:tabular-nums}.delta p{font-size:12px;color:#687484;margin:0}
+    .callout,.callout.green{border-left:3px solid #9daabd;background:#eef1f5;padding:14px 17px;border-radius:0 4px 4px 0;font-size:13px;color:#596777;margin-top:16px}.callout strong,.callout.green strong{color:#36465c}
+    .filter-wrap{padding:16px 18px 12px;background:#fff;border-bottom:1px solid var(--line)}.filter-label{font-size:12px;font-weight:700;color:#586576;margin-bottom:9px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid #d9dfe7;border-radius:5px;background:#fff;color:#788392;padding:6px 10px;font-size:12px;cursor:pointer;transition:background .12s}.chip:hover{background:#f4f6f9;color:#405674;border-color:#abb9cc}.chip[aria-pressed="true"]{background:#edf1f6;color:#3b526f;border-color:#aab9cd;font-weight:600}.chip:focus-visible,.table-scroll:focus-visible{outline:2px solid #5d7ba3;outline-offset:3px}.filter-status{font-size:11px;color:#7c8693;margin-top:9px}
+    .table-scroll{overflow:auto;max-width:100%;max-height:760px;scrollbar-color:#cbd2db #f6f7f9;scrollbar-width:thin}.table-scroll table{min-width:1300px}.agent-scroll table{min-width:980px}.agent-scroll{max-height:590px}table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;white-space:nowrap}thead th{position:sticky;top:0;z-index:2;background:#f3f5f8;color:#536174;font-size:11px;font-weight:650;text-align:right;padding:12px 13px;border-bottom:1px solid #d6dde6;vertical-align:middle;line-height:1.5}td{padding:11px 13px;text-align:right;border-bottom:1px solid #e9edf1;font-variant-numeric:tabular-nums;background:#fff;color:#354253}tbody tr:nth-child(even) td{background:#fcfcfd}tbody tr:hover td{background:#f1f4f8}tr:last-child td{border-bottom:0}
+    th:first-child,td:first-child{text-align:left;position:sticky;left:0;z-index:1;min-width:170px;max-width:170px;border-right:1px solid #e4e8ee}thead th:first-child{z-index:4;background:#f3f5f8}.effort-cell{position:sticky;left:170px;z-index:1;text-align:left;min-width:76px;max-width:76px;border-right:1px solid #e4e8ee}thead .effort-cell{z-index:4;background:#f3f5f8}.model-name{font-weight:650;color:#33445a}.model-cell small{display:block;font-size:10px;font-weight:400;color:#798494;margin-top:2px}.new-label{display:inline-block;border:1px solid #bdcadc;border-radius:3px;padding:0 4px;font-size:9px;font-weight:600;color:#607aa0;line-height:1.55;margin-left:4px}.new-row td:first-child{border-left:3px solid #879db9;padding-left:10px}.not-recorded{color:#919ba8;font-size:11px}.table-foot{padding:12px 18px;border-top:1px solid var(--line);font-size:11px;line-height:1.7;color:#778391;background:#fff}.subsection{margin-top:26px;scroll-margin-top:22px}.subsection h3{font-size:17px;margin:0 0 8px;letter-spacing:-.025em}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .tip{border-bottom:1px dotted #a9b5c5;cursor:help;display:inline-block}.tip>span{font-size:10px;color:#8b98aa}.tip:focus{outline:2px solid #6f89ad;outline-offset:3px}.tooltip-pop{position:fixed;z-index:1000;max-width:min(320px,calc(100vw - 24px));background:#fff;color:#445369;border:1px solid #ccd5e0;border-radius:5px;padding:11px 13px;font-size:12px;line-height:1.65;text-align:left;font-weight:400;pointer-events:none;box-shadow:0 5px 18px rgba(34,49,72,.12)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px}.detail{padding:21px 23px}.detail h3{font-size:15px;margin:0 0 10px;letter-spacing:-.02em}.detail p,.detail li{font-size:13px;color:#657182}.detail p{margin:0}.detail ul{padding-left:19px;margin:8px 0 0}.detail li{margin:4px 0}.badge{display:inline-block;padding:1px 5px;border:1px solid #d5dce6;border-radius:3px;font-size:10px;font-weight:600;margin-left:5px;vertical-align:1px;color:#758294;background:#f6f8fa}.badge.fact,.badge.inference,.badge.unknown{color:#687a91;background:#f6f8fa}
+    .spec-grid{display:grid;grid-template-columns:repeat(2,1fr)}.spec{padding:17px 20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.spec:nth-child(even){border-right:0}.spec:nth-last-child(-n+2){border-bottom:0}.spec .label{font-size:11px;color:#768392;font-weight:600}.spec .text{font-size:14px;font-weight:600;margin-top:4px;color:#40536e}.spec small{display:block;font-size:11px;color:#7c8795;line-height:1.6;margin-top:4px}.price-note{font-size:11px;color:#778392;margin-top:12px}.sources{padding:21px 24px}.sources ol{margin:0;padding-left:20px}.sources li{margin:8px 0;font-size:12px;color:#6a7787}.sources a{font-weight:600}.source-context{font-size:11px;color:#8a94a1}.footer{margin-top:32px;border-top:1px solid var(--line);padding-top:14px;color:#85909e;font-size:11px;display:flex;justify-content:space-between;gap:15px}
+    @media(max-width:1100px){.shell{display:block;padding:22px}.side{position:static;display:flex;gap:4px;overflow:auto;white-space:nowrap;padding:0 0 16px}.side-label,.side-note{display:none}.side a{border-left:0;border-bottom:2px solid transparent;flex:none}.side a.active{border-bottom-color:#7892b4}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:680px){.mast-inner{padding:13px 16px;gap:10px}.mast-meta{font-size:10px}.shell{padding:15px 12px 40px}.hero{padding:24px 20px}.hero h1{font-size:26px}.hero p{font-size:13px}.stat-grid{gap:8px}.stat{padding:13px 15px}.stat strong,.stat:last-child strong{font-size:21px}.summary-grid,.delta-grid,.two-col,.spec-grid{grid-template-columns:1fr}.delta{border-right:0;border-bottom:1px solid var(--line)}.delta:last-child{border-bottom:0}.spec{border-right:0!important}.spec:nth-last-child(2){border-bottom:1px solid var(--line)}.section-head{align-items:start;flex-direction:column;gap:6px}.section-head h2{font-size:20px}.filter-wrap{padding:14px}.chip{padding:6px 8px;font-size:11px}.model-cell,.effort-cell{position:static!important;min-width:0}.table-scroll{max-height:680px}th:first-child,td:first-child{position:static;max-width:none;min-width:145px}.footer{display:block}}
+    @media print{body{background:#fff;color:#000}.masthead,.side,.chips,.filter-label,.filter-status,.hero-tags{display:none}.shell{display:block;max-width:none;padding:0}.hero,.panel,.summary-card,.stat{box-shadow:none}.hero h1{font-size:24px}.table-scroll{max-height:none!important;overflow:visible!important}.table-scroll table{min-width:0!important;font-size:9px}th,td{padding:5px 4px!important;position:static!important}.table-scroll table .model-cell{min-width:0;max-width:none}.effort-cell{min-width:0;max-width:none}.table-foot{font-size:9px}section{break-inside:auto}.section-head{break-after:avoid}thead{display:table-header-group}tr{break-inside:avoid}.tooltip-pop{display:none!important}@page{size:A3 landscape;margin:14mm}}
+
+    /* 공유 문서: 개요형 요약과 낮은 채도의 전후 비교 강조 */
+    .overview{padding:2px 0 0}.overview-lead{margin:0 0 19px;font-size:16px;line-height:1.85;color:#39495e}.overview-lead>strong{font-size:19px;font-weight:700;color:#2e425e}.overview-list{list-style:none;padding:0;margin:0}.overview-list li{display:grid;grid-template-columns:205px minmax(0,1fr);gap:18px;border-top:1px solid #e6eaf0;padding:14px 0;font-size:13px;line-height:1.8}.overview-list li>strong{font-weight:650;color:#475870}.overview-list li>span{color:#5e6b7c}.overview-list b{color:#344b69;font-weight:650}.overview-note{margin:10px 0 0;padding-top:11px;border-top:1px solid #e6eaf0;font-size:11px;color:#8290a0}
+    .row-legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin:12px 0;font-size:11px;color:#748092}.row-legend>span{display:inline-flex;align-items:center;gap:7px}.swatch{width:13px;height:13px;border:1px solid #d7dfe9;border-radius:3px;display:inline-block}.before-swatch{background:#f0f1f3}.after-swatch{background:#eaf2fb}.peer-swatch{background:#faf5e9}
+    tbody tr.row-before td,tbody tr.row-before:nth-child(even) td{background:#f0f1f3;color:#667486}tbody tr.row-after td,tbody tr.row-after:nth-child(even) td{background:#eaf2fb}tbody tr.row-peer td,tbody tr.row-peer:nth-child(even) td{background:#faf5e9}tbody tr.row-before:hover td{background:#e8ebef}tbody tr.row-after:hover td{background:#dfeaf7}tbody tr.row-peer:hover td{background:#f3eddc}
+    .row-before td.model-cell{border-left:3px solid #b7bec8;padding-left:10px}.row-after td.model-cell{border-left:3px solid #91aacb;padding-left:10px}.row-peer td.model-cell{border-left:3px solid #cdbb94;padding-left:10px}.phase-label{display:inline-block;border:1px solid #d1d9e5;border-radius:3px;padding:1px 4px;font-size:9px;font-weight:600;line-height:1.5;margin-left:3px}.before-label{color:#7c8693;background:#e8ebef;border-color:#cdd3dc}.after-label{color:#4d709b;background:#e0ebf8;border-color:#b9cce5}.value-emphasis{font-weight:700!important;color:#385880!important}.meaning{white-space:normal;text-align:left;min-width:230px;max-width:280px;color:#708096;font-size:11px;line-height:1.6}.meaning-head{min-width:230px;text-align:left}.column-note{font-size:9px;font-weight:400;color:#8190a3}#comparison-table{min-width:1580px}.before-after-scroll{max-height:none}.before-after-scroll table{min-width:1000px}.before-after-scroll td:first-child,.before-after-scroll th:first-child{position:static;min-width:72px;max-width:none;border-right:0;text-align:left}.before-after-scroll td:nth-child(2),.before-after-scroll th:nth-child(2){text-align:left}.before-after-scroll .row-before td{border-top:1px solid #d9e0e8}.before-after-scroll .change-note{font-size:11px;text-align:left;color:#61768f}.before-after-scroll .phase-label{margin-left:0}
+    @media(max-width:680px){.overview-lead{font-size:14px}.overview-lead>strong{font-size:17px}.overview-list li{display:block;padding:13px 0}.overview-list li>strong{display:block;margin-bottom:4px}.row-legend{gap:7px 12px}.meaning{min-width:215px}}
+    @media print{.row-before td{background:#f0f1f3!important}.row-after td{background:#eaf2fb!important}.row-peer td{background:#faf5e9!important}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.overview-list li{break-inside:avoid}.before-after-scroll table{min-width:0}.meaning{min-width:0;max-width:190px}.table-scroll #comparison-table{min-width:0;font-size:8px}}
+    /* 요약은 말로 읽고, 숫자 근거는 비교표 툴팁으로 확인 */
+    #summary .overview-lead{margin-bottom:15px;font-size:15px;line-height:1.7}
+    #summary .overview-lead>strong{font-size:18px}
+    #summary .overview-list li{grid-template-columns:138px minmax(0,1fr);gap:20px;padding:14px 0;font-size:14px}
+    #summary .overview-list li>strong{color:#41536c}
+    #summary .overview-list li>span{max-width:880px}
+    #summary .summary-tip{display:inline;padding:0;border:0;border-bottom:1px dotted #879ab3;border-radius:0;background:transparent;color:#344c6d;font:inherit;font-weight:600;text-align:left;line-height:inherit;cursor:help}
+    #summary .summary-tip:hover{color:#233e60;border-bottom-style:solid}
+    #summary .summary-tip:focus-visible{outline:2px solid #6f89ad;outline-offset:3px}
+    #summary .overview-note{color:#748193;max-width:1000px}
+    #summary-tooltip{position:fixed;z-index:1100;width:min(500px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;background:#fff;color:#445369;border:1px solid #c5cfdd;border-radius:6px;padding:15px 16px;font-size:12px;line-height:1.6;box-shadow:0 8px 26px rgba(34,49,72,.14);overscroll-behavior:contain}
+    #summary-tooltip .tip-title{font-size:13px;font-weight:700;color:#344c6d;margin-bottom:10px}
+    #summary-tooltip .tip-subtitle{font-size:12px;font-weight:650;color:#475c78;margin:15px 0 7px}
+    #summary-tooltip .tip-table{width:100%;min-width:0;white-space:normal;table-layout:auto;font-size:11px}
+    #summary-tooltip .tip-table th,#summary-tooltip .tip-table td{position:static;min-width:0;max-width:none;border-right:0;border-bottom:1px solid #e5eaf0;padding:7px 8px;line-height:1.5;vertical-align:middle;text-align:right;font-size:11px}
+    #summary-tooltip .tip-table thead th{background:#f1f4f8;color:#647185;font-weight:600}
+    #summary-tooltip .tip-table th:first-child{text-align:left}
+    #summary-tooltip .tip-table tbody th{color:#465870;background:#fff;font-weight:600}
+    #summary-tooltip .tip-table tbody tr:nth-child(even) th{background:#fcfcfd}
+    #summary-tooltip .tip-table .row-after th,#summary-tooltip .tip-table .row-after td,#summary-tooltip .tip-after{background:#eaf2fb;color:#344f73;font-weight:650}
+    #summary-tooltip .tip-table .row-peer th,#summary-tooltip .tip-table .row-peer td{background:#faf5e9}
+    #summary-tooltip .tip-note{margin:10px 0 0;font-size:11px;line-height:1.65;color:#718096}
+    @media(max-width:680px){#summary .overview-list li{display:block;padding:13px 0}#summary .overview-list li>strong{display:block;margin-bottom:5px}#summary .overview-lead>strong{font-size:17px}#summary-tooltip{padding:13px 12px}#summary-tooltip .tip-table th,#summary-tooltip .tip-table td{padding:7px 5px}}
+    @media print{#summary-tooltip{display:none!important}#summary .summary-tip{border:0;color:inherit}}
+    /* AA·비용 대안이 있는 행은 기존 행과 어울리는 파스텔 회색. 반복 태그·판단 열·셀별 강조색 없음 */
+    #comparison .dominance-explanation{font-size:12px;color:#6b7788;line-height:1.75;margin:0 0 15px;max-width:1150px}
+    #comparison .dominance-explanation strong,#comparison .dominance-explanation b{font-weight:600;color:#51647e}
+    #comparison-table tr.aa-cost-dominated td{background:#e9ebef!important;color:#4b5563!important;border-bottom-color:#d8dde4}
+    #comparison-table tr.aa-cost-dominated:hover td{background:#e0e4e9!important}
+    #comparison-table tr.aa-cost-dominated .model-name{color:#45556b!important}
+    #comparison-table tr.aa-cost-dominated .model-cell small,#comparison-table tr.aa-cost-dominated td.not-recorded{color:#5f6b7a!important}
+    #comparison-table tr.aa-cost-dominated .phase-label{background:transparent;color:#5f6b7a;border-color:#c1c8d2}
+    #comparison-table tr.aa-cost-dominated .model-evidence{display:inline;background:transparent;border:0;padding:0;margin:0;color:inherit;font:inherit;font-weight:650;text-align:left;line-height:inherit;cursor:help;text-decoration:underline dotted #8995a5;text-underline-offset:4px}
+    #comparison-table tr.aa-cost-dominated .model-evidence:hover{text-decoration-style:solid}
+    #comparison-table tr.aa-cost-dominated .model-evidence:focus-visible{outline:2px solid #45556b;outline-offset:3px}
+    .dominated-swatch{background:#e9ebef;border-color:#c1c8d2}
+    @media print{#comparison-table tr.aa-cost-dominated td{background:#e9ebef!important;color:#4b5563!important}#comparison-table tr.aa-cost-dominated .model-evidence{text-decoration:none}}
+    /* 필요한 지표만 표시: 행 선택과 독립적인 열 선택 */
+    #intro{scroll-margin-top:24px}.purpose-label{font-weight:650;color:#45556b;margin-right:8px}
+    .column-filter{margin-top:14px;border-top:1px solid #e5e9ef;padding-top:12px}
+    .column-filter summary{display:list-item;list-style-position:inside;width:fit-content;max-width:100%;cursor:pointer;font-size:12px;font-weight:650;color:#405674;padding:5px 0}
+    .column-filter summary span{font-weight:400;color:#6b7788;margin-left:8px;white-space:nowrap}
+    .column-filter summary:focus-visible,.column-options input:focus-visible{outline:2px solid #5d7ba3;outline-offset:3px}
+    .column-options{border:1px solid #dce2eb;border-radius:5px;margin:8px 0 0;padding:13px 15px;background:#f9fafc;min-width:0}
+    .column-options label{display:flex;align-items:center;gap:7px;font-size:12px;color:#4b5b70;cursor:pointer;line-height:1.7}
+    .column-options input{width:15px;height:15px;margin:0;flex:none;accent-color:#607a9e}
+    .column-all{padding-bottom:9px;border-bottom:1px solid #e2e7ef;font-weight:600}
+    .column-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px 16px;padding-top:11px}
+    .column-help{font-size:11px;color:#647185;margin:11px 0 0}
+    .column-status{margin-top:2px}
+    #comparison-table .effort-cell{left:var(--model-column-width,170px)}
+    .conclusion-list{list-style:none;margin:0;padding:0}
+    .conclusion-list li{padding:17px 0;border-bottom:1px solid #e3e8ee}
+    .conclusion-list li:first-child{padding-top:0}
+    .conclusion-list h3{font-size:15px;font-weight:650;color:#41536c;margin:0 0 7px}
+    .conclusion-list p{font-size:14px;line-height:1.85;color:#5e6b7c;margin:0;max-width:1000px}
+    .conclusion-note{font-size:12px;line-height:1.75;color:#657182;margin:14px 0 0;max-width:1000px}
+    @media(max-width:680px){.column-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.column-options{padding:12px}.column-options label{font-size:11px}.conclusion-list p{font-size:13px}}
+    @media print{.column-filter,.column-status{display:none}.conclusion-list li{break-inside:avoid}}
+  .source-details{margin-top:22px;border-top:1px solid var(--line);padding:14px 0;color:#596473;font-size:12px}.source-details summary{cursor:pointer;font-weight:650}.source-details li{margin:10px 0;line-height:1.8}.hero p{max-width:1000px}.model-name{white-space:normal;line-height:1.5}.tip:focus-visible,.source-details summary:focus-visible{outline:2px solid #5d7ba3;outline-offset:3px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+  <header class="masthead"><div class="mast-inner"><div class="brand">자료분석 <span style="opacity:.45">/</span> 모델 리서치</div><div class="mast-meta">자료 확인 · 2026.10.01</div></div></header>
+  <div class="shell">
+    <nav class="side" aria-label="문서 목차">
+      <p class="side-label">CONTENTS</p>
+      <a href="#intro">제목 / 목적</a><a href="#summary">핵심 요약</a><a href="#delta">이전 Gemini vs Argon</a><a href="#comparison">전체 비교표</a><a href="#conclusion">결론</a>
+    </nav>
+    <main>
+      <header id="intro" class="hero" data-ui-id="hero">
+        <h1>Gemini 4 Argon 모델 분석</h1>
+        <p><span class="purpose-label">목적</span> 이전 Gemini 대비 개선 수준과 기존 GPT·Claude 모델의 선택 근거 변화 확인.</p>
+      </header>
+      <section id="summary" data-ui-id="summary">
+<div class="section-head"><div><div class="kicker">01 / 개요</div><h2>핵심 요약</h2></div></div>
+<div class="overview"><ul class="overview-list">
+<li><strong>가성비 변화</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-cost">출시 할인 중에는 Astra와 비슷한 종합 성능에 더 낮은 비용</button>. Sol 6.1보다는 비싸며, 할인 종료 후 Astra와의 비용 관계도 역전되는 조건.</span></li>
+<li><strong>성능 개선</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-performance">이전 Gemini 대비 종합 성능·자율적 업무 처리의 큰 개선</button>. 코딩 실무 전체나 장문 처리의 일괄 우위는 아닌 결과.</span></li>
+<li><strong>기본 선택</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-availability">현재 기본 모델의 일괄 교체보다, 사용 가능해진 뒤 고난도·자동화 작업에서 비교할 후보</button>. 제한된 사용자 대상 공개로 일반 사용자의 즉시 전환은 어려운 상태.</span></li>
+</ul></div>
+<template id="evidence-cost"><div class="tip-title">AA 종합 성능과 과제당 비용</div><table class="tip-table"><thead><tr><th scope="col">모델 · 설정</th><th scope="col">AA</th><th scope="col">USD / task</th></tr></thead><tbody><tr><th scope="row">Gemini 4 Argon · High · 출시 할인</th><td>53</td><td>$1.99</td></tr><tr><th scope="row">GPT-6 Astra · Max</th><td>53</td><td>$3.26</td></tr><tr><th scope="row">GPT-6.1 Sol · Max</th><td>52</td><td>$0.72</td></tr><tr><th scope="row">Argon · 할인 종료 가정</th><td>53</td><td>약 $3.98</td></tr></tbody></table><p class="tip-note">출시 할인 기준 Astra보다 약 39.0% 낮은 비용. Sol 6.1 Max 대비 약 2.8배. 할인 종료 시 동일 토큰 사용·캐시 조건에서 Astra보다 약 22.1% 높은 계산값.</p><p class="tip-note">Argon은 2026-10-01 AA 확인값, GPT는 기존 보고서의 2026-09-30 기록. $3.98은 실제 측정한 미래 비용이 아닌 가격 두 배 가정. <a href="https://artificialanalysis.ai/models/gemini-4-argon" target="_blank" rel="noopener noreferrer">Argon 평가</a> · <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 할인·정가</a></p></template>
+<template id="evidence-performance"><div class="tip-title">Gemini 세대 간 평가</div><table class="tip-table"><thead><tr><th scope="col">모델</th><th scope="col">AA</th><th scope="col">Automation</th><th scope="col">Terminal 4.0</th></tr></thead><tbody><tr><th scope="row">3.1 Pro Preview</th><td>30</td><td>35%</td><td>4%</td></tr><tr><th scope="row">3.8 Flash · High</th><td>41</td><td>60%</td><td>20%</td></tr><tr><th scope="row">4 Argon · High</th><td>53</td><td>78%</td><td>57%</td></tr></tbody></table><p class="tip-note">AA-LCR은 3.1 Pro 82% → Argon 80%. 종합 점수 상승이 모든 지표의 상승을 의미하지 않음. 서로 다른 모델·추론 조건으로, 동일 설정의 세대 비교는 아님.</p><p class="tip-note"><a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">Argon 세부 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">3.1 Pro 세부 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-hy3" target="_blank" rel="noopener noreferrer">3.8 Flash 세부 평가</a></p></template>
+<template id="evidence-availability"><div class="tip-title">2026-10-01 기준 이용 가능 범위</div><p class="tip-note">Google 공식 발표는 Fairwind 프로그램의 신뢰받는 사이버 방어 사용자부터 제공하는 단계적 공개. 유료 API 고객과 Google AI Ultra 구독자 대상 확대는 앞으로의 계획이며, 일반 공개 완료나 개인 계정 접근을 확인한 상태가 아님.</p><p class="tip-note">AA의 High는 평가 설정. 현재 앱·API의 기본값이나 Codex에서 선택 가능한 모델이라는 뜻이 아님. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 제공 범위</a></p></template>
+</section>
+
+      <section id="delta" data-ui-id="delta">
+<div class="section-head"><div><div class="kicker">02 / Gemini 세대 비교</div><h2>이전 Gemini vs Gemini 4 Argon</h2></div></div>
+<div class="panel"><div class="table-scroll before-after-scroll" role="region" aria-label="이전 Gemini와 신규 Argon의 평가 비교" tabindex="0">
+<table><thead><tr><th scope="col">구분</th><th scope="col">모델</th><th scope="col">설정</th><th scope="col"><span class="tip" tabindex="0" data-tip="AA Intelligence Index v4.3.2 종합 점수. 높을수록 좋음. 점수 차이는 지능의 배수나 개선 퍼센트가 아님.">AA <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AutomationBench-AA의 다단계 도구·업무 수행 성공률. 높을수록 좋음. Google 발표의 Zapier AutomationBench와 다른 실행 평가.">Automation <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA Terminal-Bench 4.0 터미널 기술 과제 성공률. 높을수록 좋음. Cursor·Claude Code·Codex 에이전트의 동일 환경 실측과는 다름.">Terminal 4.0 <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA 종합 지수 과제 1건의 가중 평균 API 비용, USD. 낮을수록 좋음. 실제 개발 이슈 1건의 고정 비용이 아님. Argon은 출시 할인 기준.">Cost / task <span aria-hidden="true">ⓘ</span></span></th><th scope="col"><span class="tip" tabindex="0" data-tip="AA-LCR v1.1 장문 정보 활용 성공률. 높을수록 좋음. 코드베이스의 구조 이해 성능을 직접 측정하는 지표는 아님.">AA-LCR <span aria-hidden="true">ⓘ</span></span></th></tr></thead><tbody>
+<tr class="row-before"><td>비교 전</td><td>Gemini 3.1 Pro Preview</td><td>미명시</td><td>30</td><td>35%</td><td>4%</td><td>$0.67</td><td>82%</td></tr>
+<tr class="row-peer"><td>Flash 기준</td><td>Gemini 3.8 Flash</td><td>High</td><td>41</td><td>60%</td><td>20%</td><td>$1.24</td><td>81%</td></tr>
+<tr class="row-after"><td>비교 후</td><td>Gemini 4 Argon</td><td>High</td><td class="value-emphasis">53</td><td class="value-emphasis">78%</td><td class="value-emphasis">57%</td><td>$1.99</td><td>80%</td></tr>
+</tbody></table></div><div class="table-foot">3.1 Pro 대비 AA +23점, Automation +43%p, Terminal +53%p. 과제당 비용은 약 3.0배, AA-LCR은 −2%p. AA v4.3.2 · 2026-10-01 확인 · 모델·추론 조건이 다른 비교. <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">3.1 Pro</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-hy3" target="_blank" rel="noopener noreferrer">3.8 Flash</a> · <a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">Argon</a></div></div>
+</section>
+
+      <section id="comparison" data-ui-id="comparison">
+        <div class="section-head"><div><div class="kicker">03 / 전체 모델 비교</div><h2>전체 비교표</h2></div></div>
+        <div class="row-legend" aria-label="비교 행 색상 설명"><span><i class="swatch before-swatch" aria-hidden="true"></i>비교 전 · Gemini 3.1 Pro</span><span><i class="swatch after-swatch" aria-hidden="true"></i>비교 후 · Gemini 4 Argon</span><span><i class="swatch peer-swatch" aria-hidden="true"></i>Flash 기준 · Gemini 3.8</span><span><i class="swatch dominated-swatch" aria-hidden="true"></i>같은 제작사 대안 대비 AA·비용 불리</span></div>
+        <p class="dominance-explanation">회색 판정: 같은 제작사의 대안이 AA·비용 중 하나 이상 우위이고 나머지와 Context가 동등 이상인 경우. 개별 지표와 실제 개발 작업의 우열은 별도.</p>
+        <noscript><p class="dominance-explanation">AA·비용 판단과 행·열 필터를 보려면 JavaScript를 활성화해야 합니다. 원본 비교값은 아래 표에서 확인할 수 있습니다.</p></noscript>
+        <div class="panel">
+          <div class="filter-wrap"><div class="filter-label">보이는 모델</div><div class="chips" role="group" aria-label="비교 표에 보이는 모델 계열"><button class="chip" type="button" data-family="argon4" aria-pressed="true">Gemini 4 Argon</button><button class="chip" type="button" data-family="gemini38" aria-pressed="true">Gemini 3.8 Flash</button><button class="chip" type="button" data-family="gemini31" aria-pressed="true">Gemini 3.1 Pro</button>
+            <button class="chip" type="button" data-family="sol61" aria-pressed="true">GPT-6.1 Sol</button>
+            <button class="chip" type="button" data-family="sol60" aria-pressed="true">GPT-6 Sol</button>
+            <button class="chip" type="button" data-family="astra" aria-pressed="true">GPT-6 Astra</button>
+            <button class="chip" type="button" data-family="luna6" aria-pressed="true">GPT-6 Luna</button>
+            <button class="chip" type="button" data-family="sol56" aria-pressed="true">GPT-5.6 Sol</button>
+            <button class="chip" type="button" data-family="terra56" aria-pressed="true">GPT-5.6 Terra</button>
+            <button class="chip" type="button" data-family="luna56" aria-pressed="true">GPT-5.6 Luna</button>
+            <button class="chip" type="button" data-family="opus55" aria-pressed="true">Claude Opus 5.5</button>
+            <button class="chip" type="button" data-family="fable51" aria-pressed="true">Claude Fable 5.1</button>
+            <button class="chip" type="button" data-family="opus5" aria-pressed="true">Claude Opus 5</button>
+            <button class="chip" type="button" data-family="grok47" aria-pressed="true">Grok 4.7</button>
+          </div>
+            <details class="column-filter" id="column-filter" data-ui-id="column-filter" hidden>
+              <summary>표시 지표</summary>
+              <fieldset class="column-options">
+                <legend class="sr-only">전체 비교표에 표시할 지표 선택</legend>
+                <label class="column-all"><input type="checkbox" id="column-all"> 전체 지표 선택</label>
+                <div class="column-grid">
+                  <label><input type="checkbox" data-column="aa" checked> AA Intelligence</label>
+                  <label><input type="checkbox" data-column="briefcase"> AA-Briefcase</label>
+                  <label><input type="checkbox" data-column="automation" checked> Automation</label>
+                  <label><input type="checkbox" data-column="terminal" checked> AA Terminal 4.0</label>
+                  <label><input type="checkbox" data-column="scicode"> SciCode</label>
+                  <label><input type="checkbox" data-column="cost" checked> AA Cost / task</label>
+                  <label><input type="checkbox" data-column="cursor"> CursorBench 4.0</label>
+                  <label><input type="checkbox" data-column="cursorCost"> Cursor Cost</label>
+                  <label><input type="checkbox" data-column="context" checked> Context</label>
+                  <label><input type="checkbox" data-column="meaning"> 비교 의미</label>
+                  <label><input type="checkbox" data-column="lcr" checked> AA-LCR</label>
+                </div>
+              </fieldset>
+            </details>
+            <div class="sr-only" id="filter-status" aria-live="polite"></div>
+            <div class="sr-only" id="column-status" aria-live="polite"></div>
+          </div>
+          <div class="table-scroll" role="region" aria-label="전체 모델 비교 표. 가로와 세로로 스크롤할 수 있습니다." tabindex="0"><table id="comparison-table">
+            <caption class="sr-only">기존 GPT·Claude·Grok 평가 기록과 신규 Gemini의 확인된 설정별 비교</caption>
+            <colgroup id="comparison-columns"><col data-column-key="model" style="width:170px"><col data-column-key="effort" style="width:76px"><col data-column-key="aa" style="width:90px"><col data-column-key="briefcase" style="width:110px"><col data-column-key="automation" style="width:110px"><col data-column-key="terminal" style="width:120px"><col data-column-key="scicode" style="width:90px"><col data-column-key="cost" style="width:105px"><col data-column-key="cursor" style="width:110px"><col data-column-key="cursorCost" style="width:100px"><col data-column-key="context" style="width:90px"><col data-column-key="meaning" style="width:230px"><col data-column-key="lcr" style="width:90px"></colgroup>
+            <thead><tr>
+              <th scope="col" class="model-cell">모델</th><th scope="col" class="effort-cell">추론 설정</th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis Intelligence Index v4.3.2. 추론·지식·전문 업무·에이전트 평가 10종을 합친 종합 점수입니다. 높을수록 좋습니다.">AA<br>Intelligence <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="AA-Briefcase v1.1. 문서와 자료를 활용해 복잡한 업무 결과물을 만드는 평가의 Elo 점수입니다. 코드베이스 이해 점수와 같지 않습니다.">AA-Briefcase <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="AutomationBench-AA. 도구를 사용해 여러 단계 작업을 자율적으로 처리하는 성공률입니다. 실제 팀 업무의 독립 수행률과 동일하지 않습니다.">Automation <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="Artificial Analysis 모델 평가의 Terminal-Bench 4.0. 터미널·파일·도구를 활용한 다단계 기술 과제의 성공률입니다. 코딩 에이전트 환경의 평가와 실행 조건이 다릅니다.">AA Terminal<br>4.0 <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="과학·기술 코딩 문제의 해결률입니다. 일반 소프트웨어 저장소의 구현·수정 능력과 다른 평가입니다.">SciCode <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="AA Intelligence Index 과제 1건의 가중 평균 API 비용입니다. 실제 개발 업무의 비용이나 API의 고정 요금이 아닙니다. 낮을수록 좋습니다.">AA Cost<br>/ task <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="Cursor 환경에서 실제 소프트웨어 개발 과제를 해결한 비율입니다. 동일 CursorBench 4.0 평가가 있는 행만 수치를 표시합니다.">CursorBench<br>4.0 <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="CursorBench 4.0 작업 1건의 평균 실행 비용입니다. AA Cost/task와 과제·실행 환경이 달라 직접 비교할 수 없습니다.">Cursor Cost <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="최대 컨텍스트 토큰 수입니다. Gemini 값은 AA의 Context 표기이며, Google 발표의 Argon 최대 출력 1M과 별개입니다. 한 번에 입력 가능한 문맥의 크기이며 대규모 코드 이해 성능을 뜻하지 않습니다. GPT-5.6의 기존 1M 반올림 표기는 공식 1.05M으로 통일했습니다.">Context <span aria-hidden="true">ⓘ</span></span></th>
+              <th scope="col" class="meaning-head">비교 의미<br><span class="column-note">이전 가이드 설명 포함</span></th>
+              <th scope="col"><span class="tip" tabindex="0" data-tip="AA-LCR v1.1. 긴 문맥에서 정보를 찾아 활용하는 평가입니다. 큰 코드베이스의 구조 이해를 직접 측정하지 않습니다. 기존 자료에서 확인 가능한 값만 추가했습니다.">AA-LCR <span aria-hidden="true">ⓘ</span></span></th>
+            </tr></thead>
+            <tbody>
+<tr data-family="opus55" data-model="Claude Opus 5.5" data-effort="Max"><td class="model-cell"><span class="model-name">Claude Opus 5.5</span> <small>Anthropic</small></td><td class="effort-cell">Max</td><td>58</td><td>1,822</td><td>70%</td><td>60%</td><td>67%</td><td>$5.98</td><td>57.8%</td><td>$13.43</td><td>1M</td><td class="meaning">최고성능</td><td>85%</td></tr>
+<tr data-family="opus55" data-model="Claude Opus 5.5" data-effort="xHigh"><td class="model-cell"><span class="model-name">Claude Opus 5.5</span> <small>Anthropic</small></td><td class="effort-cell">xHigh</td><td>56</td><td>1,780</td><td>65%</td><td>60%</td><td>65%</td><td>$3.46</td><td>56.0%</td><td>$6.98</td><td>1M</td><td class="meaning">추론 강화 · CursorBench에서는 High 대비 점수 이득 없음</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="opus55" data-model="Claude Opus 5.5" data-effort="High"><td class="model-cell"><span class="model-name">Claude Opus 5.5</span> <small>Anthropic</small></td><td class="effort-cell">High</td><td>54</td><td>1,705</td><td>63%</td><td>57%</td><td>60%</td><td>$1.82</td><td>56.0%</td><td>$3.97</td><td>1M</td><td class="meaning">이 보고서의 코딩 권장 설정</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="argon4" data-model="Gemini 4 Argon" data-effort="High" class="row-after" data-observed="2026-10-01"><td class="model-cell"><span class="model-name">Gemini 4 Argon</span><small>Google</small></td><td class="effort-cell">High</td><td>53</td><td>1,494</td><td>78%</td><td>57%</td><td>62%</td><td>$1.99</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>1M</td><td class="meaning">출시 할인 · 제한 공개 · 자동화 강점</td><td>80%</td></tr>
+<tr data-family="astra" data-model="GPT-6 Astra" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6 Astra</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td>53</td><td>1,569</td><td>68%</td><td>59%</td><td>56%</td><td>$3.26</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Opus High 직접 비교</td><td>81%</td></tr>
+<tr data-family="fable51" data-model="Claude Fable 5.1" data-effort="Max"><td class="model-cell"><span class="model-name">Claude Fable 5.1</span> <small>Anthropic</small></td><td class="effort-cell">Max</td><td>53</td><td>1,678</td><td>59%</td><td>52%</td><td>63%</td><td>$7.63</td><td>51.8%</td><td>$17.28</td><td>1M</td><td class="meaning">이전 최고난도 Claude</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td class="value-emphasis">52</td><td>1,564</td><td>65%</td><td>56%</td><td>54%</td><td class="value-emphasis">$0.72</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6.1 최고 종합 점수 · Astra xHigh와 동점</td><td>83%</td></tr>
+<tr data-family="astra" data-model="GPT-6 Astra" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-6 Astra</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td>52</td><td>1,544</td><td>67%</td><td>60%</td><td>56%</td><td>$2.31</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Astra 균형 상위</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td class="value-emphasis">51</td><td>1,507</td><td>67%</td><td>54%</td><td>56%</td><td class="value-emphasis">$0.39</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">가성비 대표 · 동급 종합 점수 대비 낮은 비용</td><td>80%</td></tr>
+<tr data-family="opus55" data-model="Claude Opus 5.5" data-effort="Medium"><td class="model-cell"><span class="model-name">Claude Opus 5.5</span> <small>Anthropic</small></td><td class="effort-cell">Medium</td><td>51</td><td>1,642</td><td>61%</td><td>53%</td><td>59%</td><td>$1.34</td><td>52.5%</td><td>$2.91</td><td>1M</td><td class="meaning">가성비 대표</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="astra" data-model="GPT-6 Astra" data-effort="High"><td class="model-cell"><span class="model-name">GPT-6 Astra</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td>51</td><td>1,507</td><td>67%</td><td>54%</td><td>55%</td><td>$1.73</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Opus Medium 직접 비교</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="opus5" data-model="Claude Opus 5" data-effort="Max"><td class="model-cell"><span class="model-name">Claude Opus 5</span> <small>Anthropic</small></td><td class="effort-cell">Max</td><td>51</td><td>1,673</td><td>57%</td><td>49%</td><td>56%</td><td>$5.86</td><td>46.6%</td><td>$11.95</td><td>1M</td><td class="meaning">이전 세대 비교</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="High"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td class="value-emphasis">50</td><td>1,471</td><td>64%</td><td>52%</td><td>56%</td><td class="value-emphasis">$0.32</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">AA 50 · 일반 개발 검증 출발점</td><td>82%</td></tr>
+<tr data-family="astra" data-model="GPT-6 Astra" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-6 Astra</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td>50</td><td>1,459</td><td>65%</td><td>49%</td><td>54%</td><td>$1.54</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">비용 낮춘 Astra</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td class="value-emphasis">48</td><td>1,365</td><td>63%</td><td>48%</td><td>53%</td><td class="value-emphasis">$0.21</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">AA 48 · 기존 Sol Max와 같은 종합 점수</td><td>83%</td></tr>
+<tr data-family="sol60" data-model="GPT-6 Sol" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td>48</td><td>1,483</td><td>62%</td><td>44%</td><td>58%</td><td>$1.06</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">저렴한 상위 GPT</td><td>84%</td></tr>
+<tr data-family="sol56" data-model="GPT-5.6 Sol" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-5.6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td>47</td><td>1,487</td><td>60%</td><td>40%</td><td>57%</td><td>$1.99</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">이전 Sol 비교</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="astra" data-model="GPT-6 Astra" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-6 Astra</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>46</td><td>1,261</td><td>59%</td><td>42%</td><td>54%</td><td>$0.82</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">저비용 Astra</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="grok47" data-model="Grok 4.7" data-effort="xHigh"><td class="model-cell"><span class="model-name">Grok 4.7</span> <small>SpaceXAI</small></td><td class="effort-cell">xHigh</td><td>46</td><td>1,657</td><td>66%</td><td>26%</td><td>57%</td><td>$3.74</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>500K</td><td class="meaning">외부 비교</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol60" data-model="GPT-6 Sol" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td>44</td><td>1,364</td><td>62%</td><td>30%</td><td>55%</td><td>$0.53</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">GPT 일반 개발 대표</td><td>81%</td></tr>
+<tr data-family="sol56" data-model="GPT-5.6 Sol" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-5.6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td>44</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$1.18</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Sol xHigh보다 비쌈</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol60" data-model="GPT-6 Sol" data-effort="High"><td class="model-cell"><span class="model-name">GPT-6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td>43</td><td>1,289</td><td>60%</td><td>26%</td><td>55%</td><td>$0.37</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">저비용 일반 개발</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol61" data-model="GPT-6.1 Sol" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-6.1 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td class="value-emphasis">42</td><td>1,118</td><td>53%</td><td>31%</td><td>53%</td><td class="value-emphasis">$0.13</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6.1 최저 추론 단계</td><td>84%</td></tr>
+<tr data-family="opus55" data-model="Claude Opus 5.5" data-effort="Low"><td class="model-cell"><span class="model-name">Claude Opus 5.5</span> <small>Anthropic</small></td><td class="effort-cell">Low</td><td>42</td><td>1,285</td><td>53%</td><td>31%</td><td>59%</td><td>$0.55</td><td>43.7%</td><td>$1.17</td><td>1M</td><td class="meaning">작고 명확한 작업</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol56" data-model="GPT-5.6 Sol" data-effort="High"><td class="model-cell"><span class="model-name">GPT-5.6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td>42</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.81</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Sol High에 대체</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="terra56" data-model="GPT-5.6 Terra" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-5.6 Terra</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td>42</td><td>1,334</td><td>60%</td><td>35%</td><td>55%</td><td>$1.40</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">기존 중간 모델</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="gemini38" data-model="Gemini 3.8 Flash" data-effort="High" class="row-peer" data-observed="2026-10-01"><td class="model-cell"><span class="model-name">Gemini 3.8 Flash</span><small>Google</small></td><td class="effort-cell">High</td><td>41</td><td>1,202</td><td>60%</td><td>20%</td><td>57%</td><td>$1.24</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>1M</td><td class="meaning">현재 Flash 비교 기준</td><td>81%</td></tr>
+<tr data-family="sol60" data-model="GPT-6 Sol" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td>40</td><td>1,142</td><td>58%</td><td>19%</td><td>54%</td><td>$0.25</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">저비용 Sol</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol56" data-model="GPT-5.6 Sol" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-5.6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td>39</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.50</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Sol Medium에 대체</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="terra56" data-model="GPT-5.6 Terra" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-5.6 Terra</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td>38</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.63</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Sol 계열 대비 애매</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna6" data-model="GPT-6 Luna" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td>37</td><td>1,299</td><td>53%</td><td>13%</td><td>55%</td><td>$0.07</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">초저가 실행 대표</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="Max"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Max</td><td>37</td><td>1,342</td><td>50%</td><td>12%</td><td>54%</td><td>$0.18</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">이전 Luna 비교</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td>35</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.09</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">저비용 구형</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna6" data-model="GPT-6 Luna" data-effort="xHigh"><td class="model-cell"><span class="model-name">GPT-6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">xHigh</td><td>34</td><td>1,217</td><td>48%</td><td>8%</td><td>52%</td><td>$0.04</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">초저가 추론</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol60" data-model="GPT-6 Sol" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>34</td><td>905</td><td>54%</td><td>9%</td><td>50%</td><td>$0.13</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Luna Max와 역할 겹침</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="sol56" data-model="GPT-5.6 Sol" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-5.6 Sol</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>34</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.26</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Sol Low보다 비쌈</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="terra56" data-model="GPT-5.6 Terra" data-effort="High"><td class="model-cell"><span class="model-name">GPT-5.6 Terra</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td>34</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.34</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Sol High보다 약함</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna6" data-model="GPT-6 Luna" data-effort="High"><td class="model-cell"><span class="model-name">GPT-6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td>32</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.03</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">저비용 실행</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="High"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">High</td><td>32</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.04</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 High보다 비쌈</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="gemini31" data-model="Gemini 3.1 Pro Preview" data-effort="미명시" class="row-before" data-observed="2026-10-01"><td class="model-cell"><span class="model-name">Gemini 3.1 Pro Preview</span><small>Google</small></td><td class="effort-cell">미명시</td><td>30</td><td>453</td><td>35%</td><td>4%</td><td>59%</td><td>$0.67</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>1M</td><td class="meaning">이전 비-Flash 비교 기준</td><td>82%</td></tr>
+<tr data-family="terra56" data-model="GPT-5.6 Terra" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-5.6 Terra</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td>30</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.18</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Luna/Sol 사이 이유 약함</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna6" data-model="GPT-6 Luna" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td>29</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.02</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">극저가 실행</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="terra56" data-model="GPT-5.6 Terra" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-5.6 Terra</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>28</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.14</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">Luna Max보다 약하고 비쌈</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="Medium"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Medium</td><td>25</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.02</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Luna Medium보다 약함</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna6" data-model="GPT-6 Luna" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>21</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.0045</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">최저 비용</td><td class="not-recorded">미확인</td></tr>
+<tr data-family="luna56" data-model="GPT-5.6 Luna" data-effort="Low"><td class="model-cell"><span class="model-name">GPT-5.6 Luna</span> <small>OpenAI</small></td><td class="effort-cell">Low</td><td>21</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td class="not-recorded">미확인</td><td>$0.01</td><td class="not-recorded">미측정</td><td class="not-recorded">미측정</td><td>1.05M</td><td class="meaning">6 Luna Low보다 비쌈</td><td class="not-recorded">미확인</td></tr>
+</tbody>
+          </table></div>
+          <div class="table-foot">Gemini는 2026-10-01 확인 · 기존 GPT·Claude·Grok은 이전 조사 기록. AA v4.3.2 · Argon 비용은 출시 할인 기준. Opus 5.5는 Adaptive Reasoning · Default Fallback 조건. AA·Cursor는 다른 평가. <a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">Argon 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">3.1 Pro</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-hy3" target="_blank" rel="noopener noreferrer">3.8 Flash</a></div>
+        </div>
+      </section>
+
+      <section id="conclusion" data-ui-id="conclusion">
+<div class="section-head"><div><div class="kicker">04 / 선택 기준</div><h2>결론</h2></div></div>
+<ul class="conclusion-list">
+<li><h3>Gemini의 고난도 작업 선택지 확대</h3><p>3.1 Pro 대비 큰 폭의 종합 점수와 터미널 과제 성공률 개선. 기존 Gemini를 고난도·다단계 작업에서 제외했다면 다시 비교할 근거의 발생. 다만 AA-LCR은 82%에서 80%로 낮아진 값으로, 큰 문맥의 모든 업무까지 우수해졌다는 해석은 부적절. <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">3.1 Pro 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">Argon 평가</a></p></li>
+<li><h3>기존 모델의 사용 이유가 사라지는 결과는 아님</h3><p>Sol 6.1은 훨씬 낮은 과제당 비용, Opus 5.5 Max는 더 높은 종합 점수와 Terminal 성공률의 선택 근거 유지. Astra Max는 Argon과 종합 점수가 같으면서 출시 할인 중에는 더 비싼 선택지지만, Terminal·AA-LCR·Context와 사용 가능 환경이 다른 비교. Argon이 모든 모델을 대체한다는 결론은 불가.</p><p>Gemini 3.1 Pro·3.8 Flash도 평가 과제당 비용이 더 낮은 선택지. 이전 모델 자체의 성능 저하가 아니라, 품질이 중요한 작업에서 Argon이라는 상위 후보가 추가된 변화.</p></li>
+<li><h3>긴 작업의 가능성과 비용을 함께 확인할 필요</h3><p>Google 발표의 최대 출력 한도는 기존 64K에서 1M 토큰으로 확대. 전체 비교표의 Context 1M과는 별개의 항목이며, 긴 출력을 지원한다고 대규모 코드 수정의 정확성·시간·비용을 보장하는 것은 아님. AA는 긴 응답을 후속 호출로 이어가는 Long Decode Continuation으로 평가. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 출력 한도</a> · <a href="https://artificialanalysis.ai/articles/gemini-4-argon-google-top-three-labs" target="_blank" rel="noopener noreferrer">AA 평가 조건</a></p><p>출시 입력/출력 단가는 100만 토큰당 $2/$10, 종료 후 $4/$20. $1.99 과제 비용이 상시 유지된다는 전제는 부적절. 종료 후 약 $3.98은 같은 토큰 사용·캐시 조건의 환산 시나리오. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 가격</a></p></li>
+<li><h3>현시점의 선택</h3><p>일반 공개 전인 현재는 기존 사용 모델의 유지. 접근이 제공되면 자율적 도구 업무와 어려운 코드 수정에서 High 평가 조건을 출발점으로 비교할 후보. 제한된 사용자 대상의 발표를 지금 모든 계정에서 쓸 수 있는 모델로 해석하지 않으며, 공개된 뒤 실제 작업 품질·재시도·전체 비용으로 재판단. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 제공 계획</a></p></li>
+</ul>
+<details class="source-details" data-ui-id="sources"><summary>출처와 비교 조건</summary><ul>
+<li><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">Google 공식 발표 · 2026-09-30</a> — 모델 공개 범위, 최대 출력, 출시 할인 및 정가. Google 자체 평가와 AA 평가는 별도.</li>
+<li><a href="https://artificialanalysis.ai/models/gemini-4-argon" target="_blank" rel="noopener noreferrer">AA Argon 모델 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">AA 세부 모델 비교</a> — AA v4.3.2, High, 종합 점수·자동화·터미널·코딩·장문·Context 확인.</li>
+<li><a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">AA Gemini 3.1 Pro 세부 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-hy3" target="_blank" rel="noopener noreferrer">AA Gemini 3.8 Flash High 세부 평가</a> — 이전 모델의 같은 지수 버전 확인. Pro의 추론 단계는 인용 페이지에 미명시.</li>
+<li><a href="https://artificialanalysis.ai/articles/gemini-4-argon-google-top-three-labs" target="_blank" rel="noopener noreferrer">AA Argon 출시 분석 · 2026-09-30</a> — 제한 공개, 출시 할인, Long Decode Continuation 평가 조건. 할인 종료일 미확정.</li>
+<li>GPT·Claude·Grok은 <a href="https://theo-s-han.github.io/research-analysis/materials/GPT_6_1_Sol_Model_Guide.html" target="_blank" rel="noopener noreferrer">기존 Sol 6.1 보고서</a>의 기록 보존. 기존 모델 전부를 오늘 다시 측정한 값은 아님. 새 Gemini는 2026-10-01 확인값.</li>
+<li>AA Cost/task와 Cursor Cost는 과제·실행 환경이 다른 비용. Cursor 결과가 없는 Gemini는 미확인 표시. 일반 실무 작업의 비용·완료 개수로 환산하지 않음.</li>
+<li>회색 행은 같은 제작사에서 AA·비용·Context 조건을 만족하는 대안만 표시. 서로 다른 제작사와 개별 성능·시간·도구 환경의 우열은 판정에서 제외.</li>
+</ul></details>
+</section>
+      <div class="footer"><span>발표 · 2026.09.30 / 확인 · 2026.10.01</span><span><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">Google 발표</a> · <a href="https://artificialanalysis.ai/models/gemini-4-argon" target="_blank" rel="noopener noreferrer">AA 평가</a></span></div>
+    </main>
+  </div>
+  <div id="metric-tooltip" class="tooltip-pop" role="tooltip" hidden></div>
+  <div id="summary-tooltip" role="tooltip" hidden></div>
+  <script>
+    (function(){
+      const chips=[...document.querySelectorAll('.chip[data-family]')];
+      const rows=[...document.querySelectorAll('#comparison-table tbody tr[data-family]')];
+      const status=document.getElementById('filter-status');
+      // AA·비용의 2축 열위 판단. 제작사와 에이전트 평가를 섞지 않는다.
+      function comparisonNumber(text){
+        const clean=text.trim().replace(/,/g,'');
+        return /^\$?\d+(?:\.\d+)?%?$/.test(clean)?Number(clean.replace(/[$%]/g,'')):null;
+      }
+      function comparisonContext(text){
+        const match=text.trim().match(/^(\d+(?:\.\d+)?)\s*(M|K)$/i);
+        return match?Number(match[1])*(match[2].toUpperCase()==='M'?1000000:1000):null;
+      }
+      function comparisonDominates(candidate,current){
+        return candidate!==current&&candidate.vendor!==''&&candidate.vendor===current.vendor&&
+          candidate.aa!==null&&current.aa!==null&&candidate.cost!==null&&current.cost!==null&&
+          candidate.context!==null&&current.context!==null&&candidate.context>=current.context&&
+          candidate.aa>=current.aa&&candidate.cost<=current.cost&&
+          (candidate.aa>current.aa||candidate.cost<current.cost);
+      }
+      const comparisonMetrics=[
+        {index:3,label:'AA-Briefcase',higher:true},{index:4,label:'Automation',higher:true},
+        {index:5,label:'AA Terminal',higher:true},{index:6,label:'SciCode',higher:true},
+        {index:8,label:'CursorBench',higher:true},{index:9,label:'Cursor Cost',higher:false},
+        {index:12,label:'AA-LCR',higher:true}
+      ];
+      function comparisonElement(tag,className,text){
+        const element=document.createElement(tag);
+        if(className)element.className=className;
+        if(text!==undefined)element.textContent=text;
+        return element;
+      }
+      function comparisonTipTable(current,alternative){
+        const table=comparisonElement('table','tip-table');
+        table.append(comparisonElement('caption','sr-only','현재 설정과 같은 계열 대안의 AA·과제당 비용·컨텍스트 비교'));
+        const head=comparisonElement('thead'),header=comparisonElement('tr');
+        ['모델 · 설정','AA 점수','비용 / task','Context'].forEach(label=>{
+          const cell=comparisonElement('th','',label);cell.scope='col';header.append(cell);
+        });
+        head.append(header);table.append(head);
+        const body=comparisonElement('tbody');
+        [current,alternative].forEach((record,index)=>{
+          const tr=comparisonElement('tr',index===0?'row-before':'row-after');
+          const th=comparisonElement('th','',record.model+' · '+record.effort);th.scope='row';tr.append(th);
+          [String(record.aa),record.costText,record.contextText].forEach(value=>tr.append(comparisonElement('td','',value)));
+          body.append(tr);
+        });
+        table.append(body);
+        return table;
+      }
+      const comparisonRecords=rows.map((row,index)=>{
+        const cells=[...row.cells];
+        const vendor=cells[0].querySelector('small')?.textContent.trim()||'';
+        const supportedVendor=['OpenAI','Anthropic','SpaceXAI','Google'].includes(vendor)?vendor:'';
+        const costValue=comparisonNumber(cells[7]?.textContent||'');
+        if(!row.id)row.id='compare-'+row.dataset.family+'-'+row.dataset.effort.toLowerCase()+'-'+index;
+        return {row,index,cells,vendor:supportedVendor,model:row.dataset.model,effort:row.dataset.effort,
+          aa:comparisonNumber(cells[2]?.textContent||''),cost:costValue===null?null:Math.round(costValue*1000000),
+          costText:cells[7]?.textContent.trim()||'미확인',context:comparisonContext(cells[10]?.textContent||''),
+          contextText:cells[10]?.textContent.trim()||'미확인'};
+      });
+      comparisonRecords.forEach(current=>{
+        current.row.dataset.dominated='false';
+        const candidates=comparisonRecords.filter(candidate=>comparisonDominates(candidate,current))
+          .sort((a,b)=>a.cost-b.cost||b.aa-a.aa||a.index-b.index);
+        if(candidates.length===0)return;
+        const best=candidates[0];
+        current.row.classList.add('aa-cost-dominated');
+        current.row.dataset.dominated='true';
+        current.row.dataset.alternative=best.row.id;
+        current.row.setAttribute('aria-label',current.model+' '+current.effort+' · 같은 계열에서 AA·비용 기준의 대안 존재. 모델명에서 비교 근거 확인.');
+        const label=current.cells[0].querySelector('.model-name');
+        const trigger=comparisonElement('button','model-name summary-tip model-evidence',current.model);
+        trigger.type='button';
+        const evidenceId='dominance-evidence-'+current.index;
+        trigger.dataset.summaryTip=evidenceId;
+        if(label)current.cells[0].replaceChild(trigger,label);
+        const betterMetrics=comparisonMetrics.filter(metric=>{
+          const own=comparisonNumber(current.cells[metric.index]?.textContent||'');
+          const alt=comparisonNumber(best.cells[metric.index]?.textContent||'');
+          return own!==null&&alt!==null&&(metric.higher?own>alt:own<alt);
+        });
+        const template=document.createElement('template');
+        template.id=evidenceId;
+        template.content.append(comparisonElement('div','tip-title','회색 행의 AA·비용 비교 근거'));
+        template.content.append(comparisonTipTable(current,best));
+        const delta=best.aa-current.aa;
+        const savings=current.cost>0?Math.round((1-best.cost/current.cost)*1000)/10:0;
+        const change='AA '+(delta===0?'동점':'+'+delta+'점')+' · '+(savings===0?'비용 동일':'비용 '+savings.toFixed(1)+'% 절감');
+        template.content.append(comparisonElement('p','tip-note',change+'. 같은 '+current.vendor+' 계열에서 컨텍스트 축소 없는 최소 비용 대안.'));
+        if(betterMetrics.length){
+          const detail=betterMetrics.map(metric=>metric.label+' '+current.cells[metric.index].textContent.trim()+' → 대안 '+best.cells[metric.index].textContent.trim()).join(' · ');
+          template.content.append(comparisonElement('p','tip-note','현재 설정의 개별 지표 우위: '+detail+'. 이 항목이 중요하면 대안의 종합 점수·비용만으로 교체를 결정할 수 없습니다.'));
+        }
+        template.content.append(comparisonElement('p','tip-note','판단 범위: 현재 표의 기록된 AA 종합 점수와 과제당 비용. 반올림된 종합 점수의 동점은 모든 과제의 품질이 같다는 의미가 아닙니다. 미확인 값·실제 코딩 에이전트 성능·응답 시간·도구 호환성은 판정에서 제외됩니다. 숨겨진 행도 후보에 포함됩니다.'));
+        document.body.append(template);
+      });
+
+      function render(){
+        const visible=new Set(chips.filter(chip=>chip.getAttribute('aria-pressed')==='true').map(chip=>chip.dataset.family));
+        let count=0;
+        rows.forEach(row=>{row.hidden=!visible.has(row.dataset.family);if(!row.hidden)count++;});
+        status.textContent=count+'개 모델 설정 표시';
+      }
+      chips.forEach(chip=>chip.addEventListener('click',()=>{chip.setAttribute('aria-pressed',chip.getAttribute('aria-pressed')==='true'?'false':'true');render();}));
+      render();
+
+      const comparisonTable=document.getElementById('comparison-table');
+      const columnHeaders=[...comparisonTable.querySelectorAll('thead th')];
+      const columnGroup=document.getElementById('comparison-columns');
+      const columnFilter=document.getElementById('column-filter');
+      const columnChoices=[...document.querySelectorAll('input[data-column]')];
+      const columnAll=document.getElementById('column-all');
+      const columnStatus=document.getElementById('column-status');
+      const columnDefinitions=[{"key":"model","label":"모델","width":170,"index":0},{"key":"effort","label":"추론 설정","width":76,"index":1},{"key":"aa","label":"AA Intelligence","width":90,"index":2},{"key":"briefcase","label":"AA-Briefcase","width":110,"index":3},{"key":"automation","label":"Automation","width":110,"index":4},{"key":"terminal","label":"AA Terminal 4.0","width":120,"index":5},{"key":"scicode","label":"SciCode","width":90,"index":6},{"key":"cost","label":"AA Cost / task","width":105,"index":7},{"key":"cursor","label":"CursorBench 4.0","width":110,"index":8},{"key":"cursorCost","label":"Cursor Cost","width":100,"index":9},{"key":"context","label":"Context","width":90,"index":10},{"key":"meaning","label":"비교 의미","width":230,"index":11},{"key":"lcr","label":"AA-LCR","width":90,"index":12}];
+      function updateStickyModelWidth(){
+        const width=columnHeaders[0].getBoundingClientRect().width;
+        if(width>0)comparisonTable.style.setProperty('--model-column-width',width+'px');
+      }
+      function renderColumns(){
+        const selected=new Set(columnChoices.filter(input=>input.checked).map(input=>input.dataset.column));
+        const visibleDefinitions=columnDefinitions.filter(definition=>definition.index<2||selected.has(definition.key));
+        columnDefinitions.forEach(definition=>{
+          const hidden=definition.index>=2&&!selected.has(definition.key);
+          columnHeaders[definition.index].hidden=hidden;
+          rows.forEach(row=>{row.cells[definition.index].hidden=hidden;});
+        });
+        // Hidden cells retain their original indices and values. Rebuild colgroup to avoid empty column slots.
+        columnGroup.replaceChildren(...visibleDefinitions.map(definition=>{
+          const col=document.createElement('col');
+          col.dataset.columnKey=definition.key;
+          col.style.width=definition.width+'px';
+          return col;
+        }));
+        comparisonTable.style.minWidth=visibleDefinitions.reduce((total,definition)=>total+definition.width,0)+'px';
+        columnAll.checked=selected.size===columnChoices.length;
+        columnAll.indeterminate=selected.size>0&&selected.size<columnChoices.length;
+        columnStatus.textContent=visibleDefinitions.length+'개 열 표시';
+        updateStickyModelWidth();
+      }
+      columnFilter.hidden=false;
+      columnChoices.forEach(input=>input.addEventListener('change',()=>{renderColumns();tooltip.hidden=true;hideSummary();}));
+      columnAll.addEventListener('change',()=>{
+        columnChoices.forEach(input=>{input.checked=columnAll.checked;});
+        renderColumns();tooltip.hidden=true;hideSummary();
+      });
+      columnFilter.addEventListener('keydown',event=>{
+        if(event.key==='Escape'){columnFilter.open=false;columnFilter.querySelector('summary').focus();}
+      });
+      window.addEventListener('resize',updateStickyModelWidth);
+      if('ResizeObserver' in window){const observer=new ResizeObserver(updateStickyModelWidth);observer.observe(comparisonTable);}
+      renderColumns();
+      const tooltip=document.getElementById('metric-tooltip');
+      function showTip(el){
+        tooltip.textContent=el.dataset.tip;
+        tooltip.hidden=false;
+        const target=el.getBoundingClientRect();
+        const popup=tooltip.getBoundingClientRect();
+        const left=Math.max(12,Math.min(target.left+(target.width-popup.width)/2,window.innerWidth-popup.width-12));
+        const above=target.top-popup.height-9;
+        tooltip.style.left=left+'px';
+        tooltip.style.top=(above>=12?above:Math.min(target.bottom+9,window.innerHeight-popup.height-12))+'px';
+      }
+      document.querySelectorAll('.tip').forEach(el=>{
+        el.setAttribute('aria-label',el.textContent.trim()+'. '+el.dataset.tip);
+        el.addEventListener('mouseenter',()=>showTip(el));
+        el.addEventListener('focus',()=>showTip(el));
+        el.addEventListener('click',()=>showTip(el));
+        el.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showTip(el);}});
+        el.addEventListener('mouseleave',()=>tooltip.hidden=true);
+        el.addEventListener('blur',()=>tooltip.hidden=true);
+      });
+      window.addEventListener('scroll',()=>tooltip.hidden=true,true);
+      const summaryPopup=document.getElementById('summary-tooltip');
+      const summaryTriggers=[...document.querySelectorAll('.summary-tip')];
+      let activeSummary=null;
+      let summaryPinned=false;
+      let summaryHideTimer=null;
+      function cancelSummaryHide(){clearTimeout(summaryHideTimer);}
+      function hideSummary(){
+        cancelSummaryHide();
+        summaryPopup.hidden=true;
+        if(activeSummary)activeSummary.removeAttribute('aria-describedby');
+        activeSummary=null;
+        summaryPinned=false;
+      }
+      function showSummary(el){
+        const source=document.getElementById(el.dataset.summaryTip);
+        if(!source||!source.content)return;
+        cancelSummaryHide();
+        if(activeSummary!==el){
+          if(activeSummary)activeSummary.removeAttribute('aria-describedby');
+          summaryPinned=false;
+          summaryPopup.replaceChildren(source.content.cloneNode(true));
+          summaryPopup.scrollTop=0;
+        }
+        activeSummary=el;
+        el.setAttribute('aria-describedby','summary-tooltip');
+        summaryPopup.hidden=false;
+        summaryPopup.style.left='12px';
+        summaryPopup.style.top='12px';
+        const target=el.getBoundingClientRect();
+        const popup=summaryPopup.getBoundingClientRect();
+        const left=Math.max(12,Math.min(target.left,window.innerWidth-popup.width-12));
+        const below=target.bottom+8;
+        const top=below+popup.height<=window.innerHeight-12?below:Math.max(12,target.top-popup.height-8);
+        summaryPopup.style.left=left+'px';
+        summaryPopup.style.top=top+'px';
+      }
+      function scheduleSummaryHide(){
+        cancelSummaryHide();
+        if(!summaryPinned)summaryHideTimer=setTimeout(hideSummary,180);
+      }
+      summaryTriggers.forEach(el=>{
+        el.setAttribute('aria-label',el.textContent.trim()+' · 비교 근거 보기');
+        el.addEventListener('mouseenter',()=>showSummary(el));
+        el.addEventListener('focus',()=>showSummary(el));
+        el.addEventListener('mouseleave',scheduleSummaryHide);
+        el.addEventListener('blur',()=>{summaryPinned=false;scheduleSummaryHide();});
+        el.addEventListener('click',()=>{
+          if(activeSummary===el&&summaryPinned){hideSummary();return;}
+          showSummary(el);
+          summaryPinned=true;
+        });
+      });
+      summaryPopup.addEventListener('mouseenter',cancelSummaryHide);
+      summaryPopup.addEventListener('mouseleave',()=>{summaryPinned=false;scheduleSummaryHide();});
+      document.addEventListener('keydown',event=>{if(event.key==='Escape'){hideSummary();tooltip.hidden=true;}});
+      document.addEventListener('click',event=>{
+        if(!summaryPopup.contains(event.target)&&!summaryTriggers.some(el=>el.contains(event.target)))hideSummary();
+      });
+      window.addEventListener('scroll',event=>{
+        if(event.target===window||event.target===document||!summaryPopup.contains(event.target))hideSummary();
+      },true);
+      window.addEventListener('resize',hideSummary);
+      const links=[...document.querySelectorAll('.side a[href^="#"]')];
+      if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.filter(entry=>entry.isIntersecting).forEach(entry=>{links.forEach(link=>link.classList.toggle('active',link.getAttribute('href')==='#'+entry.target.id));});},{rootMargin:'-20% 0px -65% 0px'});document.querySelectorAll('main > header[id], main > section[id]').forEach(section=>observer.observe(section));}
+    })();
+  </script>
+</body>
+</html>
