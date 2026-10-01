@@ -93,6 +93,24 @@
     @media(max-width:680px){.column-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.column-options{padding:12px}.column-options label{font-size:11px}.conclusion-list p{font-size:13px}}
     @media print{.column-filter,.column-status{display:none}.conclusion-list li{break-inside:avoid}}
   .source-details{margin-top:22px;border-top:1px solid var(--line);padding:14px 0;color:#596473;font-size:12px}.source-details summary{cursor:pointer;font-weight:650}.source-details li{margin:10px 0;line-height:1.8}.hero p{max-width:1000px}.model-name{white-space:normal;line-height:1.5}.tip:focus-visible,.source-details summary:focus-visible{outline:2px solid #5d7ba3;outline-offset:3px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    /* 구독 가격과 실제 작업 한도는 모델 평가 비용과 분리 */
+    .billing-table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff}
+    .billing-table{min-width:440px;white-space:normal;font-size:13px}
+    .billing-table th,.billing-table td{position:static;min-width:0;max-width:none;border-right:0;padding:13px 17px;vertical-align:middle}
+    .billing-table th:first-child,.billing-table td:first-child{text-align:left;width:44%}
+    .billing-table th:nth-child(2),.billing-table td:nth-child(2){text-align:right;width:25%;white-space:nowrap}
+    .billing-table th:nth-child(3),.billing-table td:nth-child(3){text-align:left;width:31%}
+    .billing-table tbody th{background:#fff;border-bottom:1px solid #e9edf1;color:#41536c;font-size:13px;font-weight:600}
+    .billing-table tbody tr:nth-child(even) th{background:#fcfcfd}
+    .billing-table tbody tr:last-child th{border-bottom:0}
+    .billing-table .subscription-price{font-weight:650;color:#344b69}
+    .billing-note{font-size:11px;line-height:1.75;color:#748193;margin:10px 0 17px;max-width:1000px}
+    .billing-conditions{list-style:none;margin:0;padding:0;max-width:1080px}
+    .billing-conditions li{padding:12px 0;border-top:1px solid #e3e8ee;font-size:13px;line-height:1.85;color:#5e6b7c}
+    .billing-conditions strong{font-weight:650;color:#41536c}
+    .billing-decision{margin:15px 0 0;border-left:3px solid #9daabd;background:#eef1f5;padding:13px 16px;color:#495b73;font-size:13px;line-height:1.85}
+    @media(max-width:680px){.billing-table th,.billing-table td{padding:12px}.billing-table,.billing-table tbody th{font-size:12px}}
+    @media print{.billing-table-wrap{overflow:visible}.billing-table{min-width:0}.billing-conditions li{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -100,7 +118,7 @@
   <div class="shell">
     <nav class="side" aria-label="문서 목차">
       <p class="side-label">CONTENTS</p>
-      <a href="#intro">제목 / 목적</a><a href="#summary">핵심 요약</a><a href="#delta">이전 Gemini vs Argon</a><a href="#comparison">전체 비교표</a><a href="#conclusion">결론</a>
+      <a href="#intro">제목 / 목적</a><a href="#summary">핵심 요약</a><a href="#delta">이전 Gemini vs Argon</a><a href="#comparison">전체 비교표</a><a href="#billing">결제 비용과 사용량</a><a href="#conclusion">결론</a>
     </nav>
     <main>
       <header id="intro" class="hero" data-ui-id="hero">
@@ -110,11 +128,11 @@
       <section id="summary" data-ui-id="summary">
 <div class="section-head"><div><div class="kicker">01 / 개요</div><h2>핵심 요약</h2></div></div>
 <div class="overview"><ul class="overview-list">
-<li><strong>가성비 변화</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-cost">출시 할인 중에는 Astra와 비슷한 종합 성능에 더 낮은 비용</button>. Sol 6.1보다는 비싸며, 할인 종료 후 Astra와의 비용 관계도 역전되는 조건.</span></li>
+<li><strong>가성비 변화</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-cost">출시 할인 중에는 Astra와 같은 종합 점수에 더 낮은 과제당 비용</button>. Opus 5.5 High와 Sol 6.1은 더 낮은 과제당 비용의 대안이며, 할인 종료 후 비용 우위도 축소되는 조건.</span></li>
 <li><strong>성능 개선</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-performance">이전 Gemini 대비 종합 성능·자율적 업무 처리의 큰 개선</button>. 코딩 실무 전체나 장문 처리의 일괄 우위는 아닌 결과.</span></li>
-<li><strong>기본 선택</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-availability">현재 기본 모델의 일괄 교체보다, 사용 가능해진 뒤 고난도·자동화 작업에서 비교할 후보</button>. 제한된 사용자 대상 공개로 일반 사용자의 즉시 전환은 어려운 상태.</span></li>
+<li><strong>기본 선택</strong><span><button type="button" class="summary-tip" data-summary-tip="evidence-cost">비교 모델 중 최고 종합 품질은 Claude Opus, 비용 효율은 Codex의 Sol 6.1 중심</button>. Argon은 자동화에서 별도 비교할 후보이며, 모든 업무에서 선택 근거가 없는 모델로 단정하기는 어려운 결과.</span></li>
 </ul></div>
-<template id="evidence-cost"><div class="tip-title">AA 종합 성능과 과제당 비용</div><table class="tip-table"><thead><tr><th scope="col">모델 · 설정</th><th scope="col">AA</th><th scope="col">USD / task</th></tr></thead><tbody><tr><th scope="row">Gemini 4 Argon · High · 출시 할인</th><td>53</td><td>$1.99</td></tr><tr><th scope="row">GPT-6 Astra · Max</th><td>53</td><td>$3.26</td></tr><tr><th scope="row">GPT-6.1 Sol · Max</th><td>52</td><td>$0.72</td></tr><tr><th scope="row">Argon · 할인 종료 가정</th><td>53</td><td>약 $3.98</td></tr></tbody></table><p class="tip-note">출시 할인 기준 Astra보다 약 39.0% 낮은 비용. Sol 6.1 Max 대비 약 2.8배. 할인 종료 시 동일 토큰 사용·캐시 조건에서 Astra보다 약 22.1% 높은 계산값.</p><p class="tip-note">Argon은 2026-10-01 AA 확인값, GPT는 기존 보고서의 2026-09-30 기록. $3.98은 실제 측정한 미래 비용이 아닌 가격 두 배 가정. <a href="https://artificialanalysis.ai/models/gemini-4-argon" target="_blank" rel="noopener noreferrer">Argon 평가</a> · <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 할인·정가</a></p></template>
+<template id="evidence-cost"><div class="tip-title">AA 종합 성능과 과제당 비용</div><table class="tip-table"><thead><tr><th scope="col">모델 · 설정</th><th scope="col">AA</th><th scope="col">USD / task</th></tr></thead><tbody><tr><th scope="row">Gemini 4 Argon · High · 출시 할인</th><td>53</td><td>$1.99</td></tr><tr><th scope="row">GPT-6 Astra · Max</th><td>53</td><td>$3.26</td></tr><tr><th scope="row">Claude Opus 5.5 · High · default fallback</th><td>54</td><td>$1.82</td></tr><tr><th scope="row">Claude Opus 5.5 · Max · default fallback</th><td>58</td><td>$5.98</td></tr><tr><th scope="row">GPT-6.1 Sol · Max</th><td>52</td><td>$0.72</td></tr><tr><th scope="row">Argon · 할인 종료 가정</th><td>53</td><td>약 $3.98</td></tr></tbody></table><p class="tip-note">출시 할인 기준 Astra보다 약 39.0% 낮은 비용. Sol 6.1 Max 대비 약 2.8배. 할인 종료 시 동일 토큰 사용·캐시 조건에서 Astra보다 약 22.1% 높은 계산값.</p><p class="tip-note">표의 5개 모델 AA·과제당 비용은 2026-10-01 재확인. Opus는 default fallback 조건. Argon은 Opus High보다 과제당 비용이 약 9.3% 높음. $3.98은 실제 측정한 미래 비용이 아닌 가격 두 배 가정. <a href="https://artificialanalysis.ai/models/gemini-4-argon" target="_blank" rel="noopener noreferrer">Argon 평가</a> · <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 할인·정가</a></p></template>
 <template id="evidence-performance"><div class="tip-title">Gemini 세대 간 평가</div><table class="tip-table"><thead><tr><th scope="col">모델</th><th scope="col">AA</th><th scope="col">Automation</th><th scope="col">Terminal 4.0</th></tr></thead><tbody><tr><th scope="row">3.1 Pro Preview</th><td>30</td><td>35%</td><td>4%</td></tr><tr><th scope="row">3.8 Flash · High</th><td>41</td><td>60%</td><td>20%</td></tr><tr><th scope="row">4 Argon · High</th><td>53</td><td>78%</td><td>57%</td></tr></tbody></table><p class="tip-note">AA-LCR은 3.1 Pro 82% → Argon 80%. 종합 점수 상승이 모든 지표의 상승을 의미하지 않음. 서로 다른 모델·추론 조건으로, 동일 설정의 세대 비교는 아님.</p><p class="tip-note"><a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">Argon 세부 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">3.1 Pro 세부 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-hy3" target="_blank" rel="noopener noreferrer">3.8 Flash 세부 평가</a></p></template>
 <template id="evidence-availability"><div class="tip-title">2026-10-01 기준 이용 가능 범위</div><p class="tip-note">Google 공식 발표는 Fairwind 프로그램의 신뢰받는 사이버 방어 사용자부터 제공하는 단계적 공개. 유료 API 고객과 Google AI Ultra 구독자 대상 확대는 앞으로의 계획이며, 일반 공개 완료나 개인 계정 접근을 확인한 상태가 아님.</p><p class="tip-note">AA의 High는 평가 설정. 현재 앱·API의 기본값이나 Codex에서 선택 가능한 모델이라는 뜻이 아님. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 제공 범위</a></p></template>
 </section>
@@ -241,13 +259,34 @@
         </div>
       </section>
 
+      <section id="billing" data-ui-id="billing">
+        <div class="section-head"><div><div class="kicker">부가 항목 / 구독 조건</div><h2>결제 비용과 사용량</h2></div></div>
+        <div class="billing-table-wrap">
+          <table class="billing-table" aria-label="Google AI 한국 월 구독료와 Pro 대비 사용 한도">
+            <thead><tr><th scope="col">요금제</th><th scope="col">월 결제액</th><th scope="col">사용 한도 · Pro 기준</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Google AI Pro</th><td class="subscription-price">29,000원</td><td>기준 · 1×</td></tr>
+              <tr><th scope="row">Google AI Ultra 5×</th><td class="subscription-price">119,000원</td><td>Pro의 5배</td></tr>
+              <tr><th scope="row">Google AI Ultra 20×</th><td class="subscription-price">300,000원</td><td>Pro의 20배</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="billing-note">한국 공식 월간 표시 가격 · 2026-10-01 확인. 5×·20×는 Google AI Pro 대비 한도로, Codex·Claude와 같은 작업량이나 월 API 사용 금액을 뜻하지 않음. <a href="https://one.google.com/intl/ko_kr/about/google-ai-plans/" target="_blank" rel="noopener noreferrer">공식 한국 요금표</a></p>
+        <ul class="billing-conditions">
+          <li><strong>Argon 제공·전용 한도 미확정.</strong> 현재 제한 공개이며, Google AI Ultra와 유료 API로 확대 예정. Ultra 5×·20× 중 어느 요금제에서 언제 제공되는지, Argon으로 실제 코딩 작업을 얼마나 수행할 수 있는지에 대한 전용 한도는 미공개. Pro 결제만으로 Argon 사용이 가능하다는 근거도 없음. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 제공 계획</a></li>
+          <li><strong>월정액이어도 사용량 보장은 아님.</strong> Gemini 앱과 Antigravity에 5시간·주간 한도 적용. 모델·추론·작업 복잡도 등에 따라 소모량이 달라지며, 복잡한 작업일수록 더 빠른 한도 소진. 공식 정책상 한도는 변경될 수 있어, 현재의 배수가 계속 유지된다는 전제는 부적절. <a href="https://support.google.com/gemini/answer/16275805?hl=en" target="_blank" rel="noopener noreferrer">Gemini 한도 정책</a> · <a href="https://www.antigravity.google/docs/plans/" target="_blank" rel="noopener noreferrer">Antigravity 한도 정책</a></li>
+          <li><strong>한도 초과와 API 비용은 별도.</strong> Antigravity는 기본 한도 소진 시 초기화 대기 또는 추가 AI 크레딧 구매로 대응. Argon 유료 API의 종량제 과금도 구독료와 별개이며, 월 구독료를 API 단가로 나누어 작업 개수를 계산하는 방식은 부적절. <a href="https://www.antigravity.google/docs/plans/" target="_blank" rel="noopener noreferrer">추가 크레딧 조건</a> · <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noopener noreferrer">API 과금 기준</a></li>
+        </ul>
+        <p class="billing-decision"><strong>결제 판단:</strong> Argon의 성능 개선만으로 Ultra 구독의 가성비까지 확정할 수 없음. 실제 접근 권한과 반복 가능한 작업량이 확인되기 전에는 고가 요금제로 전환할 근거 부족. 기본 한도가 줄거나 추가 결제가 필요해지면 작업당 비용을 다시 비교할 필요.</p>
+      </section>
+
       <section id="conclusion" data-ui-id="conclusion">
 <div class="section-head"><div><div class="kicker">04 / 선택 기준</div><h2>결론</h2></div></div>
 <ul class="conclusion-list">
-<li><h3>Gemini의 고난도 작업 선택지 확대</h3><p>3.1 Pro 대비 큰 폭의 종합 점수와 터미널 과제 성공률 개선. 기존 Gemini를 고난도·다단계 작업에서 제외했다면 다시 비교할 근거의 발생. 다만 AA-LCR은 82%에서 80%로 낮아진 값으로, 큰 문맥의 모든 업무까지 우수해졌다는 해석은 부적절. <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">3.1 Pro 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons" target="_blank" rel="noopener noreferrer">Argon 평가</a></p></li>
-<li><h3>기존 모델의 사용 이유가 사라지는 결과는 아님</h3><p>Sol 6.1은 훨씬 낮은 과제당 비용, Opus 5.5 Max는 더 높은 종합 점수와 Terminal 성공률의 선택 근거 유지. Astra Max는 Argon과 종합 점수가 같으면서 출시 할인 중에는 더 비싼 선택지지만, Terminal·AA-LCR·Context와 사용 가능 환경이 다른 비교. Argon이 모든 모델을 대체한다는 결론은 불가.</p><p>Gemini 3.1 Pro·3.8 Flash도 평가 과제당 비용이 더 낮은 선택지. 이전 모델 자체의 성능 저하가 아니라, 품질이 중요한 작업에서 Argon이라는 상위 후보가 추가된 변화.</p></li>
-<li><h3>긴 작업의 가능성과 비용을 함께 확인할 필요</h3><p>Google 발표의 최대 출력 한도는 기존 64K에서 1M 토큰으로 확대. 전체 비교표의 Context 1M과는 별개의 항목이며, 긴 출력을 지원한다고 대규모 코드 수정의 정확성·시간·비용을 보장하는 것은 아님. AA는 긴 응답을 후속 호출로 이어가는 Long Decode Continuation으로 평가. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 출력 한도</a> · <a href="https://artificialanalysis.ai/articles/gemini-4-argon-google-top-three-labs" target="_blank" rel="noopener noreferrer">AA 평가 조건</a></p><p>출시 입력/출력 단가는 100만 토큰당 $2/$10, 종료 후 $4/$20. $1.99 과제 비용이 상시 유지된다는 전제는 부적절. 종료 후 약 $3.98은 같은 토큰 사용·캐시 조건의 환산 시나리오. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 가격</a></p></li>
-<li><h3>현시점의 선택</h3><p>일반 공개 전인 현재는 기존 사용 모델의 유지. 접근이 제공되면 자율적 도구 업무와 어려운 코드 수정에서 High 평가 조건을 출발점으로 비교할 후보. 제한된 사용자 대상의 발표를 지금 모든 계정에서 쓸 수 있는 모델로 해석하지 않으며, 공개된 뒤 실제 작업 품질·재시도·전체 비용으로 재판단. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 제공 계획</a></p></li>
+<li><h3>현재 비교 범위의 선택: 최고 종합 품질은 Opus, 비용 효율은 Sol</h3><p>이 보고서의 비교 모델 중 최고 AA 종합 점수는 Claude Opus 5.5 Max의 58점이며, 과제당 평가 비용은 $5.98. 실용적인 상위 품질 대안인 Opus 5.5 High는 54점·$1.82. 좋은 종합 성능을 낮은 비용으로 반복 사용하는 기본 후보는 Codex에서 선택할 수 있는 GPT-6.1 Sol이며, Max는 52점·$0.72. 따라서 “품질 우선은 Claude Opus, 비용 효율 우선은 Codex의 Sol 6.1”이라는 운영 방향은 현재 AA 종합 점수와 과제당 비용을 기준으로 타당한 판단.</p><p>이 결론은 모델·추론 설정의 선택 기준이며, Claude와 Codex의 모든 모델·모든 실무에 적용되는 서열은 아님. 월 구독 한도와 실제 개발 작업의 완료당 비용은 별도 비교 대상. <a href="https://artificialanalysis.ai/models/releases/claude-opus-5-5" target="_blank" rel="noopener noreferrer">Opus 설정별 평가</a> · <a href="https://artificialanalysis.ai/models/gpt-6-1-sol" target="_blank" rel="noopener noreferrer">Sol Max 평가</a></p></li>
+<li><h3>Argon은 Astra Max와 동점이며, Opus High보다 과제당 비용이 높은 결과</h3><p>Gemini 4 Argon High와 GPT-6 Astra Max는 AA 53점으로 동점. Argon의 출시 할인 중 과제당 비용 $1.99는 Astra Max의 $3.26보다 약 39% 낮지만, 종합 성능 자체가 더 높다는 해석은 부정확. Opus 5.5 High는 AA 54점·$1.82로 Argon보다 점수가 1점 높고, Argon의 과제당 비용은 약 9% 더 높은 값. 종합 점수와 과제당 비용을 우선하면 Argon을 기존 Opus High 대신 기본 선택으로 바꿀 근거는 약한 결과. <a href="https://artificialanalysis.ai/models/gemini-4-argon" target="_blank" rel="noopener noreferrer">Argon 평가</a> · <a href="https://artificialanalysis.ai/models/claude-opus-5-5-high" target="_blank" rel="noopener noreferrer">Opus High 평가</a> · <a href="https://artificialanalysis.ai/articles/gemini-4-argon-google-top-three-labs" target="_blank" rel="noopener noreferrer">Astra 비교</a></p><p>여기서 “더 비싸다”는 AA 과제당 평가 비용 기준. 출시 API 단가는 Argon 입력/출력 $2/$10, Opus $4/$20로 Argon이 더 낮으며, 같은 토큰 수의 가격과 실제 평가에 사용한 토큰을 반영한 과제당 비용은 서로 다른 비교. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">Google 공식 단가</a> · <a href="https://platform.claude.com/docs/en/models/opus-5-5/overview" target="_blank" rel="noopener noreferrer">Claude 공식 단가</a></p></li>
+<li><h3>자동화의 강점 때문에 Gemini의 선택 근거는 남는 결과</h3><p>Argon은 AutomationBench-AA에서 78%로 강한 결과를 보이며, 이전 Gemini 대비 종합 점수와 자율적 작업 처리의 큰 개선. 종합 점수의 1점 차이를 모든 업무의 확실한 성능 차이로 확대하거나 “Gemini를 선택할 이유가 없다”고 단정하는 것은 부적절. 자동화 비중이 높은 업무에서는 별도 비교할 후보이며, 실제 코드 수정·정확성·재시도·완료당 비용으로 재판단할 필요. <a href="https://artificialanalysis.ai/articles/gemini-4-argon-google-top-three-labs" target="_blank" rel="noopener noreferrer">AA 자동화 평가와 조건</a></p><p>기존 Gemini 3.1 Pro·3.8 Flash는 더 낮은 평가 과제당 비용의 선택지로 유지. 이전 모델의 성능 저하나 신규 모델의 장문·실무 전체 우위를 의미하는 결과는 아님.</p></li>
+<li><h3>출시 할인과 제한 공개를 반영한 조건부 결론</h3><p>Argon의 출시 단가는 입력/출력 $2/$10, 할인 종료 후 $4/$20. 현재 $1.99 과제 비용이 상시 유지된다는 전제는 부적절하며, 약 $3.98은 같은 토큰 사용·캐시 조건의 환산 시나리오로 미래 관측값과 구분. 현재 trusted cyber defenders / Fairwind 대상의 단계적 공개이며, 일반 계정의 즉시 사용 가능 여부는 확인하지 않은 상태. <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">공식 가격·제공 계획</a></p><p>공식 최대 출력 1M 토큰은 Context 1M과 별개이며, 긴 출력을 지원한다고 대규모 코드 수정의 품질·시간·비용이 보장되는 것은 아님. 표의 AA·비용 비교는 공개 평가 조건에 한정하고, 월 구독으로 가능한 실제 작업량의 우위는 미검증으로 유지.</p></li>
 </ul>
 <details class="source-details" data-ui-id="sources"><summary>출처와 비교 조건</summary><ul>
 <li><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" target="_blank" rel="noopener noreferrer">Google 공식 발표 · 2026-09-30</a> — 모델 공개 범위, 최대 출력, 출시 할인 및 정가. Google 자체 평가와 AA 평가는 별도.</li>
@@ -255,6 +294,7 @@
 <li><a href="https://artificialanalysis.ai/models/comparisons/gemini-3-1-pro-preview-vs-gpt-4-1" target="_blank" rel="noopener noreferrer">AA Gemini 3.1 Pro 세부 평가</a> · <a href="https://artificialanalysis.ai/models/comparisons/gemini-3-8-flash-vs-hy3" target="_blank" rel="noopener noreferrer">AA Gemini 3.8 Flash High 세부 평가</a> — 이전 모델의 같은 지수 버전 확인. Pro의 추론 단계는 인용 페이지에 미명시.</li>
 <li><a href="https://artificialanalysis.ai/articles/gemini-4-argon-google-top-three-labs" target="_blank" rel="noopener noreferrer">AA Argon 출시 분석 · 2026-09-30</a> — 제한 공개, 출시 할인, Long Decode Continuation 평가 조건. 할인 종료일 미확정.</li>
 <li>GPT·Claude·Grok은 <a href="https://theo-s-han.github.io/research-analysis/materials/GPT_6_1_Sol_Model_Guide.html" target="_blank" rel="noopener noreferrer">기존 Sol 6.1 보고서</a>의 기록 보존. 기존 모델 전부를 오늘 다시 측정한 값은 아님. 새 Gemini는 2026-10-01 확인값.</li>
+<li>이번 결론에 사용한 Argon High, Astra Max, Opus 5.5 High/Max, Sol 6.1 Max의 AA 종합 점수·과제당 비용은 2026-10-01 AA 1차 평가에서 재확인. Opus는 default fallback 조건. 나머지 기존 비교 행은 원문 기록 유지. <a href="https://artificialanalysis.ai/models/releases/claude-opus-5-5" target="_blank" rel="noopener noreferrer">Opus 설정별</a> · <a href="https://artificialanalysis.ai/models/gpt-6-1-sol" target="_blank" rel="noopener noreferrer">Sol Max</a></li>
 <li>AA Cost/task와 Cursor Cost는 과제·실행 환경이 다른 비용. Cursor 결과가 없는 Gemini는 미확인 표시. 일반 실무 작업의 비용·완료 개수로 환산하지 않음.</li>
 <li>회색 행은 같은 제작사에서 AA·비용·Context 조건을 만족하는 대안만 표시. 서로 다른 제작사와 개별 성능·시간·도구 환경의 우열은 판정에서 제외.</li>
 </ul></details>
