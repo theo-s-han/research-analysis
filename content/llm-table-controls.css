@@ -8,6 +8,8 @@
 .llm-filter-all,.llm-filter-option{display:flex;align-items:center;gap:9px;margin:0;padding:9px 10px;cursor:pointer;line-height:1.45;min-height:38px}
 .llm-filter-all{flex:0 0 auto;font-weight:650;border-bottom:1px solid var(--line);margin-bottom:4px}
 .llm-filter-options{min-height:0;overflow:auto;overscroll-behavior:contain}
+.llm-filter-group{padding:12px 10px 5px;color:var(--muted);font-size:11px;font-weight:650;border-top:1px solid var(--line)}
+.llm-filter-group:first-child{border-top:0;padding-top:6px}
 .llm-filter-option:hover,.llm-filter-all:hover{background:#f1f5f9;border-radius:4px}
 .llm-filter-option:has(input:disabled){color:var(--muted);cursor:default}
 .llm-filter-panel input[type="checkbox"]{flex:0 0 16px;min-width:0;width:16px;height:16px;padding:0;margin:0;accent-color:var(--blue)}

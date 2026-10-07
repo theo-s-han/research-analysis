@@ -7,7 +7,7 @@
   const menus = [];
   const groups = [];
   let openMenu = null;
-  const defaultColumns = new Set([1, 2, 4, 6, 8, 27, 28, 30, 31, 33, 36]);
+  const defaultColumns = new Set([1, 2, 4, 8, 9, 11, 12, 13, 15, 17, 28, 37]);
   const selectedColumns = new Set(defaultColumns);
   const empty = document.createElement('div'); empty.id = 'llmTableEmpty'; empty.className = 'llm-table-empty';
   empty.textContent = '조건에 맞는 모델 없음'; empty.hidden = true; table.after(empty);
@@ -53,7 +53,12 @@
     const all = document.createElement('input'); all.type = 'checkbox'; all.id = id + '-all';
     const allText = document.createElement('span'); allText.textContent = '전체 선택'; allRow.append(all, allText); panel.append(allRow);
     const list = document.createElement('div'); list.className = 'llm-filter-options'; panel.append(list);
+    let lastGroup = null;
     const checks = items.map((item, index) => {
+      if (item.group && item.group !== lastGroup) {
+        const heading = document.createElement('div'); heading.className = 'llm-filter-group';
+        heading.textContent = item.group; list.append(heading); lastGroup = item.group;
+      }
       const row = document.createElement('label'); row.className = 'llm-filter-option';
       const input = document.createElement('input'); input.type = 'checkbox'; input.value = String(item.value); input.id = id + '-option-' + index;
       input.disabled = Boolean(item.locked);
@@ -116,10 +121,10 @@
   }
   const configurations = [
     ['tool','tools','사용 도구 필터','모든 사용 도구','사용 도구 선택','기타 / 미확인'],
-    ['provider','provider','회사 필터','모든 회사','회사 선택','미확인'],
-    ['access','access','제공 방식 필터','모든 제공 방식','제공 방식 선택','미확인'],
+    ['provider','provider','모델 개발사 필터','모든 모델 개발사','모델 개발사 선택','미확인'],
+    ['access','access','모델 이용 방식 필터','모든 모델 이용 방식','모델 이용 방식 선택','미확인'],
     ['tier','tier','종합 위치 필터','모든 위치','위치 선택','미평가'],
-    ['status','status','상태 필터','모든 상태','상태 선택','미확인']
+    ['status','status','모델 제공 상태 필터','모든 모델 제공 상태','모델 제공 상태 선택','미확인']
   ];
   configurations.forEach(([id,key,label,allLabel,partialLabel,missing]) => {
     const original = document.getElementById(id);
@@ -153,8 +158,14 @@
     if (focused?.closest('#tbl .hidden-col')) document.getElementById('filter-columns-button').focus();
   }
   const columnMenu = createMenu({
-    id:'filter-columns',label:'표시 열 선택',allLabel:'표시 열',partialLabel:'표시 열',stableLabel:true,
-    items:headers.map((header,index)=>({value:index,label:header.textContent.replace(/[↑↓]/g,'').trim(),locked:index === 2})),
+    id:'filter-columns',label:'비교 항목 선택',allLabel:'비교 항목 선택',partialLabel:'비교 항목 선택',stableLabel:true,
+    items:[
+      ['모델 정보', [1, 2, 3, 4, 5, 6, 8, 27, 37]],
+      ['코딩 에이전트', [9, 10, 11, 12, 13, 14, 15, 16, 17]],
+      ['개발 실사용', [38, 39, 40]],
+      ['모델·Cursor 평가', [28, 29, 30, 31, 32, 33, 34, 35, 36]],
+      ['기타', [0, 7, 18, 19, 20, 21, 22, 23, 24, 25, 26]]
+    ].flatMap(([group, indexes]) => indexes.map(index => ({value:index,label:headers[index].textContent.replace(/[↑↓]/g,'').trim(),locked:index === 2,group}))),
     selected:selectedColumns,onChange:applyColumns
   });
   toolbar.insertBefore(columnMenu.wrapper,document.getElementById('localOnly').parentElement);

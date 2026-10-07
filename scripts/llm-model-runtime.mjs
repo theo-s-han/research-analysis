@@ -10,13 +10,13 @@ export function installModelResearch(data) {
   const metricDefinitions = [
     ['AA Intelligence ↑', 'number', 'Artificial Analysis의 모델 종합 지능 지수. 높을수록 좋음. 코딩 에이전트 Index와 다른 평가. 기존 모델 리서치의 기록값.'],
     ['AA-Briefcase ↑', 'number', '지식 노동·업무 문제 해결 평가 점수. 높을수록 좋음. 원문과 동일한 모델·추론 설정의 기록값.'],
-    ['Automation ↑', 'percent', '자동화·자율적 작업 수행 평가의 성공률(%). 높을수록 좋음. 모델 평가이며 Codex·Claude Code 실측과 구분.'],
+    ['Automation ↑', 'percent', 'AutomationBench-AA: SaaS REST API 업무 자동화의 목표 달성 점수(%). 안전 조건 위반은 0점이며 부분 달성이 반영될 수 있음. 코딩 작업의 무개입 완료율과 다름.'],
     ['AA Terminal 4.0 ↑', 'percent', 'AA 모델 평가 환경의 Terminal-Bench 4.0 성공률(%). 높을수록 좋음. 별도 코딩 에이전트 평가와 혼합 금지.'],
-    ['SciCode ↑', 'percent', '과학·수치 계산 코딩 문제 해결 평가(%). 높을수록 좋음. 같은 벤치마크 조건끼리 비교.'],
+    ['SciCode ↑', 'percent', 'Python 과학·수치 계산 문제의 코딩 평가(%). 높을수록 좋음. 일반 저장소의 버그 수정·개발 성능 전체를 대표하지 않음.'],
     ['AA Cost / task ↓', 'money', 'AA 모델 평가의 작업당 USD 비용. 낮을수록 저렴. Codex·Claude Code 또는 Cursor의 작업당 비용과 구분. Gemini 출시 할인은 원문 조건 유지.'],
     ['CursorBench 4.0 ↑', 'percent', 'Cursor 환경의 코딩 작업 평가(%). 높을수록 좋음. AA 모델·네이티브 에이전트 평가와 다른 실행 환경.'],
     ['Cursor Cost ↓', 'money', 'CursorBench 평가의 작업당 USD 비용. 낮을수록 저렴. AA Cost/task와 직접 비교 불가.'],
-    ['AA-LCR ↑', 'percent', '장문·대규모 코드 문맥의 추론 평가(%). 높을수록 좋음. Context 최대 길이와 실제 이해 성능은 별도.']
+    ['AA-LCR ↑', 'percent', 'AA-LCR v1.1: 약 10만 토큰 규모의 여러 장문 문서를 읽고 답하는 추론 평가(%). 코드 저장소 전용 평가가 아님. Context 최대 수용량과 구분.']
   ];
   const addHeader = (name, tip, unit) => {
     const cell = document.createElement('th');
@@ -32,12 +32,27 @@ export function installModelResearch(data) {
   addHeader('사용 도구', '공식 모델 목록 기준. Codex는 ChatGPT 로그인, Claude Code는 Anthropic 직접 API 기준. 구독·제공자·관리자 정책·승인 권한에 따라 실제 선택 가능 여부가 다름.');
   metricDefinitions.forEach(([name, unit, tip]) => addHeader(name, tip, unit));
   addHeader('평가 조건 / 확인일', '모델 사용 가능 여부 확인일과 벤치마크 원문 기록 시점은 다름. 원문 기준일이 없는 값은 날짜를 추정하지 않음.');
+  [
+    ['무개입 완료율 ↑', '전체 배정 작업 중 사람의 추가 지시·수정 없이 검증까지 통과한 작업 비율(%). 동일 작업군·완료 기준의 실측만 비교. 미측정은 —이며 벤치마크 점수로 추정하지 않음.'],
+    ['회귀 없는 수정 성공률 ↑', '전체 배정 작업 중 요구사항 검증과 기존 회귀 테스트를 모두 통과한 작업 비율(%). 테스트 범위 내 결과이며 제품 전체의 무결함을 뜻하지 않음. 미측정은 —.'],
+    ['성공 1건당 총비용 ↓', '실패·재시도·도구 사용을 포함한 측정 기간의 총 USD 비용 ÷ 검증 완료 작업 수. AA 작업당 API 비용·월 구독료와 다른 지표. 완료 0건 또는 미측정은 —.']
+  ].forEach(([name, tip]) => {
+    addHeader(name, tip);
+    header.lastElementChild.dataset.type = 'num';
+    header.lastElementChild.dataset.basis = 'usage';
+  });
   for (let index = 10; index <= 17; index += 1) header.cells[index].dataset.basis = 'agent';
   header.cells[10].querySelector('.metric-tip').textContent = 'Coding Agent Index ↑';
-  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. 기존 v1.3(Terminal-Bench v2) 기록과 신규 Terminal-Bench 4.0 기반 기록은 별도 차트로 비교. AA 모델 Intelligence와 다름.';
+  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5는 DeepSWE v1.1·Terminal-Bench 4.0·SWE-Atlas-QnA 점수의 동일 가중 평균. 과거 평가판·출처 미명시 기록은 별도 차트. AA Intelligence와 다름.';
   header.cells[12].querySelector('.metric-tip').textContent = 'Agent Terminal-Bench ↑';
   header.cells[12].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 환경의 Terminal-Bench 성공률(%). 버전은 평가 조건 열과 차트명에서 구분. AA 모델 평가의 Terminal 값과 다름.';
   header.cells[4].querySelector('.metric-tip').dataset.tip = '모델 사양, AA 모델 평가, 코딩 에이전트 평가 행을 구분. 서로 다른 평가 체계의 점수·비용을 혼합하지 않음.';
+  header.cells[8].querySelector('.metric-tip').dataset.tip = '모델이 수용하는 최대 문맥 길이. 실제 대규모 저장소 이해·수정 성능이 아님. SWE-Atlas-QnA의 저장소 이해 평가와 구분.';
+  header.cells[11].querySelector('.metric-tip').dataset.tip = 'DeepSWE: 실제 소프트웨어 저장소의 구현·버그 수정 작업 평가(%). 평가판은 조건 열에서 확인. 같은 평가판·실행 환경끼리 비교.';
+  header.cells[13].querySelector('.metric-tip').dataset.tip = 'SWE-Atlas-QnA: 저장소 구조·동작을 읽고 답하는 기술 Q&A 평가(%). 대규모 코드 이해의 참고 지표이며 코드를 직접 수정하는 평가는 아님.';
+  header.cells[14].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 작업당 입력·출력 토큰 합계. 원문의 M은 백만 토큰. 캐시된 입력도 토큰 합계에 포함될 수 있어 비용과 정비례하지 않음.';
+  header.cells[15].querySelector('.metric-tip').dataset.tip = '코딩 에이전트의 작업당 평균 실행 시간. 신규 v1.5 기록은 분 단위이며 모델 응답·도구 실행을 포함한 활성 에이전트 경과 시간. 환경 준비·채점 시간과 구분.';
+  header.cells[17].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 평가의 작업당 평균 API USD 비용. 캐시·재시도 등의 원문 가격 조건 반영. 성공 1건당 비용이나 Codex·Claude 구독 사용량을 뜻하지 않음.';
 
   const textCell = (row, index, value) => {
     row.cells[index].textContent = value ?? '—';
@@ -142,6 +157,36 @@ export function installModelResearch(data) {
     textCell(row, conditionColumn, 'Agent · Terminal-Bench 4.0 · 원문 기준일 미명시');
     linkTo(row, record.source, '평가 원문');
   });
+  const numberCell = (row, column, value, display) => {
+    textCell(row, column, value == null ? '—' : display);
+    if (value != null) row.cells[column].dataset.sort = row.cells[column].dataset.chartValue = String(value);
+  };
+  data.verifiedAgents.records.forEach(record => {
+    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', 'Agent v1.5');
+    row.dataset.recordId = 'agent:v1.5:' + record.sourceId;
+    textCell(row, 8, data.modelRows.find(item => item.model === record.model)?.context || '—');
+    textCell(row, 9, record.harness + ' ' + record.harnessVersion);
+    [[10, 'index'], [11, 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
+    numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
+    numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
+    numberCell(row, 17, record.costUsd, '$' + record.costUsd.toFixed(2));
+    textCell(row, 20, 'AA 공식 평가');
+    const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
+    textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · 실패를 포함한 평균 API 비용');
+    textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + data.verifiedAgents.verifiedAt + ' · 실행일 미명시 · ' + fallback);
+    linkTo(row, data.verifiedAgents.source, 'AA 평가 원문');
+    linkTo(row, data.verifiedAgents.methodology, '평가 방법');
+  });
+  data.developerRows.forEach(record => {
+    const row = makeRow(record.model.startsWith('GPT-') ? 'OpenAI' : record.model.startsWith('Claude ') ? 'Anthropic' : '기타', record.model + ' (' + record.effort + ')', '개발 실사용 측정');
+    row.dataset.recordId = record.id;
+    textCell(row, 9, record.harness);
+    [record.unassistedRate, record.regressionFreeRate, record.costPerSuccess].forEach((value, index) => numberCell(row, 38 + index, value, value == null ? '—' : index === 2 ? '$' + value.toFixed(2) : value.toFixed(1) + '%'));
+    textCell(row, 20, '실사용 검증 기록');
+    textCell(row, 25, record.workload + ' · 테스트: ' + record.testSuite + ' · 배정 ' + record.totalTasks + '건 / 검증 완료 ' + record.completedTasks + '건');
+    textCell(row, conditionColumn, '실사용 측정 ' + record.measuredAt + ' · 작업군: ' + record.workload + ' · 테스트: ' + record.testSuite);
+    linkTo(row, record.source, '측정 근거');
+  });
   [...body.rows].forEach((row, index) => {
     row.cells[0].textContent = String(index + 1); row.cells[0].dataset.sort = String(index + 1);
   });
@@ -151,4 +196,6 @@ export function installModelResearch(data) {
   table.dataset.availabilityVerified = data.availability.verifiedAt;
   table.dataset.modelRecords = String(data.modelRows.length);
   table.dataset.agentRecords = String(data.agentRows.length);
+  table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
+  table.dataset.developerRecords = String(data.developerRows.length);
 }

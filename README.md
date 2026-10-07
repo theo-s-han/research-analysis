@@ -103,7 +103,17 @@ dist/                 생성된 게시 사이트 (Git 추적 제외)
 
 AA 모델 Intelligence, 기존 Coding Agent Index v1.3, Terminal-Bench 4.0 기반 에이전트 평가는 별도 지표/차트입니다. 같은 모델·추론 설정이라도 서로 다른 평가 환경의 값으로 덮어쓰지 않습니다. `npm run check`는 생성 파일이 원문과 일치하는지도 검사합니다.
 
-통합 표의 회사·제공 방식·도구·상태·종합 위치는 체크박스 다중 선택입니다. 같은 메뉴에서는 OR, 서로 다른 메뉴에서는 AND로 결합하며, 전체 해제는 결과 없음입니다. 기본 열은 주요 성능·비용·Context와 모델 식별 정보로 제한하고, `표시 열`에서 모든 기존 열을 복원할 수 있습니다. 모델/설정 열은 항상 표시합니다. 숨김은 원본 cell 인덱스·수치·차트 지표를 바꾸지 않으며, CSV는 현재 표시한 행과 열을 내보냅니다. `초기화`는 전체 행 조건과 기본 열을 복원합니다.
+통합 표의 모델 개발사·모델 이용 방식·도구·모델 제공 상태·종합 위치는 체크박스 다중 선택입니다. 같은 메뉴에서는 OR, 서로 다른 메뉴에서는 AND로 결합하며, 전체 해제는 결과 없음입니다. 기본 열은 주요 성능·비용·Context와 모델 식별 정보로 제한하고, `비교 항목 선택`에서 모든 기존 열을 복원할 수 있습니다. 모델/설정 열은 항상 표시합니다. 숨김은 원본 cell 인덱스·수치·차트 지표를 바꾸지 않으며, CSV는 현재 표시한 행과 열을 내보냅니다. `초기화`는 전체 행 조건과 기본 열을 복원합니다.
+
+통합 표의 기본 열은 개발자 관점으로 모델 개발사, 모델/설정, 평가·사양 구분, Context, Agent/Harness, DeepSWE, Agent Terminal-Bench, SWE-Atlas-QnA, Time/Task, $/Task, AA Intelligence, 평가 조건/확인일입니다. 다른 지표는 삭제하지 않고 비교 항목 메뉴에서 모델 정보·코딩 에이전트·개발 실사용·모델/Cursor 평가·기타로 구분합니다. 일반 모델 가이드의 기본 열 규칙을 바꾸는 것이 아니라 이 통합 표에만 적용합니다.
+
+`content/llm-agent-benchmarks.json`은 AA 공식 코딩 에이전트 페이지에서 확인한 v1.5 스냅샷입니다. 원본 sourceId, 추론 설정, harness 버전, 대체 모델, 확인일, 원 단위 값을 보존합니다. DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균인지 생성/검증 시 확인하며, 과거 기록과 별도 행·차트로 추가합니다. 확인일은 실행일이 아니며 AA 평가 비용을 월 구독 사용량으로 환산하지 않습니다. 2026-10-07 보강 범위는 Sol 6.1·Sonnet 5.5의 각 5개 설정과 같은 평가판의 Opus 5.5 Max·Sol 6 Max입니다. 원문에서 확인하지 못한 모델/설정은 채우지 않습니다.
+
+지표 설명은 평가 범위를 구분합니다. Context는 수용량, AA-LCR v1.1은 약 10만 토큰의 장문 문서 추론, SWE-Atlas-QnA는 코드 저장소 이해, Automation은 AutomationBench-AA 업무 자동화입니다. AA-LCR·Automation을 대규모 코드 수정·코딩 무개입 완료율로 표현하지 않습니다.
+
+`content/llm-developer-measurements.json`의 records는 실제 측정 근거가 생긴 뒤에만 추가합니다. 현재는 빈 목록이며 모든 실사용 값은 `—`입니다. 필수 필드는 id/model/effort/harness/workload/testSuite/measuredAt/source, totalTasks/completedTasks/unassistedCompletedTasks/regressionFreeCompletedTasks/totalCostUsd입니다. 완료는 요구사항 검증을 통과한 작업만, 무개입은 사람이 추가 지시·수정하지 않은 검증 완료 작업만, 회귀 없음은 명시한 기존 테스트까지 통과한 작업만 집계합니다. totalCostUsd에는 같은 작업군의 실패·재시도·도구 비용도 포함합니다. 작업군·테스트·완료 기준이 다른 측정은 직접 비교하지 않습니다. 계산은 무개입 완료/전체 배정, 회귀 없는 완료/전체 배정, 총비용/검증 완료입니다. 분모가 0이면 `—`이며 벤치마크 값으로 추정하지 않습니다. 미측정 실사용 열은 기본 화면·빈 차트로 노출하지 않고 비교 항목에서 선택할 수 있습니다.
+
+자료 근거: [AA 코딩 에이전트 평가](https://artificialanalysis.ai/agents/coding-agents), [에이전트 평가 방법](https://artificialanalysis.ai/methodology/coding-agents-benchmarking/), [모델 지표 정의](https://artificialanalysis.ai/methodology/intelligence-benchmarking).
 
 ## 로컬 미리보기
 
