@@ -1,0 +1,36 @@
+{
+  "verifiedAt": "2026-10-07",
+  "scope": "Codex ChatGPT 로그인 및 Claude Code의 Anthropic 직접 API. 사용자 지정 제공자와 파트너별 배포 ID는 별도 조건.",
+  "sources": {
+    "codex": "https://learn.chatgpt.com/docs/models",
+    "claudeCode": "https://code.claude.com/docs/en/model-config",
+    "claudeModels": "https://platform.claude.com/docs/en/models/overview",
+    "claudeLifecycle": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
+  },
+  "models": [
+    {"name":"GPT-6.1 Sol","id":"gpt-6.1-sol","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M","note":"요금제·클라이언트·워크스페이스 정책에 따라 제공. Enterprise/Edu는 관리자 활성화 필요."},
+    {"name":"GPT-6 Astra","id":"gpt-6-astra","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M"},
+    {"name":"GPT-6 Sol","id":"gpt-6-sol","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M"},
+    {"name":"GPT-6 Luna","id":"gpt-6-luna","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M"},
+    {"name":"GPT-5.6 Sol","id":"gpt-5.6-sol","provider":"OpenAI","tool":"codex","status":"현행"},
+    {"name":"GPT-5.6 Terra","id":"gpt-5.6-terra","provider":"OpenAI","tool":"codex","status":"현행"},
+    {"name":"GPT-5.6 Luna","id":"gpt-5.6-luna","provider":"OpenAI","tool":"codex","status":"현행"},
+    {"name":"GPT-5.5","id":"gpt-5.5","provider":"OpenAI","tool":"codex","status":"종료 예정","note":"Codex ChatGPT 로그인 제공 종료 예정일: 2026-10-14. API 수명주기와 구분."},
+    {"name":"Claude Fable 5.1","id":"claude-fable-5-1","provider":"Anthropic","tool":"claude-code","status":"현행","context":"1M"},
+    {"name":"Claude Fable 5","id":"claude-fable-5","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Opus 5.5","id":"claude-opus-5-5","provider":"Anthropic","tool":"claude-code","status":"현행","context":"1M","release":"2026-09-22"},
+    {"name":"Claude Opus 5","id":"claude-opus-5","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Opus 4.8","id":"claude-opus-4-8","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Opus 4.7","id":"claude-opus-4-7","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Opus 4.6","id":"claude-opus-4-6","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Opus 4.5","id":"claude-opus-4-5-20251101","provider":"Anthropic","tool":"claude-code","status":"현행","context":"200K"},
+    {"name":"Claude Sonnet 5.5","id":"claude-sonnet-5-5","provider":"Anthropic","tool":"claude-code","status":"현행","context":"1M","release":"2026-09-28"},
+    {"name":"Claude Sonnet 5","id":"claude-sonnet-5","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Sonnet 4.6","id":"claude-sonnet-4-6","provider":"Anthropic","tool":"claude-code","status":"현행"},
+    {"name":"Claude Sonnet 4.5","id":"claude-sonnet-4-5-20250929","provider":"Anthropic","tool":"claude-code","status":"종료 예정","context":"200K","note":"Anthropic 직접 API 종료 예정일: 2026-11-30. Bedrock·Google Cloud의 일정은 별도."},
+    {"name":"Claude Haiku 4.5","id":"claude-haiku-4-5-20251001","provider":"Anthropic","tool":"claude-code","status":"현행","context":"200K"},
+    {"name":"Claude Mythos 5.1","id":"claude-mythos-5-1","provider":"Anthropic","tool":"claude-code","status":"제한 제공","context":"1M","restricted":true,"note":"승인된 고객·접근 권한을 가진 API 계정에 한정. 일반 구독의 모델 선택 목록과 다름."},
+    {"name":"Claude Mythos 5","id":"claude-mythos-5","provider":"Anthropic","tool":"claude-code","status":"제한 제공","context":"1M","restricted":true,"note":"승인된 고객·접근 권한을 가진 API 계정에 한정. 일반 구독의 모델 선택 목록과 다름."},
+    {"name":"Claude Mythos Preview","id":"claude-mythos-preview","provider":"Anthropic","tool":"claude-code","status":"제한 제공","restricted":true,"note":"승인 고객 한정·deprecated. 종료일 미정. 일반 구독의 모델 선택 목록과 다름."}
+  ]
+}

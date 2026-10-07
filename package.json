@@ -8,6 +8,7 @@
     "build": "node scripts/build.mjs",
     "import": "node scripts/import.mjs",
     "preview": "node scripts/serve.mjs",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs && node scripts/sync-llm-model-research.mjs --check",
+    "sync:models": "node scripts/sync-llm-model-research.mjs"
   }
 }

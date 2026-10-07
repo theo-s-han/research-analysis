@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>주요 LLM·코딩 모델 통합 비교 — 2026-08-18</title>
+<title>주요 LLM·코딩 모델 통합 비교 — 2026-10-07</title>
 <style>
 :root{--bg:#f5f7fb;--panel:#fff;--fg:#172033;--muted:#667085;--line:#d8dee9;--head:#18253d;--head2:#253552;--blue:#2563eb;--green:#087f5b;--yellow:#9a6700;--red:#b42318;--shadow:0 8px 30px rgba(15,23,42,.08)}
 *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,sans-serif;line-height:1.5}
@@ -24,6 +24,10 @@ th:nth-last-child(-n+5) .metric-tip::before{left:auto;right:14px;transform:none}
 
 .footer{font-size:12px;color:var(--muted);padding:16px 2px 40px} .footer strong{color:var(--fg)}
 .hidden-col{display:none!important}
+#count,#llmChartCount{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+#tbl th:first-child,#tbl td:first-child{width:45px;min-width:45px;max-width:45px}
+#tbl th:nth-child(2),#tbl td:nth-child(2){width:105px;min-width:105px;max-width:105px}
+@media(max-width:600px){#tbl td:nth-child(-n+3){position:static}#tbl th:nth-child(-n+3){left:auto}}
 @media(max-width:900px){.page{padding:14px}.cards{grid-template-columns:repeat(2,1fr)}.guide-grid{grid-template-columns:1fr} input{min-width:100%} .count{margin-left:0}}
 @media print{.toolbar,.cards{display:none}table{font-size:8px;min-width:0}th{position:static}td:first-child,td:nth-child(2),td:nth-child(3){position:static}}
 </style>
@@ -34,7 +38,6 @@ th:nth-last-child(-n+5) .metric-tip::before{left:auto;right:14px;transform:none}
 .llm-tabs{display:flex;gap:3px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;scroll-padding:8px}
 .llm-tabs button{flex:0 0 auto;border:1px solid transparent;border-bottom:0;border-radius:6px 6px 0 0;padding:9px 12px;background:transparent;font-size:13px;white-space:nowrap;color:var(--muted)}
 .llm-tabs button[aria-selected="true"]{background:var(--panel);border-color:var(--line);color:var(--fg)}
-.llm-tabs .llm-public-tag{font-size:9px;margin-left:5px;font-weight:500;color:var(--muted)}
 .llm-tabs button[data-kind="public"]:first-of-type{margin-left:8px}
 .llm-tab-scroll{flex:0 0 30px;min-width:30px;padding:0;border:0;background:transparent;font-size:26px;color:var(--muted)}
 .llm-tab-scroll:disabled{opacity:.25;cursor:default}
@@ -116,6 +119,7 @@ th:nth-last-child(-n+5) .metric-tip::before{left:auto;right:14px;transform:none}
 </div></details>
 <div class="toolbar">
 <input id="search" type="search" placeholder="모델, 회사, 벤치, 메모 검색">
+<select id="tool" aria-label="사용 도구"><option value="">모든 사용 도구</option><option value="codex">Codex</option><option value="claude-code">Claude Code</option></select>
 <select id="provider"><option value="">모든 회사</option><option value="OpenAI">OpenAI</option><option value="Anthropic">Anthropic</option><option value="Google">Google</option><option value="xAI">xAI</option><option value="DeepSeek">DeepSeek</option><option value="Alibaba / Qwen">Alibaba / Qwen</option><option value="Moonshot AI">Moonshot AI</option><option value="Z.ai">Z.ai</option><option value="MiniMax">MiniMax</option><option value="Mistral AI">Mistral AI</option><option value="Meta">Meta</option><option value="Microsoft">Microsoft</option><option value="NVIDIA">NVIDIA</option><option value="IBM">IBM</option><option value="BigCode">BigCode</option><option value="01.AI">01.AI</option><option value="AI21 Labs">AI21 Labs</option><option value="Cohere">Cohere</option><option value="Databricks">Databricks</option><option value="TII">TII</option><option value="Snowflake">Snowflake</option><option value="Salesforce">Salesforce</option><option value="Cursor">Cursor</option></select>
 <select id="access"><option value="">모든 제공 방식</option><option value="API/온프레미스">API/온프레미스</option><option value="API/클라우드">API/클라우드</option><option value="비공개 preview">비공개 preview</option><option value="오픈웨이트">오픈웨이트</option><option value="오픈웨이트 + API">오픈웨이트 + API</option><option value="오픈웨이트 + 로컬">오픈웨이트 + 로컬</option></select>
 <select id="tier"><option value="">모든 위치</option><option value="S+">S+</option><option value="S">S</option><option value="S-">S-</option><option value="A+">A+</option><option value="A">A</option><option value="A-">A-</option><option value="B+">B+</option><option value="B">B</option><option value="B-">B-</option><option value="C+">C+</option><option value="C">C</option></select>
@@ -393,27 +397,29 @@ th:nth-last-child(-n+5) .metric-tip::before{left:auto;right:14px;transform:none}
   if (tierFilter && ![...tierFilter.options].some(option => option.value === '비교 비대상')) {
     tierFilter.add(new Option('비교 비대상', '비교 비대상'));
   }
-document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
+document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-10-07';
   const guide = document.querySelector('.guide-grid');
   if (guide) guide.insertAdjacentHTML('beforeend', '<p><b>비교 비대상</b>: 오디오·실시간·검색 특화 모델은 일반/코딩 LLM 지표와 직접 비교할 수 없어 종합 위치를 부여하지 않았습니다.</p>');
 })();
 </script>
+<script src="llm-model-research.js"></script>
 <script id="llmTableControls">
 (() => {
   const table = document.getElementById('tbl');
   const $ = selector => document.querySelector(selector);
-  const controls = ['search', 'provider', 'access', 'tier', 'status', 'localOnly', 'aaOnly'];
+  const controls = ['search', 'tool', 'provider', 'access', 'tier', 'status', 'localOnly', 'aaOnly'];
   const rows = () => [...table.tBodies[0].rows];
   const apply = () => {
     const query = $('#search').value.trim().toLowerCase();
     const provider = $('#provider').value, access = $('#access').value, tier = $('#tier').value, status = $('#status').value;
+    const tool = $('#tool').value;
     const localOnly = $('#localOnly').checked, aaOnly = $('#aaOnly').checked;
     const currentRows = rows();
     let count = 0;
     currentRows.forEach(row => {
       const visible = (!query || row.textContent.toLowerCase().includes(query)) && (!provider || row.dataset.provider === provider)
         && (!access || row.dataset.access === access) && (!tier || row.dataset.tier === tier) && (!status || row.dataset.status === status)
-        && (!localOnly || row.dataset.local === '1') && (!aaOnly || row.dataset.aa === '1');
+        && (!localOnly || row.dataset.local === '1') && (!aaOnly || row.dataset.aa === '1') && (!tool || row.dataset.tools === tool);
       row.style.display = visible ? '' : 'none';
       if (visible) count += 1;
     });
@@ -543,10 +549,13 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
     const records = tableRows.map(row => {
       const model = textOf(row.cells[modelIndex]);
       const provider = row.dataset.provider || textOf(row.cells[providerIndex]);
-      const harness = textOf(row.cells[harnessIndex]);
+      const rawHarness = textOf(row.cells[harnessIndex]);
+      const harness = rawHarness === '—' ? '' : rawHarness;
       const local = row.dataset.local !== undefined ? row.dataset.local === '1' : /로컬|오픈웨이트/.test(textOf(row.cells[accessIndex]));
-      const key = [provider, model, harness].join('|');
-      return { row, model, provider, harness, local, key, colorKey: key };
+      const condition = row.dataset.benchmark || '';
+      const key = [provider, model, harness, condition, row.dataset.recordId || ''].join('|');
+      const evidence = row.dataset.modelEvaluation === '1' ? textOf(row.cells[37]) : condition;
+      return { row, model, provider, harness, local, condition, evidence, key, colorKey: key };
     });
     const metrics = [];
     headers.forEach((header, column) => {
@@ -555,11 +564,15 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
       if (!/[↑↓]/.test(rawName) && !header.hasAttribute('data-chart')) return;
       const name = header.dataset.chartName || normalize(rawName);
       const unit = columnUnit(header, column, tableRows);
-      const entries = records.map(record => ({ ...record, value: parseNumber(record.row.cells[column], unit), context: record.harness }));
-      metrics.push({
-        id: 'column:' + name.toLowerCase(), name, kind: 'column', column, unit,
-        direction: header.dataset.chartOrder || (rawName.includes('↓') ? 'asc' : 'desc'),
-        entries: entries.filter(entry => entry.value !== null && entry.model)
+      const entries = records.map(record => ({ ...record, value: parseNumber(record.row.cells[column], unit), context: record.harness })).filter(entry => entry.value !== null && entry.model);
+      const conditions = header.dataset.basis === 'agent' ? [...new Set(entries.map(entry => entry.condition))] : [''];
+      conditions.forEach(condition => {
+        const metricName = name + (condition ? ' · ' + condition : '');
+        metrics.push({
+          id: 'column:' + metricName.toLowerCase(), name: metricName, kind: 'column', column, unit, basis: header.dataset.basis || '',
+          direction: header.dataset.chartOrder || (rawName.includes('↓') ? 'asc' : 'desc'),
+          entries: condition ? entries.filter(entry => entry.condition === condition) : entries
+        });
       });
     });
     const publicColumns = headers.map((header, index) => /공개.*(?:실측|벤치)/.test(textOf(header)) ? index : -1).filter(index => index >= 0);
@@ -574,6 +587,7 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
       });
     }));
     metrics.push(...[...publicMetrics.values()].sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true })));
+    metrics.sort((a, b) => Number(b.basis === 'model') - Number(a.basis === 'model'));
     return { metrics, records };
   }
 
@@ -646,9 +660,6 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
         button.setAttribute('role', 'tab'); button.setAttribute('aria-controls', 'llmChartView');
         button.dataset.metric = metric.id; button.dataset.kind = metric.kind;
         button.textContent = metric.name;
-        if (metric.kind === 'public') {
-          const tag = document.createElement('span'); tag.className = 'llm-public-tag'; tag.textContent = '공개'; button.appendChild(tag);
-        }
         tabs.appendChild(button);
       });
       tabs.dataset.signature = signature;
@@ -672,7 +683,7 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
     return lines;
   }
   function showTooltip(group, entry, metric) {
-    tooltip.textContent = entry.model + '\n' + entry.provider + (entry.context ? ' · ' + entry.context : '') + '\n' + metric.name + '  ' + formatValue(entry.value, metric);
+    tooltip.textContent = entry.model + '\n' + entry.provider + (entry.context ? ' · ' + entry.context : '') + '\n' + metric.name + '  ' + formatValue(entry.value, metric) + (entry.evidence ? '\n' + entry.evidence : '');
     tooltip.hidden = false;
     const bounds = group.getBoundingClientRect(), size = tooltip.getBoundingClientRect();
     tooltip.style.left = Math.max(12, Math.min(bounds.left, window.innerWidth - size.width - 12)) + 'px';
@@ -691,7 +702,7 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-09-10';
     const localOnly = byId('llmChartLocal').checked;
     const eligible = metric.entries.filter(entry => (!localOnly || entry.local) && !entry.row.hidden && entry.row.style.display !== 'none');
     const entries = eligible.slice().sort((a, b) => (metric.direction === 'asc' ? a.value - b.value : b.value - a.value) || a.key.localeCompare(b.key)).slice(0, 15);
-    byId('llmChartTitle').textContent = metric.name + (metric.kind === 'public' ? ' · 공개' : '');
+    byId('llmChartTitle').textContent = metric.name;
     byId('llmChartCount').textContent = (metric.direction === 'asc' ? '최저 ' : '상위 ') + entries.length + ' / ' + eligible.length;
     byId('llmChartScale').hidden = metric.direction === 'asc';
     byId('llmChartScroll').hidden = entries.length === 0;

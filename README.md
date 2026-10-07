@@ -95,6 +95,14 @@ dist/                 생성된 게시 사이트 (Git 추적 제외)
 
 사이트의 모든 내부 링크는 상대 경로이므로 `https://계정.github.io/저장소/` 형태의 프로젝트 사이트에서도 작동합니다. 외부 리소스를 쓰는 새 HTML은 HTTPS URL을 사용하고, 로컬 파일 경로나 `/assets/...` 같은 도메인 루트 경로는 상대 경로로 바꾸세요. 파일명은 한글과 공백을 지원하며 Linux 배포 환경에서는 대소문자를 정확히 맞춰야 합니다.
 
+## 통합 모델 비교 갱신
+
+`content/llm-model-availability.json`은 공식 문서로 확인한 모델 제공 목록과 확인일입니다. Codex ChatGPT 로그인과 Claude Code의 Anthropic 직접 API를 기준으로 하며, 승인 계정·종료 예정·파트너 제공 조건을 구분합니다. 사용자 지정 제공자의 임의 모델을 모두 지원한다고 표시하지 않습니다.
+
+`npm run sync:models`는 기존 Gemini 전체 비교표의 모델 평가와 Codex 6·Opus 5.5 자료의 네이티브 에이전트 평가를 `content/llm-model-research.js`로 생성합니다. 생성 파일은 직접 수정하지 않습니다. 새로운 원문이나 모델 목록을 반영할 때 원본/registry와 생성 파일을 함께 갱신합니다. 원문 수치와 미확인 값을 그대로 보존하며, 평가 날짜를 갱신일로 바꾸지 않습니다.
+
+AA 모델 Intelligence, 기존 Coding Agent Index v1.3, Terminal-Bench 4.0 기반 에이전트 평가는 별도 지표/차트입니다. 같은 모델·추론 설정이라도 서로 다른 평가 환경의 값으로 덮어쓰지 않습니다. `npm run check`는 생성 파일이 원문과 일치하는지도 검사합니다.
+
 ## 로컬 미리보기
 
 ```powershell
