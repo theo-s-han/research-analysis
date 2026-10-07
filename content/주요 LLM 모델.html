@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="llm-table-controls.css">
 <title>주요 LLM·코딩 모델 통합 비교 — 2026-10-07</title>
 <style>
 :root{--bg:#f5f7fb;--panel:#fff;--fg:#172033;--muted:#667085;--line:#d8dee9;--head:#18253d;--head2:#253552;--blue:#2563eb;--green:#087f5b;--yellow:#9a6700;--red:#b42318;--shadow:0 8px 30px rgba(15,23,42,.08)}
@@ -403,69 +404,7 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-10-07';
 })();
 </script>
 <script src="llm-model-research.js"></script>
-<script id="llmTableControls">
-(() => {
-  const table = document.getElementById('tbl');
-  const $ = selector => document.querySelector(selector);
-  const controls = ['search', 'tool', 'provider', 'access', 'tier', 'status', 'localOnly', 'aaOnly'];
-  const rows = () => [...table.tBodies[0].rows];
-  const apply = () => {
-    const query = $('#search').value.trim().toLowerCase();
-    const provider = $('#provider').value, access = $('#access').value, tier = $('#tier').value, status = $('#status').value;
-    const tool = $('#tool').value;
-    const localOnly = $('#localOnly').checked, aaOnly = $('#aaOnly').checked;
-    const currentRows = rows();
-    let count = 0;
-    currentRows.forEach(row => {
-      const visible = (!query || row.textContent.toLowerCase().includes(query)) && (!provider || row.dataset.provider === provider)
-        && (!access || row.dataset.access === access) && (!tier || row.dataset.tier === tier) && (!status || row.dataset.status === status)
-        && (!localOnly || row.dataset.local === '1') && (!aaOnly || row.dataset.aa === '1') && (!tool || row.dataset.tools === tool);
-      row.style.display = visible ? '' : 'none';
-      if (visible) count += 1;
-    });
-    $('#count').textContent = count.toLocaleString() + ' / ' + currentRows.length.toLocaleString() + '행';
-    table.dispatchEvent(new Event('llm:filtered'));
-  };
-  controls.forEach(id => $('#' + id).addEventListener(id === 'search' ? 'input' : 'change', apply));
-  $('#reset').onclick = () => {
-    controls.forEach(id => { const element = $('#' + id); if (element.type === 'checkbox') element.checked = false; else element.value = ''; });
-    apply();
-  };
-  let sortState = { index: -1, ascending: true };
-  table.tHead.addEventListener('click', event => {
-    const header = event.target.closest('th');
-    if (!header) return;
-    const index = header.cellIndex, ascending = sortState.index === index ? !sortState.ascending : true;
-    sortState = { index, ascending };
-    const sorted = rows().sort((left, right) => {
-      const a = left.cells[index]?.dataset.sort ?? left.cells[index]?.textContent.trim() ?? '';
-      const b = right.cells[index]?.dataset.sort ?? right.cells[index]?.textContent.trim() ?? '';
-      let comparison;
-      if (header.dataset.type === 'num') {
-        const first = parseFloat(a), second = parseFloat(b);
-        if (Number.isNaN(first)) return Number.isNaN(second) ? 0 : 1;
-        if (Number.isNaN(second)) return -1;
-        comparison = first - second;
-      } else comparison = a.localeCompare(b, 'ko', { numeric: true, sensitivity: 'base' });
-      return ascending ? comparison : -comparison;
-    });
-    sorted.forEach(row => table.tBodies[0].appendChild(row));
-  });
-  $('#csv').onclick = () => {
-    const visible = rows().filter(row => row.style.display !== 'none');
-    const heads = [...table.tHead.querySelectorAll('th')].map(cell => cell.textContent.trim());
-    const escape = value => '"' + value.replaceAll('"', '""') + '"';
-    const lines = [heads.map(escape).join(',')];
-    visible.forEach(row => lines.push([...row.cells].map(cell => escape(cell.textContent.trim())).join(',')));
-    const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob), link = document.createElement('a');
-    link.href = url; link.download = 'llm_comparison_filtered.csv'; link.click(); URL.revokeObjectURL(url);
-  };
-  table.addEventListener('llm:data-change', apply);
-  apply();
-})();
-
-</script><script id="llmChartController">
+<script id="llmTableControls" src="llm-table-controls.js"></script><script id="llmChartController">
 (() => {
   'use strict';
   const table = document.getElementById('tbl');

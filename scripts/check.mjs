@@ -42,6 +42,9 @@ for (const file of (await filesIn(output)).filter((file) => /\.html?$/.test(file
   }
 }
 for (const file of ['app.js', 'reader.js']) new vm.Script(await fs.readFile(path.join(output, 'assets', file), 'utf8'), { filename: file });
+for (const file of ['llm-table-controls.js', 'llm-model-research.js']) {
+  new vm.Script(await fs.readFile(path.join(output, 'materials', file), 'utf8'), { filename: file });
+}
 assert.equal(catalog.categories.reduce((sum, category) => sum + category.count, 0), catalog.documents.length);
 assert.ok(!index.includes('\\\\PO_FILE'));
 assert.ok(!index.includes('github_pat_'));
