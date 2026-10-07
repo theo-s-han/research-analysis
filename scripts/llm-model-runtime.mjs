@@ -8,11 +8,11 @@ export function installModelResearch(data) {
   const modelMetricsStart = 28;
   const conditionColumn = 37;
   const metricDefinitions = [
-    ['AA Intelligence ↑', 'number', 'Artificial Analysis의 모델 종합 지능 지수. 높을수록 좋음. 코딩 에이전트 Index와 다른 평가. 기존 모델 리서치의 기록값.'],
-    ['AA-Briefcase ↑', 'number', '지식 노동·업무 문제 해결 평가 점수. 높을수록 좋음. 원문과 동일한 모델·추론 설정의 기록값.'],
+    ['AA Intelligence ↑', 'number', 'Artificial Analysis Intelligence Index v4.3.2 종합 지능 지수. 높을수록 좋음. 코딩 에이전트 Index와 다른 평가. 최신 공개 실측만 표시하며 AA의 추정 Index는 제외.'],
+    ['AA-Briefcase ↑', 'number', 'AA-Briefcase v1.1 지식 노동·업무 문제 해결의 Elo 점수. 높을수록 좋음. 같은 평가판·모델·추론·fallback 조건끼리 비교.'],
     ['Automation ↑', 'percent', 'AutomationBench-AA: SaaS REST API 업무 자동화의 목표 달성 점수(%). 안전 조건 위반은 0점이며 부분 달성이 반영될 수 있음. 코딩 작업의 무개입 완료율과 다름.'],
     ['AA Terminal 4.0 ↑', 'percent', 'AA 모델 평가 환경의 Terminal-Bench 4.0 성공률(%). 높을수록 좋음. 별도 코딩 에이전트 평가와 혼합 금지.'],
-    ['SciCode ↑', 'percent', 'Python 과학·수치 계산 문제의 코딩 평가(%). 높을수록 좋음. 일반 저장소의 버그 수정·개발 성능 전체를 대표하지 않음.'],
+    ['SciCode ↑', 'percent', 'Python 과학·수치 계산 문제의 코딩 평가(%). 높을수록 좋음. 일반 저장소 개발 성능 전체를 대표하지 않음. AA가 현재 평가를 재검토(Under review) 중이며 공개값을 원문 그대로 기록.'],
     ['AA Cost / task ↓', 'money', 'AA 모델 평가의 작업당 USD 비용. 낮을수록 저렴. Codex·Claude Code 또는 Cursor의 작업당 비용과 구분. Gemini 출시 할인은 원문 조건 유지.'],
     ['CursorBench 4.0 ↑', 'percent', 'Cursor 환경의 코딩 작업 평가(%). 높을수록 좋음. AA 모델·네이티브 에이전트 평가와 다른 실행 환경.'],
     ['Cursor Cost ↓', 'money', 'CursorBench 평가의 작업당 USD 비용. 낮을수록 저렴. AA Cost/task와 직접 비교 불가.'],
@@ -65,13 +65,36 @@ export function installModelResearch(data) {
     const link = document.createElement('a');
     link.href = href; link.textContent = label; link.target = '_blank'; link.rel = 'noopener'; cell.append(link);
   };
-  const canonical = name => name.replace(/^Claude\s+/i, '').trim().toLowerCase();
+  const canonical = name => name.replace(/^Claude\s+/i, '').replace(/^GLM(?:-|\s)/i, 'GLM-').trim().toLowerCase();
   const matchModel = name => {
     const input = canonical(name);
     return data.availability.models.find(model => {
       const base = canonical(model.name);
       return input === base || (input.startsWith(base + ' ('));
     });
+  };
+  const factsOf = name => data.verifiedModels.records.filter(record => canonical(record.model) === canonical(name));
+  const contextOf = name => {
+    const official = matchModel(name)?.context;
+    if (official) return official;
+    const original = data.modelRows.find(record => canonical(record.model) === canonical(name))?.context;
+    if (original && original !== '—') return original;
+    const values = [...new Set(factsOf(name).map(record => record.contextTokens).filter(value => value != null))];
+    if (values.length === 1) return values[0].toLocaleString('en-US');
+    const existing = originalRows.find(row => canonical(row.cells[2].textContent) === canonical(name) && /\d/.test(row.cells[8].textContent));
+    return existing?.cells[8].textContent || '—';
+  };
+  const addFacts = (row, name) => {
+    const facts = factsOf(name);
+    if (!facts.length) return;
+    const dates = [...new Set(facts.map(record => record.release).filter(Boolean))];
+    if (/^(—|미확인)?$/.test(row.cells[3].textContent.trim()) && dates.length === 1) {
+      textCell(row, 3, dates[0]); row.cells[3].title = 'AA 모델 공개일 기록 · ' + facts[0].source;
+    }
+    if (/^(—|미확인)?$/.test(row.cells[8].textContent.trim())) {
+      textCell(row, 8, contextOf(name));
+      row.cells[8].title = '공식 제공 목록 / 동일 모델 AA 사양 · ' + facts[0].source;
+    }
   };
   const availabilityText = model => toolNames[model.tool] + (model.restricted ? ' · 승인 계정' : model.status === '종료 예정' ? ' · 종료 예정' : '');
   const tagModel = (row, model) => {
@@ -84,6 +107,7 @@ export function installModelResearch(data) {
     textCell(row, 27, availabilityText(model));
     row.cells[27].title = [model.id, model.note, '제공 여부 확인: ' + data.availability.verifiedAt].filter(Boolean).join('\n');
     linkTo(row, data.availability.sources[model.tool === 'codex' ? 'codex' : 'claudeCode'], '모델 선택');
+    if (model.contextSource) linkTo(row, model.contextSource, 'Context 사양');
     if (model.provider === 'Anthropic') {
       linkTo(row, data.availability.sources.claudeLifecycle, '제공 상태');
       linkTo(row, data.availability.sources.claudeModels, '모델 사양');
@@ -145,6 +169,90 @@ export function installModelResearch(data) {
     textCell(row, conditionColumn, 'AA 모델 / Cursor 별도 평가 · 원문 기록: ' + record.observed);
     linkTo(row, record.source, '평가 원문');
   });
+  // Refresh a complete, like-for-like AA measurement together. Previous guide values
+  // remain in the source HTML and on the cell, never substituted for missing results.
+  const usedModelRecords = new Set();
+  const providerNames = {SpaceXAI:'xAI', Alibaba:'Alibaba / Qwen', 'Z AI':'Z.ai', Kimi:'Moonshot AI', Mistral:'Mistral AI'};
+  const modelMetrics = [[28,'index'],[29,'briefcase'],[30,'automation'],[31,'terminal'],[32,'scicode'],[33,'cost'],[36,'lcr']];
+  const money = value => '$' + (value < .01 ? Number(value.toPrecision(3)).toString() : value.toFixed(2));
+  const installVerifiedModel = (record, row, original) => {
+    row.dataset.aa = '1'; row.dataset.modelEvaluation = '1'; row.dataset.sourceId = record.sourceId;
+    row.dataset.evaluationModel = record.model; row.dataset.evaluationEffort = record.effort;
+    row.dataset.benchmark = data.verifiedModels.suite;
+    if (!original) row.dataset.recordId = 'model:verified:' + record.sourceId;
+    textCell(row, 2, record.name);
+    textCell(row, 8, contextOf(record.model));
+    if (record.isOpenWeights) {
+      row.dataset.local = '1'; row.dataset.access = '오픈웨이트 + API'; textCell(row, 5, '오픈웨이트 + API');
+      if (record.parameters != null) textCell(row, 7, record.parameters + 'B' + (record.activeParameters != null ? ' / ' + record.activeParameters + 'B' : ''));
+    }
+    modelMetrics.forEach(([column, key]) => {
+      const cell = row.cells[column];
+      const previous = original?.values[column === 36 ? 8 : column - 28];
+      let value = key === 'index' && record.estimated ? null : record[key];
+      if (['automation','terminal','scicode','lcr'].includes(key) && value != null) value *= 100;
+      cell.textContent = value == null ? '—' : key === 'cost' ? money(value) : key === 'briefcase' ? Math.round(value).toLocaleString('en-US') : value.toFixed(1) + (column === 28 ? '' : '%');
+      delete cell.dataset.sort; delete cell.dataset.chartValue;
+      if (value != null) cell.dataset.sort = cell.dataset.chartValue = String(value);
+      const notes = [data.verifiedModels.suite + ' · 확인 ' + data.verifiedModels.verifiedAt, record.source];
+      if (key === 'index' && record.estimated) notes.push('AA가 추정한 종합 지수이므로 실측 값으로 표시하지 않음.');
+      if (key === 'scicode') notes.push('AA 평가 재검토 중(Under review).');
+      if (previous != null) {
+        cell.dataset.previousValue = previous;
+        notes.push('이전 조사 기록 (' + original.observed + '): ' + previous);
+      }
+      cell.title = notes.join('\n');
+    });
+    for (const column of [34,35]) {
+      if (original) row.cells[column].title = 'CursorBench 4.0 · 이전 원문 기록 ' + original.observed + '\n' + original.source + '\nAA 모델 평가와 별도 실행 환경. 최신 Cursor 동일 조건 자료 미확인.';
+    }
+    textCell(row, 20, 'AA 공식 공개 평가');
+    const configuration = record.name.includes('Fallback') ? record.name.match(/\(([^)]*)\)/)?.[1] : record.effort;
+    textCell(row, 25, record.estimated ? '개별 공개 평가만 표시 · 추정 종합 Index 제외' : '동일 모델·추론 조건의 AA 공개 평가');
+    if (original) { row.cells[25].dataset.previousValue = original.note; row.cells[25].title = '이전 조사 설명: ' + original.note; }
+    textCell(row, conditionColumn, data.verifiedModels.suite + ' · ' + configuration + ' · 확인 ' + data.verifiedModels.verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
+    linkTo(row, record.source, 'AA 세부 평가');
+    addFacts(row, record.model);
+    usedModelRecords.add(record.sourceId);
+  };
+  data.modelRows.forEach(original => {
+    const candidates = data.verifiedModels.records.filter(record => record.model === original.model && (record.effort.toLowerCase() === original.effort.toLowerCase() || original.effort === '미명시'));
+    // Multiple fallback / non-reasoning variants are never silently collapsed.
+    if (candidates.length !== 1) return;
+    const row = [...body.rows].find(item => item.dataset.recordId === original.id);
+    installVerifiedModel(candidates[0], row, original);
+  });
+  data.verifiedModels.records.forEach(record => {
+    if (usedModelRecords.has(record.sourceId)) return;
+    const measurable = (!record.estimated && record.index != null) || modelMetrics.slice(1).some(([,key]) => record[key] != null);
+    if (!measurable) return;
+    const row = makeRow(providerNames[record.provider] || record.provider, record.name, 'AA 모델 평가');
+    installVerifiedModel(record, row);
+  });
+  data.verifiedCursor.records.forEach(record => {
+    const candidates = [...body.rows].filter(row => canonical(row.dataset.evaluationModel || '') === canonical(record.model) && row.dataset.evaluationEffort?.toLowerCase() === record.effort.toLowerCase());
+    // A Cursor setting is independent of AA fallback variants. Ambiguity gets its own row.
+    const row = candidates.length === 1 ? candidates[0] : makeRow(record.provider, record.model + ' (' + record.effort + ')', 'Cursor 평가', 'CursorBench 4.0');
+    if (candidates.length !== 1) {
+      row.dataset.aa = '0'; row.dataset.recordId = 'cursor:' + record.label;
+      textCell(row, 8, contextOf(record.model));
+      textCell(row, 20, 'Cursor 공식 공개 평가');
+      textCell(row, conditionColumn, 'CursorBench 4.0 · ' + record.effort + ' · 확인 ' + data.verifiedCursor.verifiedAt + ' · 실행일 미명시');
+    } else {
+      // AA and Cursor stay in independent columns/charts, with independent conditions.
+      textCell(row, conditionColumn, row.cells[conditionColumn].textContent.replace(/ · Cursor: 원문 기록 .+$/, '') + ' · CursorBench 4.0 확인 ' + data.verifiedCursor.verifiedAt);
+    }
+    row.dataset.cursorRecord = record.label;
+    [[34,record.score,record.score.toFixed(1)+'%'],[35,record.costUsd,money(record.costUsd)]].forEach(([column,value,display]) => {
+      const cell = row.cells[column];
+      const previous = cell.textContent;
+      cell.textContent = display; cell.dataset.sort = cell.dataset.chartValue = String(value);
+      if (!cell.dataset.previousValue && /\d/.test(previous)) cell.dataset.previousValue = previous;
+      cell.title = 'CursorBench 4.0 · 확인 ' + data.verifiedCursor.verifiedAt + '\n' + data.verifiedCursor.source + '\nCursor 실행 환경 · 평균 토큰 ' + record.tokens.toLocaleString('en-US') + ' / Steps ' + record.steps + '\nAA 모델·네이티브 코딩 에이전트의 비용/토큰/Turns와 별도.' + (cell.dataset.previousValue ? '\n이전 조사 기록: ' + cell.dataset.previousValue : '');
+    });
+    linkTo(row, data.verifiedCursor.source, 'Cursor 평가');
+    addFacts(row, record.model);
+  });
   data.agentRows.forEach(record => {
     const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', 'Agent · TB4.0');
     row.dataset.recordId = record.id;
@@ -164,11 +272,14 @@ export function installModelResearch(data) {
   data.verifiedAgents.records.forEach(record => {
     const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', 'Agent v1.5');
     row.dataset.recordId = 'agent:v1.5:' + record.sourceId;
-    textCell(row, 8, data.modelRows.find(item => item.model === record.model)?.context || '—');
+    textCell(row, 8, record.model.includes('+') ? '모델별 상이' : contextOf(record.model));
+    if (record.model.includes('+')) row.cells[8].title = '서로 다른 모델을 조합한 평가. 단일 Context 수치로 합산·대체하지 않음.';
     textCell(row, 9, record.harness + ' ' + record.harnessVersion);
+    row.cells[9].title = Object.entries(record.harnessVersions).map(([benchmark,version]) => benchmark + ': ' + version.min.version + (version.min.version === version.max.version ? '' : '–' + version.max.version)).join('\n');
     [[10, 'index'], [11, 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
     numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
     numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
+    numberCell(row, 16, record.turns, record.turns.toFixed(1));
     numberCell(row, 17, record.costUsd, '$' + record.costUsd.toFixed(2));
     textCell(row, 20, 'AA 공식 평가');
     const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
@@ -176,6 +287,7 @@ export function installModelResearch(data) {
     textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + data.verifiedAgents.verifiedAt + ' · 실행일 미명시 · ' + fallback);
     linkTo(row, data.verifiedAgents.source, 'AA 평가 원문');
     linkTo(row, data.verifiedAgents.methodology, '평가 방법');
+    addFacts(row, record.model);
   });
   data.developerRows.forEach(record => {
     const row = makeRow(record.model.startsWith('GPT-') ? 'OpenAI' : record.model.startsWith('Claude ') ? 'Anthropic' : '기타', record.model + ' (' + record.effort + ')', '개발 실사용 측정');
@@ -189,13 +301,31 @@ export function installModelResearch(data) {
   });
   [...body.rows].forEach((row, index) => {
     row.cells[0].textContent = String(index + 1); row.cells[0].dataset.sort = String(index + 1);
+    if (row.dataset.research) addFacts(row, row.cells[2].textContent.replace(/\s*\([^)]*\)\s*$/, ''));
+    [...row.cells].forEach((cell,column) => {
+      if (!/^(—|미확인|미측정|미공개)?$/.test(cell.textContent.trim())) return;
+      let reason = '공개 원문에서 동일 조건의 수치를 확인하지 못함.';
+      if (column >= 38) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
+      else if (column >= 10 && column <= 17 && !(row.dataset.benchmark || '').startsWith('Agent')) reason = '이 행은 코딩 에이전트 평가가 아님. 같은 모델의 코딩 에이전트 평가 행에 별도 기록.';
+      else if ((column >= 28 && column <= 33 || column === 36) && row.dataset.modelEvaluation !== '1') reason = '이 행은 AA 모델 평가가 아님. 같은 모델·추론 설정의 AA 모델 평가 행에 별도 기록.';
+      else if (column === 34 || column === 35) reason = '동일 모델·추론 설정의 CursorBench 4.0 공개 측정값 미확인. AA·Codex·Claude Code의 값으로 대체하지 않음.';
+      else if (column >= 21 && column <= 24 && row.dataset.local !== '1') reason = '공개 가중치로 로컬 실행하는 모델이 아니므로 로컬 RAM 비교 대상 아님.';
+      else if (column === 7 && row.dataset.local !== '1') reason = '공개된 파라미터 사양 없음. 비용·성능으로 파라미터 수를 추정하지 않음.';
+      cell.title = [cell.title, reason].filter(Boolean).join('\n');
+      cell.dataset.missing = '1';
+    });
   });
   const status = document.getElementById('status');
   if (![...status.options].some(option => option.value === '종료 예정')) status.add(new Option('종료 예정', '종료 예정'));
-  document.title = '주요 LLM·코딩 모델 통합 비교 — ' + data.availability.verifiedAt;
+  const updated = document.getElementById('llmUpdatedAt');
+  if (updated) { updated.textContent = data.updatedAt; updated.setAttribute('datetime', data.updatedAt); }
+  document.title = '주요 LLM·코딩 모델 통합 비교 — ' + data.updatedAt;
+  table.dataset.updatedAt = data.updatedAt;
   table.dataset.availabilityVerified = data.availability.verifiedAt;
   table.dataset.modelRecords = String(data.modelRows.length);
   table.dataset.agentRecords = String(data.agentRows.length);
   table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
+  table.dataset.verifiedModelRecords = String(usedModelRecords.size);
+  table.dataset.verifiedCursorRecords = String(data.verifiedCursor.records.length);
   table.dataset.developerRecords = String(data.developerRows.length);
 }

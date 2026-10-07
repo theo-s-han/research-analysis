@@ -31,6 +31,6 @@
     {"name":"Claude Haiku 4.5","id":"claude-haiku-4-5-20251001","provider":"Anthropic","tool":"claude-code","status":"현행","context":"200K"},
     {"name":"Claude Mythos 5.1","id":"claude-mythos-5-1","provider":"Anthropic","tool":"claude-code","status":"제한 제공","context":"1M","restricted":true,"note":"승인된 고객·접근 권한을 가진 API 계정에 한정. 일반 구독의 모델 선택 목록과 다름."},
     {"name":"Claude Mythos 5","id":"claude-mythos-5","provider":"Anthropic","tool":"claude-code","status":"제한 제공","context":"1M","restricted":true,"note":"승인된 고객·접근 권한을 가진 API 계정에 한정. 일반 구독의 모델 선택 목록과 다름."},
-    {"name":"Claude Mythos Preview","id":"claude-mythos-preview","provider":"Anthropic","tool":"claude-code","status":"제한 제공","restricted":true,"note":"승인 고객 한정·deprecated. 종료일 미정. 일반 구독의 모델 선택 목록과 다름."}
+    {"name":"Claude Mythos Preview","id":"claude-mythos-preview","provider":"Anthropic","tool":"claude-code","status":"제한 제공","context":"1M","contextSource":"https://platform.claude.com/docs/en/build-with-claude/context-windows","restricted":true,"note":"승인 고객 한정·deprecated. 종료일 미정. 일반 구독의 모델 선택 목록과 다름."}
   ]
 }

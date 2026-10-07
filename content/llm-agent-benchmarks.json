@@ -10,11 +10,93 @@
   },
   "records": [
     {
+      "sourceId": "ef63fafa9b4a635522183c879ae8435b",
+      "model": "Gemini 4 Argon",
+      "effort": "미명시",
+      "harness": "Antigravity CLI",
+      "harnessVersion": "1.2.10",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.2.10",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.2.10",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.2.10",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.2.10",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.2.10",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.2.10",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 63.7577603035782,
+      "deepSWE": 78.7610619469027,
+      "terminalBench": 56.0606060606061,
+      "sweAtlas": 56.4516129032258,
+      "costUsd": 5.8439053894448145,
+      "timeSeconds": 2070.1686032008843,
+      "totalTokens": 13733793.781456953,
+      "turns": 149.1832229580574,
+      "retainedAttempts": 905,
+      "fallbackModels": [],
+      "provider": "Google"
+    },
+    {
       "sourceId": "a2c87c062f3cef73d8525e7578f14742",
       "model": "Claude Sonnet 5.5",
       "effort": "Max",
       "harness": "Claude Code",
       "harnessVersion": "2.1.280",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 68.35783373750832,
       "deepSWE": 71.97640117994099,
       "terminalBench": 66.1616161616162,
@@ -22,9 +104,213 @@
       "costUsd": 14.190800796369649,
       "timeSeconds": 5244.965372937293,
       "totalTokens": 27742337.233773403,
+      "turns": 265.93069306930687,
       "retainedAttempts": 909,
       "fallbackModels": [
         "Claude Opus 4.8"
+      ],
+      "provider": "Anthropic"
+    },
+    {
+      "sourceId": "9e810ff3c6cce5ebaaff7c744c687a47",
+      "model": "GPT-6 Astra",
+      "effort": "Max",
+      "harness": "Codex",
+      "harnessVersion": "0.153.4 / 0.151.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.151.0",
+            "dateReleased": "2026-08-29"
+          },
+          "max": {
+            "version": "0.151.0",
+            "dateReleased": "2026-08-29"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 61.64504498789397,
+      "deepSWE": 67.55162241887909,
+      "terminalBench": 55.5555555555555,
+      "sweAtlas": 61.8279569892473,
+      "costUsd": 7.46709735138597,
+      "timeSeconds": 1762.0330264026397,
+      "totalTokens": 3346611.012209417,
+      "turns": 39.378437843784376,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "OpenAI"
+    },
+    {
+      "sourceId": "f2de07373c3626f1b9269a6ecad7804c",
+      "model": "Muse Spark 1.3",
+      "effort": "Max",
+      "harness": "Muse Code",
+      "harnessVersion": "1.0.3-R2198.1",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.0.3-R2198.1",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "1.0.3-R2198.1",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.0.3-R2198.1",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "1.0.3-R2198.1",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.0.3-R2198.1",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "1.0.3-R2198.1",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 54.30273329930766,
+      "deepSWE": 71.6814159292036,
+      "terminalBench": 31.818181818181802,
+      "sweAtlas": 59.408602150537604,
+      "costUsd": 3.977504096947204,
+      "timeSeconds": 1106.8533531353135,
+      "totalTokens": 16709444.57370737,
+      "turns": 185.23817381738175,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "Meta"
+    },
+    {
+      "sourceId": "f927d9c41b5c3021996eb14c3dd1341e",
+      "model": "Grok 4.7",
+      "effort": "xHigh",
+      "harness": "Grok Build",
+      "harnessVersion": "1.0.40",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.0.40",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.0.40",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.0.40",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.0.40",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.0.40",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.0.40",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 56.26764360706693,
+      "deepSWE": 72.5663716814159,
+      "terminalBench": 33.3333333333333,
+      "sweAtlas": 62.9032258064516,
+      "costUsd": 8.817468730473037,
+      "timeSeconds": 2354.367686468646,
+      "totalTokens": 14324724.283828393,
+      "turns": 162.64576457645765,
+      "retainedAttempts": 905,
+      "fallbackModels": [],
+      "provider": "xAI"
+    },
+    {
+      "sourceId": "29a1cdad0d140781d05b9b4746cfdd0d",
+      "model": "Claude Fable 5.1",
+      "effort": "Max",
+      "harness": "Claude Code",
+      "harnessVersion": "2.1.263 / 2.1.259",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          },
+          "max": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.259",
+            "dateReleased": "2026-09-02"
+          },
+          "max": {
+            "version": "2.1.259",
+            "dateReleased": "2026-09-02"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          },
+          "max": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          }
+        }
+      },
+      "index": 62.22249615769457,
+      "deepSWE": 64.30678466076701,
+      "terminalBench": 57.5757575757576,
+      "sweAtlas": 64.78494623655911,
+      "costUsd": 12.388092375137534,
+      "timeSeconds": 2089.900125412543,
+      "totalTokens": 5715253.85918592,
+      "turns": 36.65676567656766,
+      "retainedAttempts": 909,
+      "fallbackModels": [
+        "Claude Opus 4.8",
+        "Claude Opus 5"
       ],
       "provider": "Anthropic"
     },
@@ -34,6 +320,38 @@
       "effort": "Max",
       "harness": "Claude Code",
       "harnessVersion": "2.1.280",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 65.9885802549234,
       "deepSWE": 68.4365781710915,
       "terminalBench": 63.13131313131311,
@@ -41,6 +359,7 @@
       "costUsd": 13.036383418426828,
       "timeSeconds": 3867.0923410341024,
       "totalTokens": 15551383.220022004,
+      "turns": 155.0957095709571,
       "retainedAttempts": 909,
       "fallbackModels": [
         "Claude Opus 4.8",
@@ -54,6 +373,38 @@
       "effort": "xHigh",
       "harness": "Codex",
       "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 62.90776736822983,
       "deepSWE": 73.1563421828909,
       "terminalBench": 54.5454545454545,
@@ -61,47 +412,316 @@
       "costUsd": 1.0397081014409635,
       "timeSeconds": 931.3823091309132,
       "totalTokens": 3212528.1094519314,
+      "turns": 40.05500550055005,
       "retainedAttempts": 909,
       "fallbackModels": [],
       "provider": "OpenAI"
     },
     {
-      "sourceId": "33e80f383dc644527161435b076798ad",
-      "model": "Claude Sonnet 5.5",
-      "effort": "High",
-      "harness": "Claude Code",
-      "harnessVersion": "2.1.280",
-      "index": 55.01249049636148,
-      "deepSWE": 66.6666666666667,
-      "terminalBench": 41.9191919191919,
-      "sweAtlas": 56.4516129032258,
-      "costUsd": 1.235497127172719,
-      "timeSeconds": 735.1809878987912,
-      "totalTokens": 2652380.565456549,
-      "retainedAttempts": 909,
-      "fallbackModels": [
-        "Claude Opus 4.8"
-      ],
-      "provider": "Anthropic"
+      "sourceId": "ac8276cd5d15ac2daacb9956ad44c132",
+      "model": "GPT-6 Luna",
+      "effort": "Max",
+      "harness": "Codex",
+      "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 41.07438934016153,
+      "deepSWE": 63.716814159292,
+      "terminalBench": 15.151515151515198,
+      "sweAtlas": 44.3548387096774,
+      "costUsd": 0.17591172304455457,
+      "timeSeconds": 1285.9268514851478,
+      "totalTokens": 10218069.248074815,
+      "turns": 88.64301430143014,
+      "retainedAttempts": 908,
+      "fallbackModels": [],
+      "provider": "OpenAI"
     },
     {
-      "sourceId": "666605c66ad569c503ce53c01682e285",
-      "model": "Claude Sonnet 5.5",
-      "effort": "xHigh",
-      "harness": "Claude Code",
-      "harnessVersion": "2.1.280",
-      "index": 62.8713868151493,
-      "deepSWE": 68.4365781710914,
-      "terminalBench": 58.0808080808081,
-      "sweAtlas": 62.0967741935484,
-      "costUsd": 3.3333865348734886,
-      "timeSeconds": 1619.0134708470846,
-      "totalTokens": 7087678.3960396005,
+      "sourceId": "d1003684d8f29b95a3b14d2a7722221a",
+      "model": "Gemini 3.8 Flash",
+      "effort": "High",
+      "harness": "Antigravity SDK v0.1.12",
+      "harnessVersion": "0.1.16 / 0.1.12",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.1.16",
+            "dateReleased": "2026-09-02"
+          },
+          "max": {
+            "version": "0.1.16",
+            "dateReleased": "2026-09-02"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.1.12",
+            "dateReleased": "2026-08-13"
+          },
+          "max": {
+            "version": "0.1.12",
+            "dateReleased": "2026-08-13"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.1.16",
+            "dateReleased": "2026-09-02"
+          },
+          "max": {
+            "version": "0.1.16",
+            "dateReleased": "2026-09-02"
+          }
+        }
+      },
+      "index": 41.86315529449987,
+      "deepSWE": 65.78171091445431,
+      "terminalBench": 14.6464646464646,
+      "sweAtlas": 45.1612903225807,
+      "costUsd": 2.4673922004125437,
+      "timeSeconds": 702.7110253025301,
+      "totalTokens": 13511073.155115515,
+      "turns": 188.4884488448845,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "Google"
+    },
+    {
+      "sourceId": "fa2595093fa640e73d072e7d1aa7df82",
+      "model": "GPT-6 Astra XHigh + SWE-2 Medium",
+      "effort": "미명시",
+      "harness": "Devin Fusion CLI",
+      "harnessVersion": "3000.10.7",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 58.8884131062264,
+      "deepSWE": 67.2566371681416,
+      "terminalBench": 50,
+      "sweAtlas": 59.408602150537604,
+      "costUsd": 4.536492777821779,
+      "timeSeconds": 1481.89598019802,
+      "totalTokens": 6074134.4950494915,
+      "turns": 78.55115511551155,
       "retainedAttempts": 909,
       "fallbackModels": [
+        "GPT-5.6 Sol",
         "Claude Opus 4.8"
       ],
-      "provider": "Anthropic"
+      "provider": "OpenAI + Cognition"
+    },
+    {
+      "sourceId": "cd4c865dc2f539b650d741fd2ebf7f2d",
+      "model": "Qwen3.8 Max",
+      "effort": "미명시",
+      "harness": "Claude Code",
+      "harnessVersion": "2.1.261 / 2.1.224 / 2.1.236",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.261",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "2.1.261",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.224",
+            "dateReleased": "2026-08-07"
+          },
+          "max": {
+            "version": "2.1.236",
+            "dateReleased": "2026-08-19"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.261",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "2.1.261",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 43.26529641259874,
+      "deepSWE": 51.0324483775811,
+      "terminalBench": 16.6666666666667,
+      "sweAtlas": 62.0967741935484,
+      "costUsd": 3.478965577837015,
+      "timeSeconds": 3784.416073707372,
+      "totalTokens": 8706893.798112892,
+      "turns": 110.03670136244394,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "Alibaba / Qwen"
+    },
+    {
+      "sourceId": "34970c963bdfd318e46205514d46ea4f",
+      "model": "Claude Fable 5.1 XHigh + SWE-2 Medium",
+      "effort": "미명시",
+      "harness": "Devin Fusion CLI",
+      "harnessVersion": "3000.10.7",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "3000.10.7",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 61.68255492406223,
+      "deepSWE": 63.1268436578171,
+      "terminalBench": 56.0606060606061,
+      "sweAtlas": 65.86021505376351,
+      "costUsd": 7.897126985217273,
+      "timeSeconds": 2146.9920896589642,
+      "totalTokens": 9691548.173817372,
+      "turns": 99.53135313531354,
+      "retainedAttempts": 908,
+      "fallbackModels": [
+        "Claude Opus 5",
+        "Claude Opus 4.8"
+      ],
+      "provider": "Anthropic + Cognition"
+    },
+    {
+      "sourceId": "709f801275dedae5675b1f56e97c9df3",
+      "model": "GPT-5.6 Sol",
+      "effort": "Max",
+      "harness": "Codex",
+      "harnessVersion": "0.153.4 / 0.139.0 / 0.147.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.139.0",
+            "dateReleased": "2026-06-09"
+          },
+          "max": {
+            "version": "0.147.0",
+            "dateReleased": "2026-08-07"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 54.559127289644,
+      "deepSWE": 72.27138643067849,
+      "terminalBench": 37.3737373737374,
+      "sweAtlas": 54.0322580645161,
+      "costUsd": 6.353318230693071,
+      "timeSeconds": 1237.696445544555,
+      "totalTokens": 10170136.632563243,
+      "turns": 116.39493949394938,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "OpenAI"
     },
     {
       "sourceId": "93acd59f31f8e5478686d650aa650f79",
@@ -109,6 +729,38 @@
       "effort": "Medium",
       "harness": "Codex",
       "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 61.41474695571183,
       "deepSWE": 71.97640117994099,
       "terminalBench": 51.5151515151515,
@@ -116,9 +768,60 @@
       "costUsd": 0.7046746644898908,
       "timeSeconds": 651.3228668866898,
       "totalTokens": 2298278.745423723,
+      "turns": 37.98899889988999,
       "retainedAttempts": 909,
       "fallbackModels": [],
       "provider": "OpenAI"
+    },
+    {
+      "sourceId": "cd60470c35fd626a116af80fd5915dfa",
+      "model": "Muse Spark 1.3",
+      "effort": "xHigh",
+      "harness": "Muse Code 1.0.2 RC",
+      "harnessVersion": "1.0.2-R2040.1",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.0.2-R2040.1",
+            "dateReleased": "2026-09-02"
+          },
+          "max": {
+            "version": "1.0.2-R2040.1",
+            "dateReleased": "2026-09-02"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.0.2-R2040.1",
+            "dateReleased": "2026-09-02"
+          },
+          "max": {
+            "version": "1.0.2-R2040.1",
+            "dateReleased": "2026-09-02"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.0.2-R2040.1",
+            "dateReleased": "2026-09-02"
+          },
+          "max": {
+            "version": "1.0.2-R2040.1",
+            "dateReleased": "2026-09-02"
+          }
+        }
+      },
+      "index": 48.2993172759088,
+      "deepSWE": 73.1563421828909,
+      "terminalBench": 17.171717171717198,
+      "sweAtlas": 54.5698924731183,
+      "costUsd": 3.467754041474145,
+      "timeSeconds": 1098.202911991198,
+      "totalTokens": 16237094.352035202,
+      "turns": 187.48954895489547,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "Meta"
     },
     {
       "sourceId": "ea296ce785422d3b97cfff4427f2e0d2",
@@ -126,6 +829,38 @@
       "effort": "Max",
       "harness": "Codex",
       "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 60.14750704302517,
       "deepSWE": 69.6165191740413,
       "terminalBench": 53.030303030303,
@@ -133,9 +868,62 @@
       "costUsd": 1.554119528390054,
       "timeSeconds": 1463.0464224422437,
       "totalTokens": 3999501.6107955067,
+      "turns": 40.45654565456545,
       "retainedAttempts": 909,
       "fallbackModels": [],
       "provider": "OpenAI"
+    },
+    {
+      "sourceId": "409518818f1e9ad21995d70631ab05b6",
+      "model": "Claude Opus 5",
+      "effort": "Max",
+      "harness": "Claude Code",
+      "harnessVersion": "2.1.263 / 2.1.218 / 2.1.227",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          },
+          "max": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.218",
+            "dateReleased": "2026-07-22"
+          },
+          "max": {
+            "version": "2.1.227",
+            "dateReleased": "2026-08-10"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          },
+          "max": {
+            "version": "2.1.263",
+            "dateReleased": "2026-09-06"
+          }
+        }
+      },
+      "index": 59.726367298448366,
+      "deepSWE": 62.536873156342196,
+      "terminalBench": 54.5454545454545,
+      "sweAtlas": 62.0967741935484,
+      "costUsd": 10.789154699257413,
+      "timeSeconds": 2515.540235973597,
+      "totalTokens": 11374850.488998907,
+      "turns": 152.13036303630363,
+      "retainedAttempts": 908,
+      "fallbackModels": [
+        "Claude Opus 4.8"
+      ],
+      "provider": "Anthropic"
     },
     {
       "sourceId": "e9f9d3ae5b03aa060114dd4b3275d67d",
@@ -143,6 +931,38 @@
       "effort": "Low",
       "harness": "Claude Code",
       "harnessVersion": "2.1.280",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 42.0593075103495,
       "deepSWE": 61.946902654867294,
       "terminalBench": 25.2525252525253,
@@ -150,6 +970,7 @@
       "costUsd": 0.48311011474147336,
       "timeSeconds": 380.85617931793183,
       "totalTokens": 977284.7700770069,
+      "turns": 18.578657865786578,
       "retainedAttempts": 909,
       "fallbackModels": [
         "Claude Opus 4.8"
@@ -162,6 +983,38 @@
       "effort": "Medium",
       "harness": "Claude Code",
       "harnessVersion": "2.1.280",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 45.88397535157457,
       "deepSWE": 65.48672566371681,
       "terminalBench": 27.2727272727273,
@@ -169,6 +1022,7 @@
       "costUsd": 0.6187507753025301,
       "timeSeconds": 510.7721826182621,
       "totalTokens": 1253351.4928492843,
+      "turns": 22.20902090209021,
       "retainedAttempts": 909,
       "fallbackModels": [
         "Claude Opus 4.8"
@@ -181,6 +1035,38 @@
       "effort": "Max",
       "harness": "Codex",
       "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 56.662591275779974,
       "deepSWE": 69.0265486725664,
       "terminalBench": 43.4343434343434,
@@ -188,9 +1074,164 @@
       "costUsd": 2.989729004180416,
       "timeSeconds": 1338.0527051705185,
       "totalTokens": 9840777.763476355,
+      "turns": 86.55005500550054,
       "retainedAttempts": 907,
       "fallbackModels": [],
       "provider": "OpenAI"
+    },
+    {
+      "sourceId": "666605c66ad569c503ce53c01682e285",
+      "model": "Claude Sonnet 5.5",
+      "effort": "xHigh",
+      "harness": "Claude Code",
+      "harnessVersion": "2.1.280",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 62.8713868151493,
+      "deepSWE": 68.4365781710914,
+      "terminalBench": 58.0808080808081,
+      "sweAtlas": 62.0967741935484,
+      "costUsd": 3.3333865348734886,
+      "timeSeconds": 1619.0134708470848,
+      "totalTokens": 7087678.3960396005,
+      "turns": 78.31683168316832,
+      "retainedAttempts": 909,
+      "fallbackModels": [
+        "Claude Opus 4.8"
+      ],
+      "provider": "Anthropic"
+    },
+    {
+      "sourceId": "33e80f383dc644527161435b076798ad",
+      "model": "Claude Sonnet 5.5",
+      "effort": "High",
+      "harness": "Claude Code",
+      "harnessVersion": "2.1.280",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "2.1.280",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "2.1.280",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 55.01249049636148,
+      "deepSWE": 66.6666666666667,
+      "terminalBench": 41.9191919191919,
+      "sweAtlas": 56.4516129032258,
+      "costUsd": 1.235497127172719,
+      "timeSeconds": 735.1809878987912,
+      "totalTokens": 2652380.565456549,
+      "turns": 36.772277227722775,
+      "retainedAttempts": 909,
+      "fallbackModels": [
+        "Claude Opus 4.8"
+      ],
+      "provider": "Anthropic"
+    },
+    {
+      "sourceId": "28ef65135f08f035dc93a97d324fea73",
+      "model": "DeepSeek V4 Flash 0731",
+      "effort": "Max",
+      "harness": "Codex",
+      "harnessVersion": "0.153.2 / 0.146.0 / 0.146.1",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.153.2",
+            "dateReleased": "2026-09-03"
+          },
+          "max": {
+            "version": "0.153.2",
+            "dateReleased": "2026-09-03"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.146.0",
+            "dateReleased": "2026-07-29"
+          },
+          "max": {
+            "version": "0.146.1",
+            "dateReleased": "2026-08-05"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.153.2",
+            "dateReleased": "2026-09-03"
+          },
+          "max": {
+            "version": "0.153.2",
+            "dateReleased": "2026-09-03"
+          }
+        }
+      },
+      "index": 38.74247758775307,
+      "deepSWE": 54.2772861356932,
+      "terminalBench": 10.6060606060606,
+      "sweAtlas": 51.3440860215054,
+      "costUsd": 0.08506419165060494,
+      "timeSeconds": 1097.0404400440034,
+      "totalTokens": 15350225.299229927,
+      "turns": 121.66666666666667,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "DeepSeek"
     },
     {
       "sourceId": "4aee8aa2d4a0bad6068644f40edae235",
@@ -198,6 +1239,38 @@
       "effort": "High",
       "harness": "Codex",
       "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 60.14923716179784,
       "deepSWE": 70.5014749262537,
       "terminalBench": 50,
@@ -205,6 +1278,7 @@
       "costUsd": 0.8892413135295484,
       "timeSeconds": 799.7652123212325,
       "totalTokens": 2819911.9903514963,
+      "turns": 38.97909790979098,
       "retainedAttempts": 909,
       "fallbackModels": [],
       "provider": "OpenAI"
@@ -215,6 +1289,38 @@
       "effort": "Low",
       "harness": "Codex",
       "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
       "index": 57.21634943016617,
       "deepSWE": 67.55162241887909,
       "terminalBench": 48.989898989899,
@@ -222,9 +1328,260 @@
       "costUsd": 0.49880364510270725,
       "timeSeconds": 517.8138943894386,
       "totalTokens": 1713818.9181950986,
+      "turns": 35.74037403740374,
       "retainedAttempts": 909,
       "fallbackModels": [],
       "provider": "OpenAI"
+    },
+    {
+      "sourceId": "55b029d6971b4d378335bb168eb98b3b",
+      "model": "Kimi K3",
+      "effort": "미명시",
+      "harness": "Kimi Code CLI",
+      "harnessVersion": "0.36.0 / 0.36.1 / 0.26.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.36.0",
+            "dateReleased": "2026-08-13"
+          },
+          "max": {
+            "version": "0.36.1",
+            "dateReleased": "2026-08-14"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.26.0",
+            "dateReleased": "2026-07-16"
+          },
+          "max": {
+            "version": "0.26.0",
+            "dateReleased": "2026-07-16"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.36.1",
+            "dateReleased": "2026-08-14"
+          },
+          "max": {
+            "version": "0.36.1",
+            "dateReleased": "2026-08-14"
+          }
+        }
+      },
+      "index": 51.9259105470924,
+      "deepSWE": 68.4365781710915,
+      "terminalBench": 21.2121212121212,
+      "sweAtlas": 66.1290322580645,
+      "costUsd": 5.047195443300332,
+      "timeSeconds": 3689.3441947194724,
+      "totalTokens": 8481121.533553353,
+      "turns": 173.36028602860284,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "Moonshot AI"
+    },
+    {
+      "sourceId": "45493c2782f1bd94f6d30d4911f317a0",
+      "model": "GLM-5.3",
+      "effort": "미명시",
+      "harness": "Opencode",
+      "harnessVersion": "1.18.29",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.18.29",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "1.18.29",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.18.29",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "1.18.29",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.18.29",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "1.18.29",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 53.55484140097326,
+      "deepSWE": 61.35693215339229,
+      "terminalBench": 39.8989898989899,
+      "sweAtlas": 59.408602150537604,
+      "costUsd": 4.241385833751375,
+      "timeSeconds": 2887.9556523652373,
+      "totalTokens": 14276424.426842693,
+      "turns": 107.04950495049505,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "Z.ai"
+    },
+    {
+      "sourceId": "70a5d300021b9986f77d4198272ef1a5",
+      "model": "Grok 4.6",
+      "effort": "xHigh",
+      "harness": "Grok Build",
+      "harnessVersion": "1.0.13",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.0.13",
+            "dateReleased": "2026-08-28"
+          },
+          "max": {
+            "version": "1.0.13",
+            "dateReleased": "2026-08-28"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.0.13",
+            "dateReleased": "2026-08-28"
+          },
+          "max": {
+            "version": "1.0.13",
+            "dateReleased": "2026-08-28"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.0.13",
+            "dateReleased": "2026-08-28"
+          },
+          "max": {
+            "version": "1.0.13",
+            "dateReleased": "2026-08-28"
+          }
+        }
+      },
+      "index": 46.96895205744764,
+      "deepSWE": 64.8967551622419,
+      "terminalBench": 17.6767676767677,
+      "sweAtlas": 58.3333333333333,
+      "costUsd": 3.5701432805280535,
+      "timeSeconds": 1167.3387480748086,
+      "totalTokens": 5543624.597359739,
+      "turns": 112.06160616061608,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "xAI"
+    },
+    {
+      "sourceId": "b3c56ec69185d544992fd578edb75e8c",
+      "model": "GPT-5.6 Luna",
+      "effort": "Max",
+      "harness": "Codex",
+      "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 43.22468668029613,
+      "deepSWE": 66.3716814159292,
+      "terminalBench": 14.6464646464646,
+      "sweAtlas": 48.6559139784946,
+      "costUsd": 0.43802256393839384,
+      "timeSeconds": 1412.260883388339,
+      "totalTokens": 14854524.539053895,
+      "turns": 121.51375137513753,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "OpenAI"
+    },
+    {
+      "sourceId": "542590ecc1aa12a718d158565d464daa",
+      "model": "DeepSeek V4 Pro 0813",
+      "effort": "Max",
+      "harness": "Codex",
+      "harnessVersion": "0.153.2 / 0.153.4 / 0.147.0",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "0.153.2",
+            "dateReleased": "2026-09-03"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.147.0",
+            "dateReleased": "2026-08-07"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.153.2",
+            "dateReleased": "2026-09-03"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 43.05203524444174,
+      "deepSWE": 57.227138643067796,
+      "terminalBench": 10.1010101010101,
+      "sweAtlas": 61.8279569892473,
+      "costUsd": 0.23804610720792058,
+      "timeSeconds": 2417.5500099009905,
+      "totalTokens": 24180108.028052814,
+      "turns": 138.14631463146316,
+      "retainedAttempts": 909,
+      "fallbackModels": [],
+      "provider": "DeepSeek"
     }
   ]
 }

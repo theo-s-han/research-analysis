@@ -99,7 +99,7 @@ dist/                 생성된 게시 사이트 (Git 추적 제외)
 
 `content/llm-model-availability.json`은 공식 문서로 확인한 모델 제공 목록과 확인일입니다. Codex ChatGPT 로그인과 Claude Code의 Anthropic 직접 API를 기준으로 하며, 승인 계정·종료 예정·파트너 제공 조건을 구분합니다. 사용자 지정 제공자의 임의 모델을 모두 지원한다고 표시하지 않습니다.
 
-`npm run sync:models`는 기존 Gemini 전체 비교표의 모델 평가와 Codex 6·Opus 5.5 자료의 네이티브 에이전트 평가를 `content/llm-model-research.js`로 생성합니다. 생성 파일은 직접 수정하지 않습니다. 새로운 원문이나 모델 목록을 반영할 때 원본/registry와 생성 파일을 함께 갱신합니다. 원문 수치와 미확인 값을 그대로 보존하며, 평가 날짜를 갱신일로 바꾸지 않습니다.
+`npm run sync:models`는 기존 모델 가이드와 검증된 공개 스냅샷을 `content/llm-model-research.js`로 생성합니다. 생성 파일은 직접 수정하지 않습니다. 새로운 원문이나 모델 목록을 반영할 때 원본/registry와 생성 파일을 함께 갱신합니다. 과거 에이전트 평가판은 별도 행·차트로 보존하며, 동일 조건의 AA 모델 평가 최신화는 구성 지표 전체를 함께 갱신합니다. 이전 모델 가이드의 값·확인일은 원본 HTML과 해당 수치 셀의 previousValue/툴팁에 보존합니다. 공개 확인일을 실행일로 바꾸지 않습니다.
 
 AA 모델 Intelligence, 기존 Coding Agent Index v1.3, Terminal-Bench 4.0 기반 에이전트 평가는 별도 지표/차트입니다. 같은 모델·추론 설정이라도 서로 다른 평가 환경의 값으로 덮어쓰지 않습니다. `npm run check`는 생성 파일이 원문과 일치하는지도 검사합니다.
 
@@ -107,7 +107,13 @@ AA 모델 Intelligence, 기존 Coding Agent Index v1.3, Terminal-Bench 4.0 기�
 
 통합 표의 기본 열은 개발자 관점으로 모델 개발사, 모델/설정, 평가·사양 구분, Context, Agent/Harness, DeepSWE, Agent Terminal-Bench, SWE-Atlas-QnA, Time/Task, $/Task, AA Intelligence, 평가 조건/확인일입니다. 다른 지표는 삭제하지 않고 비교 항목 메뉴에서 모델 정보·코딩 에이전트·개발 실사용·모델/Cursor 평가·기타로 구분합니다. 일반 모델 가이드의 기본 열 규칙을 바꾸는 것이 아니라 이 통합 표에만 적용합니다.
 
-`content/llm-agent-benchmarks.json`은 AA 공식 코딩 에이전트 페이지에서 확인한 v1.5 스냅샷입니다. 원본 sourceId, 추론 설정, harness 버전, 대체 모델, 확인일, 원 단위 값을 보존합니다. DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균인지 생성/검증 시 확인하며, 과거 기록과 별도 행·차트로 추가합니다. 확인일은 실행일이 아니며 AA 평가 비용을 월 구독 사용량으로 환산하지 않습니다. 2026-10-07 보강 범위는 Sol 6.1·Sonnet 5.5의 각 5개 설정과 같은 평가판의 Opus 5.5 Max·Sol 6 Max입니다. 원문에서 확인하지 못한 모델/설정은 채우지 않습니다.
+`content/llm-agent-benchmarks.json`은 AA 공식 코딩 에이전트 페이지에서 확인한 v1.5의 공개 31개 설정 스냅샷입니다. 원본 sourceId, 추론 설정, 평가별 harness 버전 범위, 대체 모델, 확인일, 원 단위 값을 보존합니다. DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균인지 생성/검증 시 확인하며, 과거 기록과 별도 행·차트로 추가합니다. Turns는 AA 공개 차트의 mean.steps(작업당 평균 에이전트 턴)입니다. harness 제조사와 모델 개발사를 혼동하지 않으며, 복합 모델은 단일 모델/Context로 대체하지 않습니다. 확인일은 실행일이 아니며 AA 평가 비용을 월 구독 사용량으로 환산하지 않습니다.
+
+`content/llm-model-benchmarks.json`은 기존 표·가이드·도구 목록과 관련된 AA 모델 상세 페이지 283개 설정의 공개 수치입니다. 모델별 sourceId/URL/추론·fallback 표시명, AA v4.3.2/Briefcase 1.1/Terminal 4.0/LCR 1.1, 원 단위 값을 보존합니다. AA가 추정한 종합 Index는 실측 수치 칸/차트에서 제외하고, 별도로 측정된 개별 평가만 반영합니다. 공개 수치가 전혀 없는 설정은 표 행을 늘리지 않습니다. SciCode의 Under review 상태를 툴팁에 명시합니다. API 공식 제공 목록의 Context를 우선하며, 다른 모델의 값으로 누락을 대신하지 않습니다.
+
+`content/llm-cursor-benchmarks.json`은 Cursor 공식 CursorBench 4.0의 공개 63개 설정입니다. AA 모델/네이티브 에이전트 값과 독립된 34·35열과 차트로 표시합니다. 정확한 모델·추론 설정이 일치할 때만 기존 AA 모델 행의 별도 Cursor 열에 결합하며, 여러 AA variant와 매칭되면 별도 Cursor 행을 만듭니다. Cursor의 토큰·Steps는 Cursor 셀의 툴팁에만 기록하고 AA agent Tokens/Turns 열에 넣지 않습니다. GPT-6·GPT-6.1과 같은 공식 Cursor 측정값 미확인 모델은 추측해서 채우지 않습니다.
+
+상단 업데이트 날짜는 모델 스냅샷의 updatedAt입니다. 페이지를 열거나 빌드할 때 오늘 날짜로 바꾸지 않습니다. 빈 셀의 툴팁은 해당 평가 대상 아님·동일 조건 공개값 미확인·실사용 미측정·비공개 사양을 구분합니다. 빈값은 0이 아닙니다.
 
 지표 설명은 평가 범위를 구분합니다. Context는 수용량, AA-LCR v1.1은 약 10만 토큰의 장문 문서 추론, SWE-Atlas-QnA는 코드 저장소 이해, Automation은 AutomationBench-AA 업무 자동화입니다. AA-LCR·Automation을 대규모 코드 수정·코딩 무개입 완료율로 표현하지 않습니다.
 

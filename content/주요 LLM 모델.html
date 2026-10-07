@@ -79,6 +79,7 @@ th:nth-last-child(-n+5) .metric-tip::before{left:auto;right:14px;transform:none}
 </head>
 <body><main class="page">
 <h1>주요 LLM·코딩 모델 통합 비교</h1>
+<p class="muted" style="margin:0 0 12px;font-size:12px">업데이트 <time id="llmUpdatedAt" datetime="2026-10-07">2026-10-07</time></p>
 <section class="llm-charts" id="llmCharts" aria-labelledby="llmChartTitle">
   <div class="llm-tabs-bar">
     <button class="llm-tab-scroll" type="button" data-tab-scroll="-1" aria-label="이전 평가 지표">‹</button>
@@ -109,13 +110,13 @@ th:nth-last-child(-n+5) .metric-tip::before{left:auto;right:14px;transform:none}
 </section>
 
 <details class="guide"><summary>지표와 RAM 해석</summary><div class="guide-grid">
-<p><b>AA Index ↑</b>: DeepSWE, Terminal-Bench v2, SWE-Atlas-QnA를 합성한 코딩 Agent 성능 지표. 높을수록 좋습니다. 모델뿐 아니라 <b>Agent/Harness와 reasoning 설정</b>의 영향이 큽니다.</p>
+<p><b>Coding Agent Index ↑</b>: v1.5는 DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균. 이전 평가판은 별도 기록이며 <b>Agent/Harness·추론·fallback 조건</b>을 구분합니다.</p>
 <p><b>Tokens / Time / Turns / $ per Task ↓</b>: 작업 1건당 사용 토큰, 시간, 반복 횟수, 추정 비용. 낮을수록 효율적입니다.</p>
 <p><b>공개 코딩 실측</b>: 제조사나 공식 모델 카드가 발표한 SWE-Bench, Terminal-Bench, LiveCodeBench 등. <b>벤치 버전과 harness가 다르면 숫자를 직접 비교하면 안 됩니다.</b></p>
 <p><b>종합 위치</b>: AA 실측이 있는 행은 Index 기반, 나머지는 공개 벤치와 세대 위치를 이용한 넓은 정성 구간입니다. 별도의 추정 Index가 아닙니다.</p>
 <p><b>Q4/Q8/FP16 모델 로드</b>: 총 파라미터 기준 가중치와 약 20% 로더 오버헤드의 대략값입니다. MoE도 활성 파라미터가 아니라 <b>총 파라미터 전체를 메모리에 적재</b>해야 합니다.</p>
 <p><b>Q4 권장 시스템 RAM</b>: 짧은 약 8K context 기준으로 OS/runtime 여유를 더한 대략값. 긴 context의 KV cache, batch, GPU backend에 따라 수 GB~수백 GB가 추가될 수 있습니다. CPU RAM+GPU VRAM 분산은 가능하지만 느려질 수 있습니다.</p>
-<p><b>빈 값</b>: 공개 사양/동일 조건 측정이 없거나 신뢰할 만한 수치를 찾지 못한 경우입니다. 억지로 채우지 않았습니다.</p>
+<p><b>빈 값</b>: 해당 평가 행의 대상이 아닌 지표, 동일 조건 공개값 미확인, 실사용 미측정을 구분합니다. 빈 셀의 툴팁에 사유를 기록하며, AA의 추정 종합 Index는 실측으로 표시하지 않습니다.</p>
 <p><b>출처</b>: 각 행 마지막 열의 링크가 해당 사양·벤치 또는 AA 실측 근거입니다.</p>
 </div></details>
 <div class="toolbar">
