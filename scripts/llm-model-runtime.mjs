@@ -3,7 +3,7 @@ export function installModelResearch(data) {
   const table = document.getElementById('tbl');
   const body = table.tBodies[0];
   const header = table.tHead.rows[0];
-  const toolNames = { codex: 'Codex', 'claude-code': 'Claude Code' };
+  const toolNames = { codex: 'Codex', 'claude-code': 'Claude Code', 'muse-code': 'Muse Code' };
   const originalRows = [...body.rows];
   const modelMetricsStart = 28;
   const conditionColumn = 37;
@@ -29,7 +29,7 @@ export function installModelResearch(data) {
     } else cell.dataset.chart = 'false';
     header.append(cell);
   };
-  addHeader('사용 도구', '공식 모델 목록 기준. Codex는 ChatGPT 로그인, Claude Code는 Anthropic 직접 API 기준. 구독·제공자·관리자 정책·승인 권한에 따라 실제 선택 가능 여부가 다름.');
+  addHeader('사용 도구', '공식 모델 목록 기준. Codex는 ChatGPT 로그인, Claude Code는 Anthropic 직접 API, Muse Code는 Meta 공식 제공 조건 기준. 구독·제공자·관리자 정책·승인 권한에 따라 실제 선택 가능 여부가 다름.');
   metricDefinitions.forEach(([name, unit, tip]) => addHeader(name, tip, unit));
   addHeader('평가 조건 / 확인일', '모델 사용 가능 여부 확인일과 벤치마크 원문 기록 시점은 다름. 원문 기준일이 없는 값은 날짜를 추정하지 않음.');
   [
@@ -74,7 +74,13 @@ export function installModelResearch(data) {
     });
   };
   const factsOf = name => data.verifiedModels.records.filter(record => canonical(record.model) === canonical(name));
+  const offeringOf = name => data.offerings.records.find(record => {
+    const input = canonical(name), base = canonical(record.name);
+    return input === base || input.startsWith(base + ' (');
+  });
   const contextOf = name => {
+    const offered = offeringOf(name)?.context;
+    if (offered) return offered;
     const official = matchModel(name)?.context;
     if (official) return official;
     const original = data.modelRows.find(record => canonical(record.model) === canonical(name))?.context;
@@ -113,6 +119,18 @@ export function installModelResearch(data) {
       linkTo(row, data.availability.sources.claudeModels, '모델 사양');
     }
   };
+  const tagOffering = (row, offering) => {
+    if (!offering) return;
+    row.dataset.tools = offering.tool; row.dataset.modelId = offering.id;
+    row.dataset.access = offering.access; row.dataset.status = offering.status;
+    row.dataset.availability = offering.access === '구독 전용' ? 'subscription' : 'active';
+    row.dataset.local = '0';
+    textCell(row, 5, offering.access); textCell(row, 6, offering.status);
+    textCell(row, 27, offering.toolLabel);
+    row.cells[27].title = offering.id + '\n' + offering.note + '\n제공 여부 확인: ' + data.offerings.verifiedAt;
+    offering.sources.forEach(url => linkTo(row, url, url === data.offerings.source ? 'Meta 모델 제공' : url.includes('pricing') ? 'Meta 요금' : 'Meta 구독'));
+    linkTo(row, offering.guide, 'Wonder 모델 분석');
+  };
   const extendRow = row => {
     while (row.cells.length < header.cells.length) {
       const cell = document.createElement('td'); cell.textContent = '—'; row.append(cell);
@@ -125,6 +143,7 @@ export function installModelResearch(data) {
       textCell(row, conditionColumn, 'Coding Agent Index v1.3 · Terminal-Bench v2 · 원문 기록');
     }
     tagModel(row, matchModel(row.cells[2].textContent));
+    tagOffering(row, offeringOf(row.cells[2].textContent));
   });
 
   const makeRow = (provider, name, type, benchmark = '') => {
@@ -137,7 +156,7 @@ export function installModelResearch(data) {
     textCell(row, 2, name); row.cells[2].className = 'model';
     textCell(row, 4, type); textCell(row, 5, 'API/클라우드'); textCell(row, 7, '미공개');
     row.cells[25].className = 'notes'; row.cells[26].className = 'sources';
-    body.append(row); tagModel(row, matchModel(name)); return row;
+    body.append(row); tagModel(row, matchModel(name)); tagOffering(row, offeringOf(name)); return row;
   };
 
   // All currently documented first-party models get a specification row, even without measured scores.
@@ -154,6 +173,13 @@ export function installModelResearch(data) {
     textCell(row, 25, [row.cells[25].textContent === '—' ? '' : row.cells[25].textContent, ...note].filter(Boolean).join(' · '));
     textCell(row, conditionColumn, '제공 여부: ' + data.availability.verifiedAt + ' · ' + (model.tool === 'codex' ? 'ChatGPT 로그인' : 'Anthropic 직접 API'));
     tagModel(row, model);
+  });
+  data.offerings.records.forEach(offering => {
+    const row = makeRow(offering.provider, offering.name, '모델 사양');
+    row.dataset.recordId = 'offering:' + offering.id;
+    textCell(row, 3, offering.release); textCell(row, 8, offering.context);
+    textCell(row, 20, '제조사 공식 사양'); textCell(row, 25, offering.id + ' · ' + offering.note);
+    textCell(row, conditionColumn, 'Meta 제공 조건 확인 ' + data.offerings.verifiedAt + ' · 가중치 비공개');
   });
 
   data.modelRows.forEach(record => {
@@ -176,6 +202,7 @@ export function installModelResearch(data) {
   const modelMetrics = [[28,'index'],[29,'briefcase'],[30,'automation'],[31,'terminal'],[32,'scicode'],[33,'cost'],[36,'lcr']];
   const money = value => '$' + (value < .01 ? Number(value.toPrecision(3)).toString() : value.toFixed(2));
   const installVerifiedModel = (record, row, original) => {
+    const verifiedAt = record.verifiedAt || data.verifiedModels.verifiedAt;
     row.dataset.aa = '1'; row.dataset.modelEvaluation = '1'; row.dataset.sourceId = record.sourceId;
     row.dataset.evaluationModel = record.model; row.dataset.evaluationEffort = record.effort;
     row.dataset.benchmark = data.verifiedModels.suite;
@@ -194,7 +221,8 @@ export function installModelResearch(data) {
       cell.textContent = value == null ? '—' : key === 'cost' ? money(value) : key === 'briefcase' ? Math.round(value).toLocaleString('en-US') : value.toFixed(1) + (column === 28 ? '' : '%');
       delete cell.dataset.sort; delete cell.dataset.chartValue;
       if (value != null) cell.dataset.sort = cell.dataset.chartValue = String(value);
-      const notes = [data.verifiedModels.suite + ' · 확인 ' + data.verifiedModels.verifiedAt, record.source];
+      const notes = [data.verifiedModels.suite + ' · 확인 ' + verifiedAt, record.source];
+      if (key === 'cost' && offeringOf(record.model)?.access === '구독 전용') notes.push('공개 토큰 단가가 없어 작업당 API 비용 미산출. 구독료로 환산하지 않음.');
       if (key === 'index' && record.estimated) notes.push('AA가 추정한 종합 지수이므로 실측 값으로 표시하지 않음.');
       if (key === 'scicode') notes.push('AA 평가 재검토 중(Under review).');
       if (previous != null) {
@@ -210,7 +238,7 @@ export function installModelResearch(data) {
     const configuration = record.name.includes('Fallback') ? record.name.match(/\(([^)]*)\)/)?.[1] : record.effort;
     textCell(row, 25, record.estimated ? '개별 공개 평가만 표시 · 추정 종합 Index 제외' : '동일 모델·추론 조건의 AA 공개 평가');
     if (original) { row.cells[25].dataset.previousValue = original.note; row.cells[25].title = '이전 조사 설명: ' + original.note; }
-    textCell(row, conditionColumn, data.verifiedModels.suite + ' · ' + configuration + ' · 확인 ' + data.verifiedModels.verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
+    textCell(row, conditionColumn, data.verifiedModels.suite + ' · ' + configuration + ' · 확인 ' + verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
     linkTo(row, record.source, 'AA 세부 평가');
     addFacts(row, record.model);
     usedModelRecords.add(record.sourceId);
@@ -270,8 +298,10 @@ export function installModelResearch(data) {
     if (value != null) row.cells[column].dataset.sort = row.cells[column].dataset.chartValue = String(value);
   };
   data.verifiedAgents.records.forEach(record => {
+    const verifiedAt = record.verifiedAt || data.verifiedAgents.verifiedAt;
     const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', 'Agent v1.5');
     row.dataset.recordId = 'agent:v1.5:' + record.sourceId;
+    row.dataset.costStatus = record.costStatus || 'priced';
     textCell(row, 8, record.model.includes('+') ? '모델별 상이' : contextOf(record.model));
     if (record.model.includes('+')) row.cells[8].title = '서로 다른 모델을 조합한 평가. 단일 Context 수치로 합산·대체하지 않음.';
     textCell(row, 9, record.harness + ' ' + record.harnessVersion);
@@ -280,11 +310,12 @@ export function installModelResearch(data) {
     numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
     numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
     numberCell(row, 16, record.turns, record.turns.toFixed(1));
-    numberCell(row, 17, record.costUsd, '$' + record.costUsd.toFixed(2));
+    numberCell(row, 17, record.costUsd, record.costUsd == null ? '—' : '$' + record.costUsd.toFixed(2));
+    if (record.costUsd == null) row.cells[17].title = '공개 토큰 단가 없음 · 작업당 API 비용 미산출. 구독료로 환산하지 않음.';
     textCell(row, 20, 'AA 공식 평가');
     const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
-    textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · 실패를 포함한 평균 API 비용');
-    textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + data.verifiedAgents.verifiedAt + ' · 실행일 미명시 · ' + fallback);
+    textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · ' + (record.costUsd == null ? 'API 비용 미산출' : '실패를 포함한 평균 API 비용'));
+    textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
     linkTo(row, data.verifiedAgents.source, 'AA 평가 원문');
     linkTo(row, data.verifiedAgents.methodology, '평가 방법');
     addFacts(row, record.model);
@@ -306,6 +337,7 @@ export function installModelResearch(data) {
       if (!/^(—|미확인|미측정|미공개)?$/.test(cell.textContent.trim())) return;
       let reason = '공개 원문에서 동일 조건의 수치를 확인하지 못함.';
       if (column >= 38) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
+      else if ((column === 17 && row.dataset.costStatus === 'not-token-priced') || (column === 33 && row.dataset.modelEvaluation === '1' && offeringOf(row.cells[2].textContent)?.access === '구독 전용')) reason = '공개 토큰 단가가 없는 구독 모델. 작업당 API 비용 미산출이며 구독료로 환산하지 않음.';
       else if (column >= 10 && column <= 17 && !(row.dataset.benchmark || '').startsWith('Agent')) reason = '이 행은 코딩 에이전트 평가가 아님. 같은 모델의 코딩 에이전트 평가 행에 별도 기록.';
       else if ((column >= 28 && column <= 33 || column === 36) && row.dataset.modelEvaluation !== '1') reason = '이 행은 AA 모델 평가가 아님. 같은 모델·추론 설정의 AA 모델 평가 행에 별도 기록.';
       else if (column === 34 || column === 35) reason = '동일 모델·추론 설정의 CursorBench 4.0 공개 측정값 미확인. AA·Codex·Claude Code의 값으로 대체하지 않음.';
@@ -317,6 +349,13 @@ export function installModelResearch(data) {
   });
   const status = document.getElementById('status');
   if (![...status.options].some(option => option.value === '종료 예정')) status.add(new Option('종료 예정', '종료 예정'));
+  data.offerings.records.forEach(offering => {
+    if (![...status.options].some(option => option.value === offering.status)) status.add(new Option(offering.status, offering.status));
+  });
+  const tools = document.getElementById('tool');
+  data.offerings.records.forEach(offering => {
+    if (![...tools.options].some(option => option.value === offering.tool)) tools.add(new Option(offering.toolLabel, offering.tool));
+  });
   const updated = document.getElementById('llmUpdatedAt');
   if (updated) { updated.textContent = data.updatedAt; updated.setAttribute('datetime', data.updatedAt); }
   document.title = '주요 LLM·코딩 모델 통합 비교 — ' + data.updatedAt;
@@ -327,5 +366,6 @@ export function installModelResearch(data) {
   table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
   table.dataset.verifiedModelRecords = String(usedModelRecords.size);
   table.dataset.verifiedCursorRecords = String(data.verifiedCursor.records.length);
+  table.dataset.offeringRecords = String(data.offerings.records.length);
   table.dataset.developerRecords = String(data.developerRows.length);
 }

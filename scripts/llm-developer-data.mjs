@@ -15,9 +15,14 @@ export function validateAgentSnapshot(snapshot) {
     for (const key of ['index', 'deepSWE', 'terminalBench', 'sweAtlas']) {
       if (!Number.isFinite(row[key]) || row[key] < 0 || row[key] > 100) throw new Error('Invalid agent score: ' + key);
     }
-    for (const key of ['costUsd', 'timeSeconds', 'totalTokens', 'turns']) {
+    for (const key of ['timeSeconds', 'totalTokens', 'turns']) {
       if (!Number.isFinite(row[key]) || row[key] < 0) throw new Error('Invalid agent measurement: ' + key);
     }
+    if (row.costStatus === 'not-token-priced') {
+      if (row.costUsd !== null) throw new Error('Unpriced agent must have a null cost');
+    } else if ((row.costStatus != null && row.costStatus !== 'priced')
+        || !Number.isFinite(row.costUsd) || row.costUsd < 0) throw new Error('Invalid agent measurement: costUsd');
+    if (row.verifiedAt != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.verifiedAt)) throw new Error('Invalid agent verification date');
     for (const key of ['deep-swe-v1.1', 'terminal-bench-v4', 'swe-atlas-qna']) {
       const version = row.harnessVersions?.[key];
       if (!version?.min?.version || !version?.max?.version) throw new Error('Missing per-benchmark harness version');
@@ -53,6 +58,7 @@ export function validateModelSnapshot(snapshot) {
       if (row[key] != null && (!Number.isFinite(row[key]) || row[key] < 0 || row[key] > 1)) throw new Error('Invalid model proportion: ' + key);
     }
     if (row.release != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.release)) throw new Error('Invalid model release date');
+    if (row.verifiedAt != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.verifiedAt)) throw new Error('Invalid model verification date');
   }
   return snapshot;
 }
@@ -69,6 +75,21 @@ export function validateCursorSnapshot(snapshot) {
         || !Number.isFinite(row.costUsd) || row.costUsd < 0
         || !Number.isInteger(row.tokens) || row.tokens < 0
         || !Number.isInteger(row.steps) || row.steps < 0) throw new Error('Invalid Cursor measurement');
+  }
+  return snapshot;
+}
+
+export function validateModelOfferings(snapshot) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(snapshot.verifiedAt) || snapshot.source !== 'https://dev.meta.ai/docs/models') throw new Error('Unverified model offerings');
+  const names = new Set(), ids = new Set();
+  for (const row of snapshot.records) {
+    if (!row.name || names.has(row.name) || !row.id || ids.has(row.id)
+        || row.provider !== 'Meta' || row.tool !== 'muse-code' || row.toolLabel !== 'Muse Code'
+        || !['API + 구독', '구독 전용'].includes(row.access) || !row.status || !row.context
+        || row.isOpenWeights !== false || !/^\d{4}-\d{2}-\d{2}$/.test(row.release)
+        || !row.note || !row.sources?.includes(snapshot.source) || row.sources.some(url => !url.startsWith('https://dev.meta.ai/'))
+        || row.guide !== 'Muse_Wonder_Model_Guide.html') throw new Error('Invalid Meta model offering');
+    names.add(row.name); ids.add(row.id);
   }
   return snapshot;
 }

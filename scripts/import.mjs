@@ -3,15 +3,19 @@ import path from 'node:path';
 import { root, filesIn, readJSON, hash } from './lib.mjs';
 
 const argument = process.argv.indexOf('--from');
-if (argument < 0 || !process.argv[argument + 1]) {
-  console.error('사용법: npm run import -- --from "자료조사 폴더의 전체 경로"');
+const fileArgument = process.argv.indexOf('--file');
+if ((argument >= 0) === (fileArgument >= 0) || !(process.argv[(fileArgument >= 0 ? fileArgument : argument) + 1])) {
+  console.error('사용법: npm run import -- --file "대상 HTML 전체 경로" 또는 --from "자료조사 폴더의 전체 경로"');
   process.exit(1);
 }
-const source = path.resolve(process.argv[argument + 1]);
+const singleFile = fileArgument >= 0 ? path.resolve(process.argv[fileArgument + 1]) : null;
+if (singleFile && !(await fs.stat(singleFile)).isFile()) throw new Error('--file에는 단일 파일을 지정해야 합니다.');
+const source = singleFile ? path.dirname(singleFile) : path.resolve(process.argv[argument + 1]);
 const target = path.join(root, 'content');
 if (source === target || source.startsWith(target + path.sep) || target.startsWith(source + path.sep)) throw new Error('원본과 게시 폴더는 서로 독립된 위치여야 합니다.');
 const allowed = new Set(['.html', '.htm', '.css', '.js', '.mjs', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif', '.ico', '.woff', '.woff2', '.ttf', '.avif', '.mp4', '.webm', '.pdf', '.csv']);
-const files = (await filesIn(source)).filter((file) => allowed.has(path.extname(file).toLowerCase()));
+const files = (singleFile ? [path.basename(singleFile)] : await filesIn(source)).filter((file) => allowed.has(path.extname(file).toLowerCase()));
+if (singleFile && files.length !== 1) throw new Error('지원하지 않는 파일 형식입니다.');
 await fs.mkdir(target, { recursive: true });
 const registryFile = path.join(target, '.source-info.json');
 const registry = await readJSON(registryFile, {});

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs/promises';
-import { calculateDeveloperMeasurements, validateAgentSnapshot, validateModelSnapshot, validateCursorSnapshot } from './llm-developer-data.mjs';
+import { calculateDeveloperMeasurements, validateAgentSnapshot, validateModelSnapshot, validateCursorSnapshot, validateModelOfferings } from './llm-developer-data.mjs';
 
 const measured = {
   id: 'test:one', model: 'GPT-6.1 Sol', effort: 'High', harness: 'Codex test',
@@ -37,14 +37,14 @@ test('checked-in agent values retain their suite, units, source IDs and componen
   assert.throws(() => validateAgentSnapshot({...input, records: [input.records[0], input.records[0]]}));
   assert.throws(() => validateAgentSnapshot({...input, records: [{...input.records[0], costUsd: null}]}));
   assert.throws(() => validateAgentSnapshot({...input, records: [{...input.records[0], index: 99}]}));
-  assert.equal(input.records.length, 31);
+  assert.equal(input.records.length, 33);
   assert.throws(() => validateAgentSnapshot({...input, records: [{...input.records[0], turns: null}]}));
   assert.throws(() => validateAgentSnapshot({...input, records: [{...input.records[0], harnessVersions: {}}]}));
 });
 test('model snapshot distinguishes measured values, missing values and estimated Index', async () => {
   const input = JSON.parse(await fs.readFile(new URL('../content/llm-model-benchmarks.json', import.meta.url), 'utf8'));
   validateModelSnapshot(input);
-  assert.equal(input.records.length, 283);
+  assert.equal(input.records.length, 285);
   assert.equal(input.records.filter(row => row.model === 'GPT-6.1 Sol').length, 5);
   assert.equal(input.records.filter(row => row.model === 'Claude Sonnet 5.5').length, 5);
   assert(input.records.some(row => row.estimated && row.lcr != null));
@@ -56,6 +56,28 @@ test('model snapshot distinguishes measured values, missing values and estimated
     assert.throws(() => validateModelSnapshot({...input, records:[{...row,...patch}]}));
   }
   validateModelSnapshot({...input, records:[{...row, cost:0, terminal:0, index:null, lcr:null}]});
+  assert.equal(input.records.filter(row => row.model === 'Muse Wonder' || row.model === 'Muse Wonder Full').length, 2);
+  assert(input.records.filter(row => row.model.startsWith('Muse Wonder')).every(row => row.verifiedAt === '2026-10-13' && row.isOpenWeights === false));
+  assert.throws(() => validateModelSnapshot({...input, records:[{...row, verifiedAt:'unknown'}]}));
+});
+test('subscription-only agent cost stays absent, not zero or an assumed API price', async () => {
+  const input = JSON.parse(await fs.readFile(new URL('../content/llm-agent-benchmarks.json', import.meta.url), 'utf8'));
+  const full = input.records.find(row => row.model === 'Muse Wonder Full');
+  assert.equal(full.costUsd, null); assert.equal(full.costStatus, 'not-token-priced');
+  assert.equal(full.verifiedAt, '2026-10-13'); validateAgentSnapshot({...input, records:[full]});
+  for (const patch of [{costStatus:undefined}, {costStatus:'unknown'}, {costUsd:0}, {costUsd:1}, {verifiedAt:'unknown'}]) {
+    assert.throws(() => validateAgentSnapshot({...input, records:[{...full,...patch}]}));
+  }
+});
+test('Meta native access is separate from Codex/Claude availability and open weights', async () => {
+  const input = JSON.parse(await fs.readFile(new URL('../content/llm-model-offerings.json', import.meta.url), 'utf8'));
+  validateModelOfferings(input); assert.equal(input.records.length, 2);
+  assert.equal(input.records.find(row => row.name === 'Muse Wonder Full').access, '구독 전용');
+  const row=input.records[0];
+  for (const patch of [{tool:'codex'}, {isOpenWeights:true}, {sources:['https://example.com']}, {access:'오픈웨이트'}]) {
+    assert.throws(() => validateModelOfferings({...input, records:[{...row,...patch}]}));
+  }
+  assert.throws(() => validateModelOfferings({...input, records:[row,row]}));
 });
 test('Cursor values keep their own evaluation/version and source label', async () => {
   const input = JSON.parse(await fs.readFile(new URL('../content/llm-cursor-benchmarks.json', import.meta.url), 'utf8'));

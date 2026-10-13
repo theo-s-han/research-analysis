@@ -34,6 +34,8 @@ npm run preview
 
 가져오기는 원본을 변경하지 않고 HTML과 연결 파일을 `content/`에 복사합니다. 원본에서 빠진 기존 자료도 자동 삭제하지 않습니다. 게시용 파일이 별도로 수정되어 원본과 충돌하면 덮어쓰지 않고 중단합니다. 파일 서버를 실시간 감시하지 않으므로 공유 폴더를 바꾼 뒤에는 다시 가져와 저장소에 반영해야 합니다. 업로드·커밋·푸시는 가져오기 명령이 자동 실행하지 않습니다.
 
+선택한 파일만 게시할 때는 `npm run import -- --file "대상 HTML 전체 경로"`를 사용합니다. 같은 작업 폴더의 조사 JSON·검증 스크립트·스크린샷은 함께 가져오지 않습니다. 별도 필수 자산은 각각 지정합니다.
+
 기본 가져오기 형식은 HTML, CSS, JS, 이미지, 폰트, PDF, CSV, MP4, WebM입니다. 자료에 필요한 다른 파일 형식은 `content/`에 직접 추가하거나 `scripts/import.mjs`의 형식 목록에 추가하세요. 불필요한 비공개 파일은 `content/`에 넣지 않습니다.
 
 ## 제목·분류·요약·태그
@@ -107,9 +109,11 @@ AA 모델 Intelligence, 기존 Coding Agent Index v1.3, Terminal-Bench 4.0 기�
 
 통합 표의 기본 열은 개발자 관점으로 모델 개발사, 모델/설정, 평가·사양 구분, Context, Agent/Harness, DeepSWE, Agent Terminal-Bench, SWE-Atlas-QnA, Time/Task, $/Task, AA Intelligence, 평가 조건/확인일입니다. 다른 지표는 삭제하지 않고 비교 항목 메뉴에서 모델 정보·코딩 에이전트·개발 실사용·모델/Cursor 평가·기타로 구분합니다. 일반 모델 가이드의 기본 열 규칙을 바꾸는 것이 아니라 이 통합 표에만 적용합니다.
 
-`content/llm-agent-benchmarks.json`은 AA 공식 코딩 에이전트 페이지에서 확인한 v1.5의 공개 31개 설정 스냅샷입니다. 원본 sourceId, 추론 설정, 평가별 harness 버전 범위, 대체 모델, 확인일, 원 단위 값을 보존합니다. DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균인지 생성/검증 시 확인하며, 과거 기록과 별도 행·차트로 추가합니다. Turns는 AA 공개 차트의 mean.steps(작업당 평균 에이전트 턴)입니다. harness 제조사와 모델 개발사를 혼동하지 않으며, 복합 모델은 단일 모델/Context로 대체하지 않습니다. 확인일은 실행일이 아니며 AA 평가 비용을 월 구독 사용량으로 환산하지 않습니다.
+`content/llm-agent-benchmarks.json`은 AA 공식 코딩 에이전트 페이지에서 확인한 v1.5의 공개 33개 설정 스냅샷입니다. 원본 sourceId, 추론 설정, 평가별 harness 버전 범위, 대체 모델, 확인일, 원 단위 값을 보존합니다. DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균인지 생성/검증 시 확인하며, 과거 기록과 별도 행·차트로 추가합니다. Turns는 AA 공개 차트의 mean.steps(작업당 평균 에이전트 턴)입니다. harness 제조사와 모델 개발사를 혼동하지 않으며, 복합 모델은 단일 모델/Context로 대체하지 않습니다. 확인일은 실행일이 아니며 AA 평가 비용을 월 구독 사용량으로 환산하지 않습니다.
 
-`content/llm-model-benchmarks.json`은 기존 표·가이드·도구 목록과 관련된 AA 모델 상세 페이지 283개 설정의 공개 수치입니다. 모델별 sourceId/URL/추론·fallback 표시명, AA v4.3.2/Briefcase 1.1/Terminal 4.0/LCR 1.1, 원 단위 값을 보존합니다. AA가 추정한 종합 Index는 실측 수치 칸/차트에서 제외하고, 별도로 측정된 개별 평가만 반영합니다. 공개 수치가 전혀 없는 설정은 표 행을 늘리지 않습니다. SciCode의 Under review 상태를 툴팁에 명시합니다. API 공식 제공 목록의 Context를 우선하며, 다른 모델의 값으로 누락을 대신하지 않습니다.
+`content/llm-model-benchmarks.json`은 기존 표·가이드·도구 목록과 관련된 AA 모델 상세 페이지 285개 설정의 공개 수치입니다. 모델별 sourceId/URL/추론·fallback 표시명, AA v4.3.2/Briefcase 1.1/Terminal 4.0/LCR 1.1, 원 단위 값을 보존합니다. AA가 추정한 종합 Index는 실측 수치 칸/차트에서 제외하고, 별도로 측정된 개별 평가만 반영합니다. 공개 수치가 전혀 없는 설정은 표 행을 늘리지 않습니다. SciCode의 Under review 상태를 툴팁에 명시합니다. API 공식 제공 목록의 Context를 우선하며, 다른 모델의 값으로 누락을 대신하지 않습니다.
+
+`content/llm-model-offerings.json`은 Wonder·Wonder Full의 Meta 공식 제공 조건입니다. Muse Code를 Codex·Claude Code 제공 목록에 섞지 않습니다. 두 모델 모두 가중치 비공개이며, Wonder는 API preview와 구독, Full은 Muse Code 구독 전용으로 구분합니다. 부분 추가 시 기존 2026-10-07 수치는 그대로 보존하고 새 행의 verifiedAt=2026-10-13을 우선 표시합니다. Full의 코딩 에이전트 비용은 costStatus=not-token-priced와 costUsd=null로 보존하고 `—`로 표시하며 정렬·차트의 숫자 0으로 변환하지 않습니다.
 
 `content/llm-cursor-benchmarks.json`은 Cursor 공식 CursorBench 4.0의 공개 63개 설정입니다. AA 모델/네이티브 에이전트 값과 독립된 34·35열과 차트로 표시합니다. 정확한 모델·추론 설정이 일치할 때만 기존 AA 모델 행의 별도 Cursor 열에 결합하며, 여러 AA variant와 매칭되면 별도 Cursor 행을 만듭니다. Cursor의 토큰·Steps는 Cursor 셀의 툴팁에만 기록하고 AA agent Tokens/Turns 열에 넣지 않습니다. GPT-6·GPT-6.1과 같은 공식 Cursor 측정값 미확인 모델은 추측해서 채우지 않습니다.
 

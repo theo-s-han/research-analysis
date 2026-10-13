@@ -1,4 +1,12 @@
 {
+  "Muse_Wonder_Model_Guide.html": {
+    "slug": "muse-wonder-model-guide",
+    "title": "Muse Wonder · Wonder Full 모델 분석",
+    "description": "Spark 1.3 대비 성능 변화와 기존 코딩 모델의 비용·접근 조건을 비교합니다. Wonder API와 Full 구독 조건을 구분합니다.",
+    "category": "모델 리서치",
+    "tags": ["Muse Wonder", "Muse Wonder Full", "Meta", "모델 비교"],
+    "referenceDate": "2026-10-13"
+  },
   "Gemini_4_Argon_Model_Guide.html": {
     "slug": "gemini-4-argon-model-guide",
     "title": "Gemini 4 Argon 모델 분석",
@@ -61,7 +69,7 @@
     "description": "Codex·Claude Code의 모델 목록과 최신 모델 평가를 포함해 성능, 사양, 메모리 요구량을 비교합니다. 평가 환경과 제한 제공 조건을 구분합니다.",
     "category": "모델 리서치",
     "tags": ["LLM", "Codex", "Claude Code", "오픈웨이트", "로컬 모델"],
-    "referenceDate": "2026-10-07"
+    "referenceDate": "2026-10-13"
   },
   "Artificial Analysis Coding Agent Index v1.3.html": {
     "slug": "coding-agent-index",

@@ -46,5 +46,9 @@
   "GPT_6_1_Sol_Model_Guide.html": {
     "sha256": "5d37348c72440b067044510ac29b09a6f4636c136cc71a3760d3821468a32d8e",
     "updatedAt": "2026-09-30T06:40:59.501Z"
+  },
+  "Muse_Wonder_Model_Guide.html": {
+    "sha256": "c41ef9890a16e301b50efe42a1bdf13e65a9eb5ef8fbcbfadea65e469885c29a",
+    "updatedAt": "2026-10-13T00:27:41.291Z"
   }
 }

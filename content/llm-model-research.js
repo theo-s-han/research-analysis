@@ -3,7 +3,7 @@
   const table = document.getElementById('tbl');
   const body = table.tBodies[0];
   const header = table.tHead.rows[0];
-  const toolNames = { codex: 'Codex', 'claude-code': 'Claude Code' };
+  const toolNames = { codex: 'Codex', 'claude-code': 'Claude Code', 'muse-code': 'Muse Code' };
   const originalRows = [...body.rows];
   const modelMetricsStart = 28;
   const conditionColumn = 37;
@@ -29,7 +29,7 @@
     } else cell.dataset.chart = 'false';
     header.append(cell);
   };
-  addHeader('사용 도구', '공식 모델 목록 기준. Codex는 ChatGPT 로그인, Claude Code는 Anthropic 직접 API 기준. 구독·제공자·관리자 정책·승인 권한에 따라 실제 선택 가능 여부가 다름.');
+  addHeader('사용 도구', '공식 모델 목록 기준. Codex는 ChatGPT 로그인, Claude Code는 Anthropic 직접 API, Muse Code는 Meta 공식 제공 조건 기준. 구독·제공자·관리자 정책·승인 권한에 따라 실제 선택 가능 여부가 다름.');
   metricDefinitions.forEach(([name, unit, tip]) => addHeader(name, tip, unit));
   addHeader('평가 조건 / 확인일', '모델 사용 가능 여부 확인일과 벤치마크 원문 기록 시점은 다름. 원문 기준일이 없는 값은 날짜를 추정하지 않음.');
   [
@@ -74,7 +74,13 @@
     });
   };
   const factsOf = name => data.verifiedModels.records.filter(record => canonical(record.model) === canonical(name));
+  const offeringOf = name => data.offerings.records.find(record => {
+    const input = canonical(name), base = canonical(record.name);
+    return input === base || input.startsWith(base + ' (');
+  });
   const contextOf = name => {
+    const offered = offeringOf(name)?.context;
+    if (offered) return offered;
     const official = matchModel(name)?.context;
     if (official) return official;
     const original = data.modelRows.find(record => canonical(record.model) === canonical(name))?.context;
@@ -113,6 +119,18 @@
       linkTo(row, data.availability.sources.claudeModels, '모델 사양');
     }
   };
+  const tagOffering = (row, offering) => {
+    if (!offering) return;
+    row.dataset.tools = offering.tool; row.dataset.modelId = offering.id;
+    row.dataset.access = offering.access; row.dataset.status = offering.status;
+    row.dataset.availability = offering.access === '구독 전용' ? 'subscription' : 'active';
+    row.dataset.local = '0';
+    textCell(row, 5, offering.access); textCell(row, 6, offering.status);
+    textCell(row, 27, offering.toolLabel);
+    row.cells[27].title = offering.id + '\n' + offering.note + '\n제공 여부 확인: ' + data.offerings.verifiedAt;
+    offering.sources.forEach(url => linkTo(row, url, url === data.offerings.source ? 'Meta 모델 제공' : url.includes('pricing') ? 'Meta 요금' : 'Meta 구독'));
+    linkTo(row, offering.guide, 'Wonder 모델 분석');
+  };
   const extendRow = row => {
     while (row.cells.length < header.cells.length) {
       const cell = document.createElement('td'); cell.textContent = '—'; row.append(cell);
@@ -125,6 +143,7 @@
       textCell(row, conditionColumn, 'Coding Agent Index v1.3 · Terminal-Bench v2 · 원문 기록');
     }
     tagModel(row, matchModel(row.cells[2].textContent));
+    tagOffering(row, offeringOf(row.cells[2].textContent));
   });
 
   const makeRow = (provider, name, type, benchmark = '') => {
@@ -137,7 +156,7 @@
     textCell(row, 2, name); row.cells[2].className = 'model';
     textCell(row, 4, type); textCell(row, 5, 'API/클라우드'); textCell(row, 7, '미공개');
     row.cells[25].className = 'notes'; row.cells[26].className = 'sources';
-    body.append(row); tagModel(row, matchModel(name)); return row;
+    body.append(row); tagModel(row, matchModel(name)); tagOffering(row, offeringOf(name)); return row;
   };
 
   // All currently documented first-party models get a specification row, even without measured scores.
@@ -154,6 +173,13 @@
     textCell(row, 25, [row.cells[25].textContent === '—' ? '' : row.cells[25].textContent, ...note].filter(Boolean).join(' · '));
     textCell(row, conditionColumn, '제공 여부: ' + data.availability.verifiedAt + ' · ' + (model.tool === 'codex' ? 'ChatGPT 로그인' : 'Anthropic 직접 API'));
     tagModel(row, model);
+  });
+  data.offerings.records.forEach(offering => {
+    const row = makeRow(offering.provider, offering.name, '모델 사양');
+    row.dataset.recordId = 'offering:' + offering.id;
+    textCell(row, 3, offering.release); textCell(row, 8, offering.context);
+    textCell(row, 20, '제조사 공식 사양'); textCell(row, 25, offering.id + ' · ' + offering.note);
+    textCell(row, conditionColumn, 'Meta 제공 조건 확인 ' + data.offerings.verifiedAt + ' · 가중치 비공개');
   });
 
   data.modelRows.forEach(record => {
@@ -176,6 +202,7 @@
   const modelMetrics = [[28,'index'],[29,'briefcase'],[30,'automation'],[31,'terminal'],[32,'scicode'],[33,'cost'],[36,'lcr']];
   const money = value => '$' + (value < .01 ? Number(value.toPrecision(3)).toString() : value.toFixed(2));
   const installVerifiedModel = (record, row, original) => {
+    const verifiedAt = record.verifiedAt || data.verifiedModels.verifiedAt;
     row.dataset.aa = '1'; row.dataset.modelEvaluation = '1'; row.dataset.sourceId = record.sourceId;
     row.dataset.evaluationModel = record.model; row.dataset.evaluationEffort = record.effort;
     row.dataset.benchmark = data.verifiedModels.suite;
@@ -194,7 +221,8 @@
       cell.textContent = value == null ? '—' : key === 'cost' ? money(value) : key === 'briefcase' ? Math.round(value).toLocaleString('en-US') : value.toFixed(1) + (column === 28 ? '' : '%');
       delete cell.dataset.sort; delete cell.dataset.chartValue;
       if (value != null) cell.dataset.sort = cell.dataset.chartValue = String(value);
-      const notes = [data.verifiedModels.suite + ' · 확인 ' + data.verifiedModels.verifiedAt, record.source];
+      const notes = [data.verifiedModels.suite + ' · 확인 ' + verifiedAt, record.source];
+      if (key === 'cost' && offeringOf(record.model)?.access === '구독 전용') notes.push('공개 토큰 단가가 없어 작업당 API 비용 미산출. 구독료로 환산하지 않음.');
       if (key === 'index' && record.estimated) notes.push('AA가 추정한 종합 지수이므로 실측 값으로 표시하지 않음.');
       if (key === 'scicode') notes.push('AA 평가 재검토 중(Under review).');
       if (previous != null) {
@@ -210,7 +238,7 @@
     const configuration = record.name.includes('Fallback') ? record.name.match(/\(([^)]*)\)/)?.[1] : record.effort;
     textCell(row, 25, record.estimated ? '개별 공개 평가만 표시 · 추정 종합 Index 제외' : '동일 모델·추론 조건의 AA 공개 평가');
     if (original) { row.cells[25].dataset.previousValue = original.note; row.cells[25].title = '이전 조사 설명: ' + original.note; }
-    textCell(row, conditionColumn, data.verifiedModels.suite + ' · ' + configuration + ' · 확인 ' + data.verifiedModels.verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
+    textCell(row, conditionColumn, data.verifiedModels.suite + ' · ' + configuration + ' · 확인 ' + verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
     linkTo(row, record.source, 'AA 세부 평가');
     addFacts(row, record.model);
     usedModelRecords.add(record.sourceId);
@@ -270,8 +298,10 @@
     if (value != null) row.cells[column].dataset.sort = row.cells[column].dataset.chartValue = String(value);
   };
   data.verifiedAgents.records.forEach(record => {
+    const verifiedAt = record.verifiedAt || data.verifiedAgents.verifiedAt;
     const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', 'Agent v1.5');
     row.dataset.recordId = 'agent:v1.5:' + record.sourceId;
+    row.dataset.costStatus = record.costStatus || 'priced';
     textCell(row, 8, record.model.includes('+') ? '모델별 상이' : contextOf(record.model));
     if (record.model.includes('+')) row.cells[8].title = '서로 다른 모델을 조합한 평가. 단일 Context 수치로 합산·대체하지 않음.';
     textCell(row, 9, record.harness + ' ' + record.harnessVersion);
@@ -280,11 +310,12 @@
     numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
     numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
     numberCell(row, 16, record.turns, record.turns.toFixed(1));
-    numberCell(row, 17, record.costUsd, '$' + record.costUsd.toFixed(2));
+    numberCell(row, 17, record.costUsd, record.costUsd == null ? '—' : '$' + record.costUsd.toFixed(2));
+    if (record.costUsd == null) row.cells[17].title = '공개 토큰 단가 없음 · 작업당 API 비용 미산출. 구독료로 환산하지 않음.';
     textCell(row, 20, 'AA 공식 평가');
     const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
-    textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · 실패를 포함한 평균 API 비용');
-    textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + data.verifiedAgents.verifiedAt + ' · 실행일 미명시 · ' + fallback);
+    textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · ' + (record.costUsd == null ? 'API 비용 미산출' : '실패를 포함한 평균 API 비용'));
+    textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
     linkTo(row, data.verifiedAgents.source, 'AA 평가 원문');
     linkTo(row, data.verifiedAgents.methodology, '평가 방법');
     addFacts(row, record.model);
@@ -306,6 +337,7 @@
       if (!/^(—|미확인|미측정|미공개)?$/.test(cell.textContent.trim())) return;
       let reason = '공개 원문에서 동일 조건의 수치를 확인하지 못함.';
       if (column >= 38) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
+      else if ((column === 17 && row.dataset.costStatus === 'not-token-priced') || (column === 33 && row.dataset.modelEvaluation === '1' && offeringOf(row.cells[2].textContent)?.access === '구독 전용')) reason = '공개 토큰 단가가 없는 구독 모델. 작업당 API 비용 미산출이며 구독료로 환산하지 않음.';
       else if (column >= 10 && column <= 17 && !(row.dataset.benchmark || '').startsWith('Agent')) reason = '이 행은 코딩 에이전트 평가가 아님. 같은 모델의 코딩 에이전트 평가 행에 별도 기록.';
       else if ((column >= 28 && column <= 33 || column === 36) && row.dataset.modelEvaluation !== '1') reason = '이 행은 AA 모델 평가가 아님. 같은 모델·추론 설정의 AA 모델 평가 행에 별도 기록.';
       else if (column === 34 || column === 35) reason = '동일 모델·추론 설정의 CursorBench 4.0 공개 측정값 미확인. AA·Codex·Claude Code의 값으로 대체하지 않음.';
@@ -317,6 +349,13 @@
   });
   const status = document.getElementById('status');
   if (![...status.options].some(option => option.value === '종료 예정')) status.add(new Option('종료 예정', '종료 예정'));
+  data.offerings.records.forEach(offering => {
+    if (![...status.options].some(option => option.value === offering.status)) status.add(new Option(offering.status, offering.status));
+  });
+  const tools = document.getElementById('tool');
+  data.offerings.records.forEach(offering => {
+    if (![...tools.options].some(option => option.value === offering.tool)) tools.add(new Option(offering.toolLabel, offering.tool));
+  });
   const updated = document.getElementById('llmUpdatedAt');
   if (updated) { updated.textContent = data.updatedAt; updated.setAttribute('datetime', data.updatedAt); }
   document.title = '주요 LLM·코딩 모델 통합 비교 — ' + data.updatedAt;
@@ -327,6 +366,7 @@
   table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
   table.dataset.verifiedModelRecords = String(usedModelRecords.size);
   table.dataset.verifiedCursorRecords = String(data.verifiedCursor.records.length);
+  table.dataset.offeringRecords = String(data.offerings.records.length);
   table.dataset.developerRecords = String(data.developerRows.length);
 })({
   "availability": {
@@ -531,6 +571,50 @@
         "contextSource": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
         "restricted": true,
         "note": "승인 고객 한정·deprecated. 종료일 미정. 일반 구독의 모델 선택 목록과 다름."
+      }
+    ]
+  },
+  "offerings": {
+    "verifiedAt": "2026-10-13",
+    "source": "https://dev.meta.ai/docs/models",
+    "records": [
+      {
+        "name": "Muse Wonder",
+        "id": "muse-wonder-1.0",
+        "provider": "Meta",
+        "tool": "muse-code",
+        "toolLabel": "Muse Code",
+        "access": "API + 구독",
+        "status": "preview",
+        "release": "2026-10-12",
+        "context": "1,048,576",
+        "isOpenWeights": false,
+        "note": "가중치 비공개. Model API preview(Standard) 및 Muse Code 종량제·모든 구독 플랜. API 단가: 입력 $4 / 캐시 읽기 $0.20 / 출력 $20 per 1M tokens. 구독 Contributor mode는 기본 활성화이며 Standard와 학습 조건이 다름.",
+        "sources": [
+          "https://dev.meta.ai/docs/models",
+          "https://dev.meta.ai/docs/pricing-rate-limits",
+          "https://dev.meta.ai/docs/muse-code/subscriptions"
+        ],
+        "guide": "Muse_Wonder_Model_Guide.html"
+      },
+      {
+        "name": "Muse Wonder Full",
+        "id": "muse-wonder-full-1.0",
+        "provider": "Meta",
+        "tool": "muse-code",
+        "toolLabel": "Muse Code",
+        "access": "구독 전용",
+        "status": "구독 제공",
+        "release": "2026-10-12",
+        "context": "1M",
+        "isOpenWeights": false,
+        "note": "가중치 비공개·공개 API 없음. Muse Code Power 월 $50 / Maximum 월 $200 구독에서 제공. Wonder의 Max 설정과 다른 모델. 토큰 단가·작업당 API 비용은 미산출이며 구독료로 대신 계산하지 않음. Contributor mode 및 지역·계정 제공 조건 확인 필요.",
+        "sources": [
+          "https://dev.meta.ai/docs/models",
+          "https://dev.meta.ai/models/muse-wonder",
+          "https://dev.meta.ai/docs/muse-code/subscriptions"
+        ],
+        "guide": "Muse_Wonder_Model_Guide.html"
       }
     ]
   },
@@ -3250,6 +3334,109 @@
         "retainedAttempts": 909,
         "fallbackModels": [],
         "provider": "DeepSeek"
+      },
+      {
+        "sourceId": "61df0222d90b30e25d4ff8b08d0c0aca",
+        "model": "Muse Wonder",
+        "effort": "Max",
+        "provider": "Meta",
+        "harness": "Muse Code",
+        "harnessVersion": "1.4.5-R5426.1",
+        "harnessVersions": {
+          "deep-swe-v1.1": {
+            "min": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 63.49675266318143,
+        "deepSWE": 75.811209439528,
+        "terminalBench": 47.474747474747495,
+        "sweAtlas": 67.2043010752688,
+        "costUsd": 8.052232502530256,
+        "timeSeconds": 1346.6521254125387,
+        "totalTokens": 15016299.67931794,
+        "turns": 191.95514936108992,
+        "retainedAttempts": 907,
+        "fallbackModels": [],
+        "verifiedAt": "2026-10-13"
+      },
+      {
+        "sourceId": "60d5b66f39c9e9aacacde1855d69e211",
+        "model": "Muse Wonder Full",
+        "effort": "Max",
+        "provider": "Meta",
+        "harness": "Muse Code",
+        "harnessVersion": "1.4.5-R5426.1",
+        "harnessVersions": {
+          "deep-swe-v1.1": {
+            "min": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "1.4.5-R5426.1",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 68.03093740718634,
+        "deepSWE": 76.9911504424779,
+        "terminalBench": 59.09090909090911,
+        "sweAtlas": 68.010752688172,
+        "costUsd": null,
+        "timeSeconds": 1725.8832958057408,
+        "totalTokens": 15002315.66997792,
+        "turns": 194.96357615894038,
+        "retainedAttempts": 906,
+        "fallbackModels": [],
+        "verifiedAt": "2026-10-13",
+        "costStatus": "not-token-priced"
       }
     ]
   },
@@ -3257,7 +3444,7 @@
     "source": "https://artificialanalysis.ai/models",
     "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
     "verifiedAt": "2026-10-07",
-    "updatedAt": "2026-10-07",
+    "updatedAt": "2026-10-13",
     "suite": "AA Intelligence Index v4.3.2",
     "benchmarkVersions": {
       "briefcase": "1.1",
@@ -11141,6 +11328,76 @@
           "omniscience",
           "artificial-analysis-long-context-reasoning"
         ]
+      },
+      {
+        "source": "https://artificialanalysis.ai/models/muse-wonder",
+        "sourceId": "ff2f3f3d-783f-4e27-8a39-47237501a313",
+        "slug": "muse-wonder",
+        "model": "Muse Wonder",
+        "name": "Muse Wonder (Max)",
+        "effort": "max",
+        "provider": "Meta",
+        "release": "2026-10-12",
+        "contextTokens": 1048576,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false,
+        "index": 52.393894697293,
+        "estimated": false,
+        "briefcase": 1658.65,
+        "automation": 0.6809455131207758,
+        "terminal": 0.52020202020202,
+        "scicode": 0.603009259259259,
+        "cost": 4.515677444063016,
+        "lcr": 0.806666666666667,
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "gdpval-aa",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "scicode",
+          "humanitys-last-exam",
+          "gdp-pdf",
+          "critpt",
+          "omniscience",
+          "artificial-analysis-long-context-reasoning"
+        ],
+        "verifiedAt": "2026-10-13"
+      },
+      {
+        "source": "https://artificialanalysis.ai/models/muse-wonder-full",
+        "sourceId": "e994a6e0-d36b-4dab-8ae1-c1b469e4d9e2",
+        "slug": "muse-wonder-full",
+        "model": "Muse Wonder Full",
+        "name": "Muse Wonder Full (Max)",
+        "effort": "max",
+        "provider": "Meta",
+        "release": "2026-10-12",
+        "contextTokens": 1000000,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false,
+        "index": 55.8021199855616,
+        "estimated": false,
+        "briefcase": 1729.32,
+        "automation": 0.7133074973223975,
+        "terminal": 0.570707070707071,
+        "scicode": 0.626157407407407,
+        "cost": null,
+        "lcr": 0.836666666666667,
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "gdpval-aa",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "scicode",
+          "humanitys-last-exam",
+          "gdp-pdf",
+          "critpt",
+          "omniscience",
+          "artificial-analysis-long-context-reasoning"
+        ],
+        "verifiedAt": "2026-10-13"
       }
     ]
   },
@@ -11783,5 +12040,5 @@
     ]
   },
   "developerRows": [],
-  "updatedAt": "2026-10-07"
+  "updatedAt": "2026-10-13"
 });

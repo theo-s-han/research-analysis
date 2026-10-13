@@ -1582,6 +1582,109 @@
       "retainedAttempts": 909,
       "fallbackModels": [],
       "provider": "DeepSeek"
+    },
+    {
+      "sourceId": "61df0222d90b30e25d4ff8b08d0c0aca",
+      "model": "Muse Wonder",
+      "effort": "Max",
+      "provider": "Meta",
+      "harness": "Muse Code",
+      "harnessVersion": "1.4.5-R5426.1",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 63.49675266318143,
+      "deepSWE": 75.811209439528,
+      "terminalBench": 47.474747474747495,
+      "sweAtlas": 67.2043010752688,
+      "costUsd": 8.052232502530256,
+      "timeSeconds": 1346.6521254125387,
+      "totalTokens": 15016299.67931794,
+      "turns": 191.95514936108992,
+      "retainedAttempts": 907,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-13"
+    },
+    {
+      "sourceId": "60d5b66f39c9e9aacacde1855d69e211",
+      "model": "Muse Wonder Full",
+      "effort": "Max",
+      "provider": "Meta",
+      "harness": "Muse Code",
+      "harnessVersion": "1.4.5-R5426.1",
+      "harnessVersions": {
+        "deep-swe-v1.1": {
+          "min": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "1.4.5-R5426.1",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 68.03093740718634,
+      "deepSWE": 76.9911504424779,
+      "terminalBench": 59.09090909090911,
+      "sweAtlas": 68.010752688172,
+      "costUsd": null,
+      "timeSeconds": 1725.8832958057408,
+      "totalTokens": 15002315.66997792,
+      "turns": 194.96357615894038,
+      "retainedAttempts": 906,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-13",
+      "costStatus": "not-token-priced"
     }
   ]
 }
