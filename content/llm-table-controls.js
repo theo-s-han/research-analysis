@@ -184,26 +184,37 @@
     closeMenu(); document.getElementById('search').value = '';
     document.getElementById('localOnly').checked = false; document.getElementById('aaOnly').checked = false;
     groups.forEach(group=>{group.menu.selected.clear();group.menu.items.forEach(item=>group.menu.selected.add(item.value));group.menu.refresh();});
-    selectedColumns.clear();defaultColumns.forEach(index=>selectedColumns.add(index));columnMenu.refresh();applyColumns();applyRows();
+    selectedColumns.clear();defaultColumns.forEach(index=>selectedColumns.add(index));columnMenu.refresh();applyColumns();applyRows();sortColumn(28,false);
   };
-  let sortState = {index:-1,ascending:true};
+  let sortState = {index:28,ascending:false};
+  function sortKind(index) {
+    if (index === 3) return 'date';
+    if (index === 15) return 'time';
+    if (index >= 21 && index <= 24) return 'memory';
+    return headers[index].dataset.type === 'num' || /[↑↓]/.test(headers[index].textContent) || index === 7 || index === 8 ? 'number' : 'text';
+  }
+  function sortValue(row,index) {
+    const cell=row.cells[index],text=cell?.textContent.trim()||'';
+    if (window.LLMTableSort.numeric(text)===null && sortKind(index)!=='text') return null;
+    if (sortKind(index)==='text' || [3,7,8,21,22,23,24].includes(index)) return text;
+    return cell?.dataset.chartValue ?? cell?.dataset.sort ?? text;
+  }
+  function sortColumn(index,ascending) {
+    sortState={index,ascending};
+    window.LLMTableSort.sort(table,index,ascending,sortValue,sortKind(index));
+  }
   table.tHead.addEventListener('click',event=>{
     const header = event.target.closest('th'); if (!header) return;
     const index = header.cellIndex,ascending = sortState.index === index ? !sortState.ascending : true;
-    sortState = {index,ascending};
-    const sorted = rows().sort((left,right)=>{
-      const a = left.cells[index]?.dataset.sort ?? left.cells[index]?.textContent.trim() ?? '';
-      const b = right.cells[index]?.dataset.sort ?? right.cells[index]?.textContent.trim() ?? '';
-      if (header.dataset.type === 'num') {
-        const first = parseFloat(a),second = parseFloat(b);
-        if (Number.isNaN(first)) return Number.isNaN(second) ? 0 : 1;
-        if (Number.isNaN(second)) return -1;
-        return (first-second) * (ascending ? 1 : -1);
-      }
-      return a.localeCompare(b,'ko',{numeric:true,sensitivity:'base'}) * (ascending ? 1 : -1);
-    });
-    sorted.forEach(row=>table.tBodies[0].append(row));
+    sortColumn(index,ascending);
   });
+  headers.forEach(header=>header.tabIndex=0);
+  table.tHead.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'&&event.key!==' ')return;
+    const header=event.target.closest('th');if(!header)return;
+    event.preventDefault();sortColumn(header.cellIndex,sortState.index===header.cellIndex?!sortState.ascending:true);
+  });
+  sortColumn(28,false);
   document.getElementById('csv').onclick = () => {
     const visible = rows().filter(row=>row.style.display !== 'none');
     const indexes = headers.map((_,index)=>index).filter(index=>selectedColumns.has(index));

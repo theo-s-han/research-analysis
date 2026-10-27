@@ -18,6 +18,12 @@
 .llm-table-empty[hidden]{display:none!important}
 #tbl td{overflow-wrap:anywhere}
 #tbl th{white-space:normal;overflow-wrap:anywhere}
+#tbl th{cursor:pointer}
+#tbl th:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+#tbl th[aria-sort]{background:#e8eff7;color:#244976}
+#tbl th[aria-sort]::after{display:inline-block;margin-left:5px;font-size:11px}
+#tbl th[aria-sort="descending"]::after{content:'▾'}
+#tbl th[aria-sort="ascending"]::after{content:'▴'}
 .llm-table-scroll{width:fit-content;max-width:100%}
 @media(max-width:600px){#tbl th:nth-child(-n+3){left:auto!important}}
 @media print{.llm-filter-panel{display:none!important}}
