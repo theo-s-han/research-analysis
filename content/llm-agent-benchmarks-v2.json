@@ -1,0 +1,370 @@
+{
+  "source": "https://artificialanalysis.ai/agents/coding-agents",
+  "methodology": "https://artificialanalysis.ai/methodology/coding-agents-benchmarking/",
+  "suite": "Coding Agent Index v2.0",
+  "verifiedAt": "2026-10-27",
+  "benchmarkVersions": {
+    "frontierCode": "1.1",
+    "terminalBench": "4.0",
+    "sweAtlas": "QnA-AA"
+  },
+  "records": [
+    {
+      "sourceId": "3897d72a57138fd2e2353367570b4b37",
+      "model": "GPT-6.1 Sol",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 54.1279798631476,
+      "frontierCode": 49.4074,
+      "terminalBench": 53.030303030303,
+      "sweAtlas": 59.9462365591398,
+      "costUsd": 1.5046389983744,
+      "timeSeconds": 1421.42885321603,
+      "totalTokens": 3944222.64509301,
+      "turns": 40.6271304442272,
+      "retainedAttempts": 870,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    },
+    {
+      "sourceId": "5bc9ed9064c8cd589bfd3aaad4bbebf8",
+      "model": "GPT-6.1 Terra",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.163.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 48.1004244053438,
+      "frontierCode": 41.7841666666667,
+      "terminalBench": 48.4848484848485,
+      "sweAtlas": 54.0322580645161,
+      "costUsd": 1.24038465572461,
+      "timeSeconds": 1568.79046882589,
+      "totalTokens": 12280717.4101086,
+      "turns": 100.428485934615,
+      "retainedAttempts": 870,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    },
+    {
+      "sourceId": "41bcc9881ff1465f62e417e5a7535e20",
+      "model": "GPT-6.1 Terra",
+      "effort": "High",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.163.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 46.2787772238514,
+      "frontierCode": 43.4551,
+      "terminalBench": 42.4242424242424,
+      "sweAtlas": 52.9569892473118,
+      "costUsd": 0.544031579042956,
+      "timeSeconds": 759.266290102096,
+      "totalTokens": 5600133.87243293,
+      "turns": 66.7762083197567,
+      "retainedAttempts": 870,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    },
+    {
+      "sourceId": "a3eeef492929228973b8da75e051291d",
+      "model": "GPT-6.1 Terra",
+      "effort": "Medium",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.163.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 42.0492375909634,
+      "frontierCode": 43.751166666666705,
+      "terminalBench": 35.3535353535354,
+      "sweAtlas": 47.043010752688204,
+      "costUsd": 0.394994482142174,
+      "timeSeconds": 610.752293823178,
+      "totalTokens": 4075423.19637776,
+      "turns": 57.9985804279353,
+      "retainedAttempts": 870,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    },
+    {
+      "sourceId": "9b52f0eb016964fb4421a352b9c9518c",
+      "model": "GPT-6.1 Terra",
+      "effort": "xHigh",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.163.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 48.223834495492504,
+      "frontierCode": 44.9484666666666,
+      "terminalBench": 45.959595959596,
+      "sweAtlas": 53.76344086021499,
+      "costUsd": 0.690844449567775,
+      "timeSeconds": 981.713951073096,
+      "totalTokens": 6886239.03807863,
+      "turns": 71.9594569349408,
+      "retainedAttempts": 869,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    },
+    {
+      "sourceId": "ee13e548b65eeee544cd5b0c6068a4f5",
+      "model": "GPT-6.1 Terra",
+      "effort": "None",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.163.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 39.215161464103396,
+      "frontierCode": 46.1564,
+      "terminalBench": 25.2525252525252,
+      "sweAtlas": 46.2365591397849,
+      "costUsd": 0.454255643441512,
+      "timeSeconds": 572.437023079179,
+      "totalTokens": 5776354.240164,
+      "turns": 81.5091973498425,
+      "retainedAttempts": 870,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    },
+    {
+      "sourceId": "b54e883be1cff7a6a43a737ee106011c",
+      "model": "GPT-6.1 Terra",
+      "effort": "Low",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.163.0",
+      "harnessVersions": {
+        "frontiercode-v1.1-main": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 34.85683422396,
+      "frontierCode": 40.6083,
+      "terminalBench": 25.2525252525253,
+      "sweAtlas": 38.7096774193548,
+      "costUsd": 0.198820047696481,
+      "timeSeconds": 379.469317133703,
+      "totalTokens": 1886086.8732888,
+      "turns": 42.7471271858369,
+      "retainedAttempts": 870,
+      "fallbackModels": [],
+      "verifiedAt": "2026-10-27"
+    }
+  ]
+}

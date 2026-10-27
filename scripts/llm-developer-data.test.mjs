@@ -44,7 +44,7 @@ test('checked-in agent values retain their suite, units, source IDs and componen
 test('model snapshot distinguishes measured values, missing values and estimated Index', async () => {
   const input = JSON.parse(await fs.readFile(new URL('../content/llm-model-benchmarks.json', import.meta.url), 'utf8'));
   validateModelSnapshot(input);
-  assert.equal(input.records.length, 285);
+  assert.equal(input.records.length, 291);
   assert.equal(input.records.filter(row => row.model === 'GPT-6.1 Sol').length, 5);
   assert.equal(input.records.filter(row => row.model === 'Claude Sonnet 5.5').length, 5);
   assert(input.records.some(row => row.estimated && row.lcr != null));
@@ -59,6 +59,35 @@ test('model snapshot distinguishes measured values, missing values and estimated
   assert.equal(input.records.filter(row => row.model === 'Muse Wonder' || row.model === 'Muse Wonder Full').length, 2);
   assert(input.records.filter(row => row.model.startsWith('Muse Wonder')).every(row => row.verifiedAt === '2026-10-13' && row.isOpenWeights === false));
   assert.throws(() => validateModelSnapshot({...input, records:[{...row, verifiedAt:'unknown'}]}));
+});
+
+test('Terra 6.1 retains all six AA settings and independently collected vision scores', async () => {
+  const input = JSON.parse(await fs.readFile(new URL('../content/llm-model-benchmarks.json', import.meta.url), 'utf8'));
+  const rows=input.records.filter(row=>row.model==='GPT-6.1 Terra');
+  assert.equal(rows.length,6);
+  assert.deepEqual(new Set(rows.map(row=>row.effort.toLowerCase())),new Set(['max','xhigh','high','medium','low','non-reasoning']));
+  assert(rows.every(row=>row.verifiedAt==='2026-10-27' && row.mmmuPro>0 && !row.estimated));
+  for(const value of [-1,1.1,NaN]) assert.throws(()=>validateModelSnapshot({...input,records:[{...rows[0],mmmuPro:value}]}));
+  const availability=JSON.parse(await fs.readFile(new URL('../content/llm-model-availability.json',import.meta.url),'utf8'));
+  assert.equal(availability.models.find(row=>row.id==='gpt-6.1-terra').verifiedAt,'2026-10-27');
+  assert.equal(availability.verifiedAt,'2026-10-07');
+});
+
+test('Coding Agent v2 uses FrontierCode, never relabels it as DeepSWE v1.5', async () => {
+  const input = JSON.parse(await fs.readFile(new URL('../content/llm-agent-benchmarks-v2.json', import.meta.url), 'utf8'));
+  validateAgentSnapshot(input);
+  assert.equal(input.records.length,7);
+  assert.equal(input.records.filter(row=>row.model==='GPT-6.1 Terra').length,6);
+  assert.equal(input.records.filter(row=>row.model==='GPT-6.1 Sol').length,1);
+  const row=input.records[0];
+  assert.throws(()=>validateAgentSnapshot({...input,suite:'Coding Agent Index v1.5'}));
+  assert.throws(()=>validateAgentSnapshot({...input,records:[{...row,deepSWE:row.frontierCode}]}));
+  assert.throws(()=>validateAgentSnapshot({...input,records:[{...row,frontierCode:null}]}));
+  assert.throws(()=>validateAgentSnapshot({...input,records:[{...row,index:99}]}));
+  const versions={...row.harnessVersions}; delete versions['frontiercode-v1.1-main'];
+  assert.throws(()=>validateAgentSnapshot({...input,records:[{...row,harnessVersions:versions}]}));
+  const historical = JSON.parse(await fs.readFile(new URL('../content/llm-agent-benchmarks.json', import.meta.url),'utf8'));
+  assert.equal(historical.records.length,33); assert.equal(historical.suite,'Coding Agent Index v1.5');
 });
 test('subscription-only agent cost stays absent, not zero or an assumed API price', async () => {
   const input = JSON.parse(await fs.readFile(new URL('../content/llm-agent-benchmarks.json', import.meta.url), 'utf8'));

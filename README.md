@@ -111,7 +111,9 @@ AA 모델 Intelligence, 기존 Coding Agent Index v1.3, Terminal-Bench 4.0 기�
 
 `content/llm-agent-benchmarks.json`은 AA 공식 코딩 에이전트 페이지에서 확인한 v1.5의 공개 33개 설정 스냅샷입니다. 원본 sourceId, 추론 설정, 평가별 harness 버전 범위, 대체 모델, 확인일, 원 단위 값을 보존합니다. DeepSWE 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA의 동일 가중 평균인지 생성/검증 시 확인하며, 과거 기록과 별도 행·차트로 추가합니다. Turns는 AA 공개 차트의 mean.steps(작업당 평균 에이전트 턴)입니다. harness 제조사와 모델 개발사를 혼동하지 않으며, 복합 모델은 단일 모델/Context로 대체하지 않습니다. 확인일은 실행일이 아니며 AA 평가 비용을 월 구독 사용량으로 환산하지 않습니다.
 
-`content/llm-model-benchmarks.json`은 기존 표·가이드·도구 목록과 관련된 AA 모델 상세 페이지 285개 설정의 공개 수치입니다. 모델별 sourceId/URL/추론·fallback 표시명, AA v4.3.2/Briefcase 1.1/Terminal 4.0/LCR 1.1, 원 단위 값을 보존합니다. AA가 추정한 종합 Index는 실측 수치 칸/차트에서 제외하고, 별도로 측정된 개별 평가만 반영합니다. 공개 수치가 전혀 없는 설정은 표 행을 늘리지 않습니다. SciCode의 Under review 상태를 툴팁에 명시합니다. API 공식 제공 목록의 Context를 우선하며, 다른 모델의 값으로 누락을 대신하지 않습니다.
+`content/llm-model-benchmarks.json`은 기존 표·가이드·도구 목록과 관련된 AA 모델 상세 페이지 291개 설정의 공개 수치입니다. 모델별 sourceId/URL/추론·fallback 표시명, AA v4.3.2/Briefcase 1.1/Terminal 4.0/LCR 1.1, 원 단위 값을 보존합니다. AA가 추정한 종합 Index는 실측 수치 칸/차트에서 제외하고, 별도로 측정된 개별 평가만 반영합니다. 공개 수치가 전혀 없는 설정은 표 행을 늘리지 않습니다. SciCode의 Under review 상태를 툴팁에 명시합니다. API 공식 제공 목록의 Context를 우선하며, 다른 모델의 값으로 누락을 대신하지 않습니다.
+
+`content/llm-agent-benchmarks-v2.json`은 2026-10-27 확인한 Terra 6.1의 6개 설정과 비교용 Sol 6.1 Max의 Coding Agent Index v2.0입니다. FrontierCode 1.1·Terminal-Bench 4.0·SWE-Atlas-QnA-AA를 같은 비중으로 합산하며, 기존 33개 v1.5 기록은 수정하지 않습니다. FrontierCode는 새 41번 열, MMMU-Pro는 42번 열에 추가해 기존 0–40번 cell 인덱스를 보존합니다. v2.0 행의 DeepSWE 값은 채우지 않으며 차트도 평가판별로 분리합니다. 신규 Terra 제공 조건·수치에만 확인일 2026-10-27을 표시합니다. 이전 스냅샷의 MMMU-Pro 빈값은 미수집이지 원문 미공개를 뜻하지 않습니다.
 
 `content/llm-model-offerings.json`은 Wonder·Wonder Full의 Meta 공식 제공 조건입니다. Muse Code를 Codex·Claude Code 제공 목록에 섞지 않습니다. 두 모델 모두 가중치 비공개이며, Wonder는 API preview와 구독, Full은 Muse Code 구독 전용으로 구분합니다. 부분 추가 시 기존 2026-10-07 수치는 그대로 보존하고 새 행의 verifiedAt=2026-10-13을 우선 표시합니다. Full의 코딩 에이전트 비용은 costStatus=not-token-priced와 costUsd=null로 보존하고 `—`로 표시하며 정렬·차트의 숫자 0으로 변환하지 않습니다.
 

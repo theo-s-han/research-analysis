@@ -50,5 +50,9 @@
   "Muse_Wonder_Model_Guide.html": {
     "sha256": "c41ef9890a16e301b50efe42a1bdf13e65a9eb5ef8fbcbfadea65e469885c29a",
     "updatedAt": "2026-10-13T00:27:41.291Z"
+  },
+  "GPT_6_1_Terra_Model_Guide.html": {
+    "sha256": "da3c24e63e7ef8948d42e8caf21e8c998223594a0887be831c275f846ff6ff54",
+    "updatedAt": "2026-10-27T00:00:16.742Z"
   }
 }

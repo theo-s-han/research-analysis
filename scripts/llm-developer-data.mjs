@@ -1,18 +1,23 @@
 // Measurements are independent of AA model/agent scores and consumer-plan capacity.
 export function validateAgentSnapshot(snapshot) {
+  const v2 = snapshot.suite === 'Coding Agent Index v2.0';
+  const component = v2 ? 'frontierCode' : 'deepSWE';
+  const componentSlug = v2 ? 'frontiercode-v1.1-main' : 'deep-swe-v1.1';
   if (snapshot.source !== 'https://artificialanalysis.ai/agents/coding-agents'
-      || snapshot.suite !== 'Coding Agent Index v1.5'
+      || !['Coding Agent Index v1.5', 'Coding Agent Index v2.0'].includes(snapshot.suite)
       || !/^\d{4}-\d{2}-\d{2}$/.test(snapshot.verifiedAt)
-      || snapshot.benchmarkVersions?.deepSWE !== '1.1'
+      || snapshot.benchmarkVersions?.[component] !== '1.1'
       || snapshot.benchmarkVersions?.terminalBench !== '4.0'
-      || snapshot.benchmarkVersions?.sweAtlas !== 'QnA') throw new Error('Unverified coding-agent snapshot');
+      || snapshot.benchmarkVersions?.sweAtlas !== (v2 ? 'QnA-AA' : 'QnA')
+      || !Array.isArray(snapshot.records)) throw new Error('Unverified coding-agent snapshot');
   const ids = new Set();
   for (const row of snapshot.records) {
     if (!row.sourceId || ids.has(row.sourceId) || !row.model || !row.effort || !row.provider
         || !row.harness || !row.harnessVersion || !Array.isArray(row.fallbackModels)
         || !Number.isInteger(row.retainedAttempts) || row.retainedAttempts <= 0) throw new Error('Invalid agent provenance');
     ids.add(row.sourceId);
-    for (const key of ['index', 'deepSWE', 'terminalBench', 'sweAtlas']) {
+    if (v2 && row.deepSWE != null || !v2 && row.frontierCode != null) throw new Error('Mixed agent evaluation components');
+    for (const key of ['index', component, 'terminalBench', 'sweAtlas']) {
       if (!Number.isFinite(row[key]) || row[key] < 0 || row[key] > 100) throw new Error('Invalid agent score: ' + key);
     }
     for (const key of ['timeSeconds', 'totalTokens', 'turns']) {
@@ -23,11 +28,11 @@ export function validateAgentSnapshot(snapshot) {
     } else if ((row.costStatus != null && row.costStatus !== 'priced')
         || !Number.isFinite(row.costUsd) || row.costUsd < 0) throw new Error('Invalid agent measurement: costUsd');
     if (row.verifiedAt != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.verifiedAt)) throw new Error('Invalid agent verification date');
-    for (const key of ['deep-swe-v1.1', 'terminal-bench-v4', 'swe-atlas-qna']) {
+    for (const key of [componentSlug, 'terminal-bench-v4', 'swe-atlas-qna']) {
       const version = row.harnessVersions?.[key];
       if (!version?.min?.version || !version?.max?.version) throw new Error('Missing per-benchmark harness version');
     }
-    const index = (row.deepSWE + row.terminalBench + row.sweAtlas) / 3;
+    const index = (row[component] + row.terminalBench + row.sweAtlas) / 3;
     if (Math.abs(row.index - index) > 1e-8) throw new Error('Coding Agent Index component mismatch');
   }
   return snapshot;
@@ -54,7 +59,7 @@ export function validateModelSnapshot(snapshot) {
       if (row[key] != null && (!Number.isFinite(row[key]) || row[key] < 0)) throw new Error('Invalid model value: ' + key);
     }
     if (row.index != null && row.index > 100) throw new Error('Invalid Intelligence Index');
-    for (const key of ['automation', 'terminal', 'scicode', 'lcr']) {
+    for (const key of ['automation', 'terminal', 'scicode', 'lcr', 'mmmuPro']) {
       if (row[key] != null && (!Number.isFinite(row[key]) || row[key] < 0 || row[key] > 1)) throw new Error('Invalid model proportion: ' + key);
     }
     if (row.release != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.release)) throw new Error('Invalid model release date');

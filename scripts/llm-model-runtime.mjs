@@ -41,17 +41,20 @@ export function installModelResearch(data) {
     header.lastElementChild.dataset.type = 'num';
     header.lastElementChild.dataset.basis = 'usage';
   });
+  addHeader('FrontierCode 1.1 ↑', '실제 오픈소스 저장소 구현·수정 평가의 평균 루브릭 점수(%). 차단 조건 실패는 0, 모두 통과하면 70–100. 성공률과 다르며 DeepSWE로 환산하지 않음. Coding Agent Index v2.0 구성 지표.', 'percent');
+  header.lastElementChild.dataset.basis = 'agent';
+  addHeader('MMMU-Pro ↑', '학술·전문 분야의 이미지+텍스트 문제를 통한 시각적 추론 정확도(%). 높을수록 좋음. 화면 조작이나 코딩 성공률은 아님. 이전 스냅샷의 미수집 값은 —.', 'percent');
   for (let index = 10; index <= 17; index += 1) header.cells[index].dataset.basis = 'agent';
   header.cells[10].querySelector('.metric-tip').textContent = 'Coding Agent Index ↑';
-  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5는 DeepSWE v1.1·Terminal-Bench 4.0·SWE-Atlas-QnA 점수의 동일 가중 평균. 과거 평가판·출처 미명시 기록은 별도 차트. AA Intelligence와 다름.';
+  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5: DeepSWE 1.1 / TB4.0 / SWE-Atlas-QnA. v2.0: FrontierCode 1.1 / TB4.0 / SWE-Atlas-QnA-AA의 동일 가중 평균. 평가판별 행·차트 분리, 직접 증감 비교 금지. AA Intelligence와 다름.';
   header.cells[12].querySelector('.metric-tip').textContent = 'Agent Terminal-Bench ↑';
   header.cells[12].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 환경의 Terminal-Bench 성공률(%). 버전은 평가 조건 열과 차트명에서 구분. AA 모델 평가의 Terminal 값과 다름.';
   header.cells[4].querySelector('.metric-tip').dataset.tip = '모델 사양, AA 모델 평가, 코딩 에이전트 평가 행을 구분. 서로 다른 평가 체계의 점수·비용을 혼합하지 않음.';
   header.cells[8].querySelector('.metric-tip').dataset.tip = '모델이 수용하는 최대 문맥 길이. 실제 대규모 저장소 이해·수정 성능이 아님. SWE-Atlas-QnA의 저장소 이해 평가와 구분.';
   header.cells[11].querySelector('.metric-tip').dataset.tip = 'DeepSWE: 실제 소프트웨어 저장소의 구현·버그 수정 작업 평가(%). 평가판은 조건 열에서 확인. 같은 평가판·실행 환경끼리 비교.';
-  header.cells[13].querySelector('.metric-tip').dataset.tip = 'SWE-Atlas-QnA: 저장소 구조·동작을 읽고 답하는 기술 Q&A 평가(%). 대규모 코드 이해의 참고 지표이며 코드를 직접 수정하는 평가는 아님.';
+  header.cells[13].querySelector('.metric-tip').dataset.tip = 'SWE-Atlas: 저장소 구조·동작을 읽고 답하는 기술 Q&A 평가(%). v2.0은 AA 채점 조정판 QnA-AA, 이전은 QnA. 평가판별 행·차트로 구분. 코드를 직접 수정하는 평가는 아님.';
   header.cells[14].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 작업당 입력·출력 토큰 합계. 원문의 M은 백만 토큰. 캐시된 입력도 토큰 합계에 포함될 수 있어 비용과 정비례하지 않음.';
-  header.cells[15].querySelector('.metric-tip').dataset.tip = '코딩 에이전트의 작업당 평균 실행 시간. 신규 v1.5 기록은 분 단위이며 모델 응답·도구 실행을 포함한 활성 에이전트 경과 시간. 환경 준비·채점 시간과 구분.';
+  header.cells[15].querySelector('.metric-tip').dataset.tip = '코딩 에이전트의 작업당 평균 실행 시간. v1.5·v2.0 기록은 분 단위이며 모델 응답·도구 실행을 포함한 활성 에이전트 경과 시간. 환경 준비·채점 시간과 구분.';
   header.cells[17].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 평가의 작업당 평균 API USD 비용. 캐시·재시도 등의 원문 가격 조건 반영. 성공 1건당 비용이나 Codex·Claude 구독 사용량을 뜻하지 않음.';
 
   const textCell = (row, index, value) => {
@@ -111,8 +114,10 @@ export function installModelResearch(data) {
     row.dataset.status = model.status;
     textCell(row, 6, model.status);
     textCell(row, 27, availabilityText(model));
-    row.cells[27].title = [model.id, model.note, '제공 여부 확인: ' + data.availability.verifiedAt].filter(Boolean).join('\n');
+    row.cells[27].title = [model.id, model.note, '제공 여부 확인: ' + (model.verifiedAt || data.availability.verifiedAt)].filter(Boolean).join('\n');
     linkTo(row, data.availability.sources[model.tool === 'codex' ? 'codex' : 'claudeCode'], '모델 선택');
+    if (model.guide) linkTo(row, model.guide, '모델 분석');
+    if (model.source) linkTo(row, model.source, '공식 사양');
     if (model.contextSource) linkTo(row, model.contextSource, 'Context 사양');
     if (model.provider === 'Anthropic') {
       linkTo(row, data.availability.sources.claudeLifecycle, '제공 상태');
@@ -171,7 +176,7 @@ export function installModelResearch(data) {
     if (model.release) textCell(row, 3, model.release);
     const note = [model.id, model.note || (model.tool === 'codex' ? 'Codex 제공은 요금제·관리자 정책에 따라 달라짐.' : 'Claude Code 전체 모델 ID 지정. 해당 API 사용 권한 필요.')];
     textCell(row, 25, [row.cells[25].textContent === '—' ? '' : row.cells[25].textContent, ...note].filter(Boolean).join(' · '));
-    textCell(row, conditionColumn, '제공 여부: ' + data.availability.verifiedAt + ' · ' + (model.tool === 'codex' ? 'ChatGPT 로그인' : 'Anthropic 직접 API'));
+    textCell(row, conditionColumn, '제공 여부: ' + (model.verifiedAt || data.availability.verifiedAt) + ' · ' + (model.tool === 'codex' ? 'ChatGPT 로그인' : 'Anthropic 직접 API'));
     tagModel(row, model);
   });
   data.offerings.records.forEach(offering => {
@@ -199,7 +204,7 @@ export function installModelResearch(data) {
   // remain in the source HTML and on the cell, never substituted for missing results.
   const usedModelRecords = new Set();
   const providerNames = {SpaceXAI:'xAI', Alibaba:'Alibaba / Qwen', 'Z AI':'Z.ai', Kimi:'Moonshot AI', Mistral:'Mistral AI'};
-  const modelMetrics = [[28,'index'],[29,'briefcase'],[30,'automation'],[31,'terminal'],[32,'scicode'],[33,'cost'],[36,'lcr']];
+  const modelMetrics = [[28,'index'],[29,'briefcase'],[30,'automation'],[31,'terminal'],[32,'scicode'],[33,'cost'],[36,'lcr'],[42,'mmmuPro']];
   const money = value => '$' + (value < .01 ? Number(value.toPrecision(3)).toString() : value.toFixed(2));
   const installVerifiedModel = (record, row, original) => {
     const verifiedAt = record.verifiedAt || data.verifiedModels.verifiedAt;
@@ -215,9 +220,9 @@ export function installModelResearch(data) {
     }
     modelMetrics.forEach(([column, key]) => {
       const cell = row.cells[column];
-      const previous = original?.values[column === 36 ? 8 : column - 28];
+      const previous = column === 42 ? undefined : original?.values[column === 36 ? 8 : column - 28];
       let value = key === 'index' && record.estimated ? null : record[key];
-      if (['automation','terminal','scicode','lcr'].includes(key) && value != null) value *= 100;
+      if (['automation','terminal','scicode','lcr','mmmuPro'].includes(key) && value != null) value *= 100;
       cell.textContent = value == null ? '—' : key === 'cost' ? money(value) : key === 'briefcase' ? Math.round(value).toLocaleString('en-US') : value.toFixed(1) + (column === 28 ? '' : '%');
       delete cell.dataset.sort; delete cell.dataset.chartValue;
       if (value != null) cell.dataset.sort = cell.dataset.chartValue = String(value);
@@ -297,16 +302,17 @@ export function installModelResearch(data) {
     textCell(row, column, value == null ? '—' : display);
     if (value != null) row.cells[column].dataset.sort = row.cells[column].dataset.chartValue = String(value);
   };
-  data.verifiedAgents.records.forEach(record => {
-    const verifiedAt = record.verifiedAt || data.verifiedAgents.verifiedAt;
-    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', 'Agent v1.5');
-    row.dataset.recordId = 'agent:v1.5:' + record.sourceId;
+  [data.verifiedAgents, data.verifiedAgentsV2].forEach(snapshot => snapshot.records.forEach(record => {
+    const v2 = snapshot.suite === 'Coding Agent Index v2.0';
+    const verifiedAt = record.verifiedAt || snapshot.verifiedAt;
+    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', v2 ? 'Agent v2.0' : 'Agent v1.5');
+    row.dataset.recordId = (v2 ? 'agent:v2.0:' : 'agent:v1.5:') + record.sourceId;
     row.dataset.costStatus = record.costStatus || 'priced';
     textCell(row, 8, record.model.includes('+') ? '모델별 상이' : contextOf(record.model));
     if (record.model.includes('+')) row.cells[8].title = '서로 다른 모델을 조합한 평가. 단일 Context 수치로 합산·대체하지 않음.';
     textCell(row, 9, record.harness + ' ' + record.harnessVersion);
     row.cells[9].title = Object.entries(record.harnessVersions).map(([benchmark,version]) => benchmark + ': ' + version.min.version + (version.min.version === version.max.version ? '' : '–' + version.max.version)).join('\n');
-    [[10, 'index'], [11, 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
+    [[10, 'index'], [v2 ? 41 : 11, v2 ? 'frontierCode' : 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
     numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
     numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
     numberCell(row, 16, record.turns, record.turns.toFixed(1));
@@ -315,11 +321,11 @@ export function installModelResearch(data) {
     textCell(row, 20, 'AA 공식 평가');
     const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
     textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · ' + (record.costUsd == null ? 'API 비용 미산출' : '실패를 포함한 평균 API 비용'));
-    textCell(row, conditionColumn, data.verifiedAgents.suite + ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
-    linkTo(row, data.verifiedAgents.source, 'AA 평가 원문');
-    linkTo(row, data.verifiedAgents.methodology, '평가 방법');
+    textCell(row, conditionColumn, snapshot.suite + (v2 ? ' · FrontierCode 1.1 / TB 4.0 / SWE-Atlas-QnA-AA' : ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA') + ' · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
+    linkTo(row, snapshot.source, 'AA 평가 원문');
+    linkTo(row, snapshot.methodology, '평가 방법');
     addFacts(row, record.model);
-  });
+  }));
   data.developerRows.forEach(record => {
     const row = makeRow(record.model.startsWith('GPT-') ? 'OpenAI' : record.model.startsWith('Claude ') ? 'Anthropic' : '기타', record.model + ' (' + record.effort + ')', '개발 실사용 측정');
     row.dataset.recordId = record.id;
@@ -336,7 +342,10 @@ export function installModelResearch(data) {
     [...row.cells].forEach((cell,column) => {
       if (!/^(—|미확인|미측정|미공개)?$/.test(cell.textContent.trim())) return;
       let reason = '공개 원문에서 동일 조건의 수치를 확인하지 못함.';
-      if (column >= 38) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
+      if (column >= 38 && column <= 40) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
+      else if (column === 41) reason = 'Coding Agent Index v2.0의 FrontierCode 1.1 평가 대상에만 표시. DeepSWE 등 이전 평가의 수치로 환산하지 않음.';
+      else if (column === 11 && row.dataset.benchmark === 'Agent v2.0') reason = 'v2.0은 DeepSWE 대신 FrontierCode 1.1을 평가. 별도 FrontierCode 열에 기록.';
+      else if (column === 42) reason = '이 조사 스냅샷에서 동일 설정의 MMMU-Pro 값을 수집하지 않음. 원문 미공개를 의미하지 않으며 다른 평가로 대체하지 않음.';
       else if ((column === 17 && row.dataset.costStatus === 'not-token-priced') || (column === 33 && row.dataset.modelEvaluation === '1' && offeringOf(row.cells[2].textContent)?.access === '구독 전용')) reason = '공개 토큰 단가가 없는 구독 모델. 작업당 API 비용 미산출이며 구독료로 환산하지 않음.';
       else if (column >= 10 && column <= 17 && !(row.dataset.benchmark || '').startsWith('Agent')) reason = '이 행은 코딩 에이전트 평가가 아님. 같은 모델의 코딩 에이전트 평가 행에 별도 기록.';
       else if ((column >= 28 && column <= 33 || column === 36) && row.dataset.modelEvaluation !== '1') reason = '이 행은 AA 모델 평가가 아님. 같은 모델·추론 설정의 AA 모델 평가 행에 별도 기록.';
@@ -364,6 +373,7 @@ export function installModelResearch(data) {
   table.dataset.modelRecords = String(data.modelRows.length);
   table.dataset.agentRecords = String(data.agentRows.length);
   table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
+  table.dataset.verifiedAgentV2Records = String(data.verifiedAgentsV2.records.length);
   table.dataset.verifiedModelRecords = String(usedModelRecords.size);
   table.dataset.verifiedCursorRecords = String(data.verifiedCursor.records.length);
   table.dataset.offeringRecords = String(data.offerings.records.length);

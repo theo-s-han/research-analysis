@@ -161,9 +161,9 @@
     id:'filter-columns',label:'비교 항목 선택',allLabel:'비교 항목 선택',partialLabel:'비교 항목 선택',stableLabel:true,
     items:[
       ['모델 정보', [1, 2, 3, 4, 5, 6, 8, 27, 37]],
-      ['코딩 에이전트', [9, 10, 11, 12, 13, 14, 15, 16, 17]],
+      ['코딩 에이전트', [9, 10, 11, 12, 13, 14, 15, 16, 17, 41]],
       ['개발 실사용', [38, 39, 40]],
-      ['모델·Cursor 평가', [28, 29, 30, 31, 32, 33, 34, 35, 36]],
+      ['모델·Cursor 평가', [28, 29, 30, 31, 32, 33, 34, 35, 36, 42]],
       ['기타', [0, 7, 18, 19, 20, 21, 22, 23, 24, 25, 26]]
     ].flatMap(([group, indexes]) => indexes.map(index => ({value:index,label:headers[index].textContent.replace(/[↑↓]/g,'').trim(),locked:index === 2,group}))),
     selected:selectedColumns,onChange:applyColumns

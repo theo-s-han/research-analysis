@@ -8,6 +8,7 @@
     "claudeLifecycle": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
   },
   "models": [
+    {"name":"GPT-6.1 Terra","id":"gpt-6.1-terra","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M","release":"2026-10-26","verifiedAt":"2026-10-27","source":"https://developers.openai.com/api/docs/models/gpt-6.1-terra","guide":"GPT_6_1_Terra_Model_Guide.html","note":"Codex CLI 0.159.0 이상. Plus·Pro·Business·Enterprise·Edu의 계정·관리자 정책에 따라 제공. API: none/low/medium/high/xhigh/max, 기본 medium. 도구 호출은 Responses API. 입력 text·image, 출력 text."},
     {"name":"GPT-6.1 Sol","id":"gpt-6.1-sol","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M","note":"요금제·클라이언트·워크스페이스 정책에 따라 제공. Enterprise/Edu는 관리자 활성화 필요."},
     {"name":"GPT-6 Astra","id":"gpt-6-astra","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M"},
     {"name":"GPT-6 Sol","id":"gpt-6-sol","provider":"OpenAI","tool":"codex","status":"현행","context":"1.05M"},

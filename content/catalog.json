@@ -1,4 +1,12 @@
 {
+  "GPT_6_1_Terra_Model_Guide.html": {
+    "slug": "gpt-6-1-terra-model-guide",
+    "title": "GPT-6.1 Terra 모델 분석",
+    "description": "Terra 5.6 대비 성능·비용 변화와 Sol 6.1의 역할을 비교합니다. 코딩·시각적 추론의 공개 평가와 사용 조건을 구분합니다.",
+    "category": "모델 리서치",
+    "tags": ["GPT-6.1 Terra", "OpenAI", "Codex", "모델 비교"],
+    "referenceDate": "2026-10-27"
+  },
   "Muse_Wonder_Model_Guide.html": {
     "slug": "muse-wonder-model-guide",
     "title": "Muse Wonder · Wonder Full 모델 분석",
