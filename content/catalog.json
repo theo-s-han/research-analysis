@@ -106,5 +106,17 @@
     "description": "작업당 비용과 성능을 함께 비교하고, 명확한 작업부터 복잡한 원인 분석까지 업무에 맞는 모델 선택 기준을 정리했습니다.",
     "category": "업무 활용",
     "tags": ["Codex", "비용 효율", "모델 선택"]
+  },
+  "Gemini_4_Carbon_Model_Guide.html": {
+    "slug": "gemini-4-carbon-model-guide",
+    "title": "Gemini 4 Carbon 모델 분석",
+    "description": "Argon 대비 개발 성능·비용 변화와 AA v5.0 전체 비교. 제한 제공, 출시 할인과 구독 사용량 미공개 조건을 구분합니다.",
+    "category": "모델 리서치",
+    "tags": [
+      "Gemini 4 Carbon",
+      "Google",
+      "모델 비교"
+    ],
+    "referenceDate": "2026-10-29"
   }
 }
