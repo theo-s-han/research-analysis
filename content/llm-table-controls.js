@@ -7,7 +7,8 @@
   const menus = [];
   const groups = [];
   let openMenu = null;
-  const defaultColumns = new Set([1, 2, 4, 8, 9, 11, 12, 13, 15, 17, 28, 37]);
+  const defaultColumns = new Set([1, 2, 4, 8, 9, 11, 12, 13, 15, 17, 28, 37, 43, 44]);
+  const latestAA = 43;
   const selectedColumns = new Set(defaultColumns);
   const empty = document.createElement('div'); empty.id = 'llmTableEmpty'; empty.className = 'llm-table-empty';
   empty.textContent = '조건에 맞는 모델 없음'; empty.hidden = true; table.after(empty);
@@ -163,7 +164,7 @@
       ['모델 정보', [1, 2, 3, 4, 5, 6, 8, 27, 37]],
       ['코딩 에이전트', [9, 10, 11, 12, 13, 14, 15, 16, 17, 41]],
       ['개발 실사용', [38, 39, 40]],
-      ['모델·Cursor 평가', [28, 29, 30, 31, 32, 33, 34, 35, 36, 42]],
+      ['모델·Cursor 평가', [43, 44, 45, 28, 29, 30, 31, 32, 33, 34, 35, 36, 42]],
       ['기타', [0, 7, 18, 19, 20, 21, 22, 23, 24, 25, 26]]
     ].flatMap(([group, indexes]) => indexes.map(index => ({value:index,label:headers[index].textContent.replace(/[↑↓]/g,'').trim(),locked:index === 2,group}))),
     selected:selectedColumns,onChange:applyColumns
@@ -184,9 +185,9 @@
     closeMenu(); document.getElementById('search').value = '';
     document.getElementById('localOnly').checked = false; document.getElementById('aaOnly').checked = false;
     groups.forEach(group=>{group.menu.selected.clear();group.menu.items.forEach(item=>group.menu.selected.add(item.value));group.menu.refresh();});
-    selectedColumns.clear();defaultColumns.forEach(index=>selectedColumns.add(index));columnMenu.refresh();applyColumns();applyRows();sortColumn(28,false);
+    selectedColumns.clear();defaultColumns.forEach(index=>selectedColumns.add(index));columnMenu.refresh();applyColumns();applyRows();sortColumn(latestAA,false);
   };
-  let sortState = {index:28,ascending:false};
+  let sortState = {index:latestAA,ascending:false};
   function sortKind(index) {
     if (index === 3) return 'date';
     if (index === 15) return 'time';
@@ -201,7 +202,10 @@
   }
   function sortColumn(index,ascending) {
     sortState={index,ascending};
-    window.LLMTableSort.sort(table,index,ascending,sortValue,sortKind(index));
+    // When the latest edition is missing, preserve the legacy AA ranking as a separate group.
+    const tieBreak = index === latestAA ? (a,b) => sortValue(a,index) == null && sortValue(b,index) == null
+      ? window.LLMTableSort.compare(sortValue(a,28),sortValue(b,28),false) : 0 : undefined;
+    window.LLMTableSort.sort(table,index,ascending,sortValue,sortKind(index),tieBreak);
   }
   table.tHead.addEventListener('click',event=>{
     const header = event.target.closest('th'); if (!header) return;
@@ -214,7 +218,7 @@
     const header=event.target.closest('th');if(!header)return;
     event.preventDefault();sortColumn(header.cellIndex,sortState.index===header.cellIndex?!sortState.ascending:true);
   });
-  sortColumn(28,false);
+  sortColumn(latestAA,false);
   document.getElementById('csv').onclick = () => {
     const visible = rows().filter(row=>row.style.display !== 'none');
     const indexes = headers.map((_,index)=>index).filter(index=>selectedColumns.has(index));

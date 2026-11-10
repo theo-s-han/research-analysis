@@ -40,5 +40,5 @@ test('both pages load the shared sorter and explicitly initialize AA descending'
   assert(report.includes('sortReportColumn(2,false);'));
   assert(report.includes("help.setAttribute('aria-label',label+' 설명')"));
   assert(integrated.indexOf('src="llm-table-sort.js"')<integrated.indexOf('src="llm-table-controls.js"'));
-  assert(controls.includes('sortColumn(28,false);'));
+  assert(controls.includes('sortColumn(latestAA,false);'));
 });

@@ -27,12 +27,12 @@
     const order = kind === 'text' ? first.localeCompare(second, 'ko', {numeric:true, sensitivity:'base'}) : first - second;
     return order * (ascending ? 1 : -1);
   }
-  function sort(table, index, ascending, valueFor, kind = 'number') {
+  function sort(table, index, ascending, valueFor, kind = 'number', tieBreak = () => 0) {
     const rows = [...table.tBodies[0].rows];
     let sourceOrder = sourceOrders.get(table);
     if (!sourceOrder) { sourceOrder = new Map(); sourceOrders.set(table, sourceOrder); }
     rows.forEach(row => { if (!sourceOrder.has(row)) sourceOrder.set(row, sourceOrder.size); });
-    const ordered = rows.sort((a,b) => compare(valueFor(a,index), valueFor(b,index), ascending, kind) || sourceOrder.get(a) - sourceOrder.get(b));
+    const ordered = rows.sort((a,b) => compare(valueFor(a,index), valueFor(b,index), ascending, kind) || tieBreak(a,b) || sourceOrder.get(a) - sourceOrder.get(b));
     ordered.forEach(row => table.tBodies[0].append(row));
     [...table.tHead.rows[0].cells].forEach((header,column) => {
       if (column === index) header.setAttribute('aria-sort', ascending ? 'ascending' : 'descending');

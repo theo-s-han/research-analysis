@@ -118,5 +118,13 @@
       "모델 비교"
     ],
     "referenceDate": "2026-10-29"
+  },
+  "Claude_Fable_5_2_Model_Guide.html": {
+    "slug": "claude-fable-5-2-model-guide",
+    "title": "Claude Fable 5.2 모델 분석",
+    "description": "Fable 5.1 대비 성능·작업 비용 변화와 AA v5.0.1 전체 비교. CursorBench와 Claude Code 이용 조건.",
+    "category": "모델 리서치",
+    "tags": ["Claude Fable 5.2", "Anthropic", "모델 비교"],
+    "referenceDate": "2026-11-10"
   }
 }

@@ -39,27 +39,30 @@ export function validateAgentSnapshot(snapshot) {
 }
 
 export function validateModelSnapshot(snapshot) {
+  const v5 = snapshot.suite === 'AA Intelligence Index v5.0.1';
   if (snapshot.source !== 'https://artificialanalysis.ai/models'
       || snapshot.methodology !== 'https://artificialanalysis.ai/methodology/intelligence-benchmarking'
-      || snapshot.suite !== 'AA Intelligence Index v4.3.2'
+      || (!v5 && snapshot.suite !== 'AA Intelligence Index v4.3.2')
       || !/^\d{4}-\d{2}-\d{2}$/.test(snapshot.verifiedAt)
       || !/^\d{4}-\d{2}-\d{2}$/.test(snapshot.updatedAt)
       || snapshot.benchmarkVersions?.briefcase !== '1.1'
       || snapshot.benchmarkVersions?.terminal !== '4.0'
-      || snapshot.benchmarkVersions?.lcr !== '1.1') throw new Error('Unverified model snapshot');
+      || snapshot.benchmarkVersions?.lcr !== '1.1'
+      || (v5 && snapshot.benchmarkVersions?.frontierCode !== '2.0')) throw new Error('Unverified model snapshot');
   const ids = new Set(), slugs = new Set();
   for (const row of snapshot.records) {
     if (!row.sourceId || ids.has(row.sourceId) || !row.slug || slugs.has(row.slug)
         || row.source !== 'https://artificialanalysis.ai/models/' + row.slug
         || !row.model || !row.name || !row.effort || !row.provider
         || typeof row.estimated !== 'boolean' || typeof row.isOpenWeights !== 'boolean'
+        || (v5 && row.version !== 'v5.0.1')
         || !Array.isArray(row.evaluationSlugs)) throw new Error('Invalid model provenance');
     ids.add(row.sourceId); slugs.add(row.slug);
     for (const key of ['index', 'briefcase', 'cost', 'contextTokens', 'parameters', 'activeParameters']) {
       if (row[key] != null && (!Number.isFinite(row[key]) || row[key] < 0)) throw new Error('Invalid model value: ' + key);
     }
     if (row.index != null && row.index > 100) throw new Error('Invalid Intelligence Index');
-    for (const key of ['automation', 'terminal', 'scicode', 'lcr', 'mmmuPro']) {
+    for (const key of ['automation', 'terminal', 'scicode', 'lcr', 'mmmuPro', 'frontierCode20']) {
       if (row[key] != null && (!Number.isFinite(row[key]) || row[key] < 0 || row[key] > 1)) throw new Error('Invalid model proportion: ' + key);
     }
     if (row.release != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.release)) throw new Error('Invalid model release date');
@@ -80,6 +83,7 @@ export function validateCursorSnapshot(snapshot) {
         || !Number.isFinite(row.costUsd) || row.costUsd < 0
         || !Number.isInteger(row.tokens) || row.tokens < 0
         || !Number.isInteger(row.steps) || row.steps < 0) throw new Error('Invalid Cursor measurement');
+    if (row.verifiedAt != null && !/^\d{4}-\d{2}-\d{2}$/.test(row.verifiedAt)) throw new Error('Invalid Cursor verification date');
   }
   return snapshot;
 }

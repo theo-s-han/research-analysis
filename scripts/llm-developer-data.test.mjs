@@ -108,10 +108,27 @@ test('Meta native access is separate from Codex/Claude availability and open wei
   }
   assert.throws(() => validateModelOfferings({...input, records:[row,row]}));
 });
+test('Fable 5.2 keeps five v5.0.1 settings separate from legacy AA and matches Cursor by effort', async () => {
+  const legacy = JSON.parse(await fs.readFile(new URL('../content/llm-model-benchmarks.json', import.meta.url), 'utf8'));
+  const latest = JSON.parse(await fs.readFile(new URL('../content/llm-model-benchmarks-v5.json', import.meta.url), 'utf8'));
+  const cursor = JSON.parse(await fs.readFile(new URL('../content/llm-cursor-benchmarks.json', import.meta.url), 'utf8'));
+  const model = 'Claude Fable 5.2';
+  assert(!legacy.records.some(row => row.model === model));
+  validateModelSnapshot(latest);
+  const rows = latest.records.filter(row => row.model === model);
+  assert.deepEqual(rows.map(row => row.effort).sort(), ['high','low','max','medium','xhigh']);
+  for (const row of rows) {
+    const match = cursor.records.find(item => item.model === model && item.effort.toLowerCase() === row.effort);
+    assert.equal(match?.verifiedAt, row.verifiedAt);
+    assert(row.name.includes('Default Fallback') && row.index > 0 && row.cost > 0 && row.frontierCode20 > 0);
+  }
+  assert.throws(() => validateModelSnapshot({...latest, records:[{...rows[0], version:'v4.3.2'}]}));
+});
+
 test('Cursor values keep their own evaluation/version and source label', async () => {
   const input = JSON.parse(await fs.readFile(new URL('../content/llm-cursor-benchmarks.json', import.meta.url), 'utf8'));
   validateCursorSnapshot(input);
-  assert.equal(input.records.length, 63);
+  assert.equal(input.records.filter(row => row.model !== 'Claude Fable 5.2').length, 63);
   assert.equal(input.records.find(row => row.model === 'Claude Sonnet 5.5' && row.effort === 'Max').score, 55.5);
   assert(!input.records.some(row => row.model === 'GPT-6.1 Sol'));
   assert.throws(() => validateCursorSnapshot({...input, suite:'CursorBench 3.2'}));

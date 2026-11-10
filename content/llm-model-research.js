@@ -8,12 +8,12 @@
   const modelMetricsStart = 28;
   const conditionColumn = 37;
   const metricDefinitions = [
-    ['AA Intelligence ↑', 'number', 'Artificial Analysis Intelligence Index v4.3.2 종합 지능 지수. 높을수록 좋음. 코딩 에이전트 Index와 다른 평가. 최신 공개 실측만 표시하며 AA의 추정 Index는 제외.'],
+    ['AA Intelligence v4 ↑', 'number', 'Artificial Analysis Intelligence Index v4.3.2 및 이전 조사 기록. 높을수록 좋음. v5.0.1과 직접 비교하지 않으며 AA 추정 Index는 제외.'],
     ['AA-Briefcase ↑', 'number', 'AA-Briefcase v1.1 지식 노동·업무 문제 해결의 Elo 점수. 높을수록 좋음. 같은 평가판·모델·추론·fallback 조건끼리 비교.'],
     ['Automation ↑', 'percent', 'AutomationBench-AA: SaaS REST API 업무 자동화의 목표 달성 점수(%). 안전 조건 위반은 0점이며 부분 달성이 반영될 수 있음. 코딩 작업의 무개입 완료율과 다름.'],
     ['AA Terminal 4.0 ↑', 'percent', 'AA 모델 평가 환경의 Terminal-Bench 4.0 성공률(%). 높을수록 좋음. 별도 코딩 에이전트 평가와 혼합 금지.'],
     ['SciCode ↑', 'percent', 'Python 과학·수치 계산 문제의 코딩 평가(%). 높을수록 좋음. 일반 저장소 개발 성능 전체를 대표하지 않음. AA가 현재 평가를 재검토(Under review) 중이며 공개값을 원문 그대로 기록.'],
-    ['AA Cost / task ↓', 'money', 'AA 모델 평가의 작업당 USD 비용. 낮을수록 저렴. Codex·Claude Code 또는 Cursor의 작업당 비용과 구분. Gemini 출시 할인은 원문 조건 유지.'],
+    ['AA Cost / task v4 ↓', 'money', 'AA v4 및 이전 모델 평가의 작업당 USD 비용. 낮을수록 저렴. v5.0.1·Codex·Claude Code·Cursor 비용과 직접 비교하지 않음.'],
     ['CursorBench 4.0 ↑', 'percent', 'Cursor 환경의 코딩 작업 평가(%). 높을수록 좋음. AA 모델·네이티브 에이전트 평가와 다른 실행 환경.'],
     ['Cursor Cost ↓', 'money', 'CursorBench 평가의 작업당 USD 비용. 낮을수록 저렴. AA Cost/task와 직접 비교 불가.'],
     ['AA-LCR ↑', 'percent', 'AA-LCR v1.1: 약 10만 토큰 규모의 여러 장문 문서를 읽고 답하는 추론 평가(%). 코드 저장소 전용 평가가 아님. Context 최대 수용량과 구분.']
@@ -44,6 +44,9 @@
   addHeader('FrontierCode 1.1 ↑', '실제 오픈소스 저장소 구현·수정 평가의 평균 루브릭 점수(%). 차단 조건 실패는 0, 모두 통과하면 70–100. 성공률과 다르며 DeepSWE로 환산하지 않음. Coding Agent Index v2.0 구성 지표.', 'percent');
   header.lastElementChild.dataset.basis = 'agent';
   addHeader('MMMU-Pro ↑', '학술·전문 분야의 이미지+텍스트 문제를 통한 시각적 추론 정확도(%). 높을수록 좋음. 화면 조작이나 코딩 성공률은 아님. 이전 스냅샷의 미수집 값은 —.', 'percent');
+  addHeader('AA Intelligence v5.0.1 ↑', '업무·코딩·과학·일반 추론을 같은 비중으로 합산한 Artificial Analysis 종합 지능 지수. 높을수록 좋음. v4.3.2와 직접 비교하지 않음.', 'number');
+  addHeader('AA Cost / task v5.0.1 ↓', 'AA v5.0.1 평가의 작업당 USD 비용. 낮을수록 저렴. 기존 v4 평가와 구성·가중치가 다르며 구독 사용량과는 별개.', 'money');
+  addHeader('FrontierCode 2.0 ↑', 'AA 모델 평가 환경에서 실제 저장소 구현·수정 결과를 루브릭으로 채점한 점수(%). 높을수록 좋음. 에이전트 평가의 FrontierCode 1.1과 구분.', 'percent');
   for (let index = 10; index <= 17; index += 1) header.cells[index].dataset.basis = 'agent';
   header.cells[10].querySelector('.metric-tip').textContent = 'Coding Agent Index ↑';
   header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5: DeepSWE 1.1 / TB4.0 / SWE-Atlas-QnA. v2.0: FrontierCode 1.1 / TB4.0 / SWE-Atlas-QnA-AA의 동일 가중 평균. 평가판별 행·차트 분리, 직접 증감 비교 금지. AA Intelligence와 다름.';
@@ -205,12 +208,13 @@
   const usedModelRecords = new Set();
   const providerNames = {SpaceXAI:'xAI', Alibaba:'Alibaba / Qwen', 'Z AI':'Z.ai', Kimi:'Moonshot AI', Mistral:'Mistral AI'};
   const modelMetrics = [[28,'index'],[29,'briefcase'],[30,'automation'],[31,'terminal'],[32,'scicode'],[33,'cost'],[36,'lcr'],[42,'mmmuPro']];
+  const modelMetricsV5 = [...modelMetrics.filter(([column]) => column !== 28 && column !== 33), [43,'index'],[44,'cost'],[45,'frontierCode20']];
   const money = value => '$' + (value < .01 ? Number(value.toPrecision(3)).toString() : value.toFixed(2));
-  const installVerifiedModel = (record, row, original) => {
-    const verifiedAt = record.verifiedAt || data.verifiedModels.verifiedAt;
+  const installVerifiedModel = (record, row, original, snapshot = data.verifiedModels) => {
+    const verifiedAt = record.verifiedAt || snapshot.verifiedAt;
     row.dataset.aa = '1'; row.dataset.modelEvaluation = '1'; row.dataset.sourceId = record.sourceId;
     row.dataset.evaluationModel = record.model; row.dataset.evaluationEffort = record.effort;
-    row.dataset.benchmark = data.verifiedModels.suite;
+    row.dataset.benchmark = snapshot.suite;
     if (!original) row.dataset.recordId = 'model:verified:' + record.sourceId;
     textCell(row, 2, record.name);
     textCell(row, 8, contextOf(record.model));
@@ -218,15 +222,16 @@
       row.dataset.local = '1'; row.dataset.access = '오픈웨이트 + API'; textCell(row, 5, '오픈웨이트 + API');
       if (record.parameters != null) textCell(row, 7, record.parameters + 'B' + (record.activeParameters != null ? ' / ' + record.activeParameters + 'B' : ''));
     }
-    modelMetrics.forEach(([column, key]) => {
+    const metrics = snapshot === data.verifiedModelsV5 ? modelMetricsV5 : modelMetrics;
+    metrics.forEach(([column, key]) => {
       const cell = row.cells[column];
       const previous = column === 42 ? undefined : original?.values[column === 36 ? 8 : column - 28];
       let value = key === 'index' && record.estimated ? null : record[key];
-      if (['automation','terminal','scicode','lcr','mmmuPro'].includes(key) && value != null) value *= 100;
-      cell.textContent = value == null ? '—' : key === 'cost' ? money(value) : key === 'briefcase' ? Math.round(value).toLocaleString('en-US') : value.toFixed(1) + (column === 28 ? '' : '%');
+      if (['automation','terminal','scicode','lcr','mmmuPro','frontierCode20'].includes(key) && value != null) value *= 100;
+      cell.textContent = value == null ? '—' : key === 'cost' ? money(value) : key === 'briefcase' ? Math.round(value).toLocaleString('en-US') : value.toFixed(1) + (key === 'index' ? '' : '%');
       delete cell.dataset.sort; delete cell.dataset.chartValue;
       if (value != null) cell.dataset.sort = cell.dataset.chartValue = String(value);
-      const notes = [data.verifiedModels.suite + ' · 확인 ' + verifiedAt, record.source];
+      const notes = [snapshot.suite + ' · 확인 ' + verifiedAt, record.source];
       if (key === 'cost' && offeringOf(record.model)?.access === '구독 전용') notes.push('공개 토큰 단가가 없어 작업당 API 비용 미산출. 구독료로 환산하지 않음.');
       if (key === 'index' && record.estimated) notes.push('AA가 추정한 종합 지수이므로 실측 값으로 표시하지 않음.');
       if (key === 'scicode') notes.push('AA 평가 재검토 중(Under review).');
@@ -243,10 +248,10 @@
     const configuration = record.name.includes('Fallback') ? record.name.match(/\(([^)]*)\)/)?.[1] : record.effort;
     textCell(row, 25, record.estimated ? '개별 공개 평가만 표시 · 추정 종합 Index 제외' : '동일 모델·추론 조건의 AA 공개 평가');
     if (original) { row.cells[25].dataset.previousValue = original.note; row.cells[25].title = '이전 조사 설명: ' + original.note; }
-    textCell(row, conditionColumn, data.verifiedModels.suite + ' · ' + configuration + ' · 확인 ' + verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
+    textCell(row, conditionColumn, snapshot.suite + ' · ' + configuration + ' · 확인 ' + verifiedAt + ' · 실행일 미명시' + (original && [6,7].some(index => /\d/.test(original.values[index])) ? ' · Cursor: 원문 기록 ' + original.observed : ''));
     linkTo(row, record.source, 'AA 세부 평가');
     addFacts(row, record.model);
-    usedModelRecords.add(record.sourceId);
+    if (snapshot === data.verifiedModels) usedModelRecords.add(record.sourceId);
   };
   data.modelRows.forEach(original => {
     const candidates = data.verifiedModels.records.filter(record => record.model === original.model && (record.effort.toLowerCase() === original.effort.toLowerCase() || original.effort === '미명시'));
@@ -255,14 +260,19 @@
     const row = [...body.rows].find(item => item.dataset.recordId === original.id);
     installVerifiedModel(candidates[0], row, original);
   });
-  data.verifiedModels.records.forEach(record => {
-    if (usedModelRecords.has(record.sourceId)) return;
-    const measurable = (!record.estimated && record.index != null) || modelMetrics.slice(1).some(([,key]) => record[key] != null);
+  [data.verifiedModels, data.verifiedModelsV5].forEach(snapshot => snapshot.records.forEach(record => {
+    // The same AA source ID can occur in both editions; v5 gets a separate row.
+    const isV5 = snapshot === data.verifiedModelsV5;
+    if (!isV5 && usedModelRecords.has(record.sourceId)) return;
+    const metrics = isV5 ? modelMetricsV5 : modelMetrics;
+    const measurable = (!record.estimated && record.index != null) || metrics.some(([,key]) => key !== 'index' && record[key] != null);
     if (!measurable) return;
     const row = makeRow(providerNames[record.provider] || record.provider, record.name, 'AA 모델 평가');
-    installVerifiedModel(record, row);
-  });
+    installVerifiedModel(record, row, undefined, snapshot);
+    if (isV5) row.dataset.recordId = 'model:v5:' + record.sourceId;
+  }));
   data.verifiedCursor.records.forEach(record => {
+    const cursorVerifiedAt = record.verifiedAt || data.verifiedCursor.verifiedAt;
     const candidates = [...body.rows].filter(row => canonical(row.dataset.evaluationModel || '') === canonical(record.model) && row.dataset.evaluationEffort?.toLowerCase() === record.effort.toLowerCase());
     // A Cursor setting is independent of AA fallback variants. Ambiguity gets its own row.
     const row = candidates.length === 1 ? candidates[0] : makeRow(record.provider, record.model + ' (' + record.effort + ')', 'Cursor 평가', 'CursorBench 4.0');
@@ -270,10 +280,10 @@
       row.dataset.aa = '0'; row.dataset.recordId = 'cursor:' + record.label;
       textCell(row, 8, contextOf(record.model));
       textCell(row, 20, 'Cursor 공식 공개 평가');
-      textCell(row, conditionColumn, 'CursorBench 4.0 · ' + record.effort + ' · 확인 ' + data.verifiedCursor.verifiedAt + ' · 실행일 미명시');
+      textCell(row, conditionColumn, 'CursorBench 4.0 · ' + record.effort + ' · 확인 ' + cursorVerifiedAt + ' · 실행일 미명시');
     } else {
       // AA and Cursor stay in independent columns/charts, with independent conditions.
-      textCell(row, conditionColumn, row.cells[conditionColumn].textContent.replace(/ · Cursor: 원문 기록 .+$/, '') + ' · CursorBench 4.0 확인 ' + data.verifiedCursor.verifiedAt);
+      textCell(row, conditionColumn, row.cells[conditionColumn].textContent.replace(/ · Cursor: 원문 기록 .+$/, '') + ' · CursorBench 4.0 확인 ' + cursorVerifiedAt);
     }
     row.dataset.cursorRecord = record.label;
     [[34,record.score,record.score.toFixed(1)+'%'],[35,record.costUsd,money(record.costUsd)]].forEach(([column,value,display]) => {
@@ -281,7 +291,7 @@
       const previous = cell.textContent;
       cell.textContent = display; cell.dataset.sort = cell.dataset.chartValue = String(value);
       if (!cell.dataset.previousValue && /\d/.test(previous)) cell.dataset.previousValue = previous;
-      cell.title = 'CursorBench 4.0 · 확인 ' + data.verifiedCursor.verifiedAt + '\n' + data.verifiedCursor.source + '\nCursor 실행 환경 · 평균 토큰 ' + record.tokens.toLocaleString('en-US') + ' / Steps ' + record.steps + '\nAA 모델·네이티브 코딩 에이전트의 비용/토큰/Turns와 별도.' + (cell.dataset.previousValue ? '\n이전 조사 기록: ' + cell.dataset.previousValue : '');
+      cell.title = 'CursorBench 4.0 · 확인 ' + cursorVerifiedAt + '\n' + data.verifiedCursor.source + '\nCursor 실행 환경 · 평균 토큰 ' + record.tokens.toLocaleString('en-US') + ' / Steps ' + record.steps + '\nAA 모델·네이티브 코딩 에이전트의 비용/토큰/Turns와 별도.' + (cell.dataset.previousValue ? '\n이전 조사 기록: ' + cell.dataset.previousValue : '');
     });
     linkTo(row, data.verifiedCursor.source, 'Cursor 평가');
     addFacts(row, record.model);
@@ -346,6 +356,8 @@
       else if (column === 41) reason = 'Coding Agent Index v2.0의 FrontierCode 1.1 평가 대상에만 표시. DeepSWE 등 이전 평가의 수치로 환산하지 않음.';
       else if (column === 11 && row.dataset.benchmark === 'Agent v2.0') reason = 'v2.0은 DeepSWE 대신 FrontierCode 1.1을 평가. 별도 FrontierCode 열에 기록.';
       else if (column === 42) reason = '이 조사 스냅샷에서 동일 설정의 MMMU-Pro 값을 수집하지 않음. 원문 미공개를 의미하지 않으며 다른 평가로 대체하지 않음.';
+      else if (column >= 43 && column <= 45 && row.dataset.benchmark !== data.verifiedModelsV5.suite) reason = '별도 AA v5.0.1 스냅샷에 포함된 추론 설정만 표시. 기존 평가판 수치로 대체하지 않음.';
+      else if ((column === 28 || column === 33) && row.dataset.benchmark === data.verifiedModelsV5.suite) reason = '이 설정은 별도 AA v5.0.1 열에 기록.';
       else if ((column === 17 && row.dataset.costStatus === 'not-token-priced') || (column === 33 && row.dataset.modelEvaluation === '1' && offeringOf(row.cells[2].textContent)?.access === '구독 전용')) reason = '공개 토큰 단가가 없는 구독 모델. 작업당 API 비용 미산출이며 구독료로 환산하지 않음.';
       else if (column >= 10 && column <= 17 && !(row.dataset.benchmark || '').startsWith('Agent')) reason = '이 행은 코딩 에이전트 평가가 아님. 같은 모델의 코딩 에이전트 평가 행에 별도 기록.';
       else if ((column >= 28 && column <= 33 || column === 36) && row.dataset.modelEvaluation !== '1') reason = '이 행은 AA 모델 평가가 아님. 같은 모델·추론 설정의 AA 모델 평가 행에 별도 기록.';
@@ -463,6 +475,19 @@
         "tool": "codex",
         "status": "종료 예정",
         "note": "Codex ChatGPT 로그인 제공 종료 예정일: 2026-10-14. API 수명주기와 구분."
+      },
+      {
+        "name": "Claude Fable 5.2",
+        "id": "claude-fable-5-2",
+        "provider": "Anthropic",
+        "tool": "claude-code",
+        "status": "현행",
+        "context": "1M",
+        "release": "2026-11-09",
+        "verifiedAt": "2026-11-10",
+        "source": "https://platform.claude.com/docs/en/models/fable-5-2/overview",
+        "guide": "Claude_Fable_5_2_Model_Guide.html",
+        "note": "Claude Code 2.1.321 이상. 요금제·조직 설정에 따라 선택 및 사용 한도 적용. Anthropic 직접 API 표준 단가: 입력 $8 / 출력 $40 (100만 토큰당). 기본 추론 High, 최대 출력 128K."
       },
       {
         "name": "Claude Fable 5.1",
@@ -12010,6 +12035,275 @@
       }
     ]
   },
+  "verifiedModelsV5": {
+    "source": "https://artificialanalysis.ai/models",
+    "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+    "verifiedAt": "2026-11-10",
+    "updatedAt": "2026-11-10",
+    "suite": "AA Intelligence Index v5.0.1",
+    "benchmarkVersions": {
+      "briefcase": "1.1",
+      "terminal": "4.0",
+      "lcr": "1.1",
+      "frontierCode": "2.0"
+    },
+    "underReview": [
+      "scicode"
+    ],
+    "scope": "Claude Fable 5.2 모델 평가 · Default Fallback · 기존 AA v4.3.2 수치와 분리",
+    "records": [
+      {
+        "slug": "claude-fable-5-2",
+        "sourceId": "593f2d23-247b-41c9-a679-cebd225f0a9a",
+        "source": "https://artificialanalysis.ai/models/claude-fable-5-2",
+        "model": "Claude Fable 5.2",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "effort": "max",
+        "provider": "Anthropic",
+        "contextTokens": 1000000,
+        "release": "2026-11-09",
+        "estimated": false,
+        "index": 64.563595756626,
+        "cost": 26.53855780398091,
+        "timePerTask": 2785.6666305511853,
+        "outputTokensPerTask": {
+          "reasoning": 192700.52895423025,
+          "answer": 81075.43138606165,
+          "output": 273775.9603402919
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-10",
+        "briefcase": 1785.32,
+        "automation": 0.7642233832611831,
+        "terminal": 0.595959595959596,
+        "scicode": 0.677083333333333,
+        "lcr": 0.833333333333333,
+        "mmmuPro": null,
+        "frontierCode20": 0.487597222222222,
+        "omniscience": 66.76666666666667,
+        "omniscienceAccuracy": 0.7913333333333333,
+        "hallucinationRate": 0.5926517571884984,
+        "gdpPdf": 0.242,
+        "hleDiamond": 0.802,
+        "critptHard": 0.765,
+        "terminalScience": 0.733333333333333,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false
+      },
+      {
+        "slug": "claude-fable-5-2-medium",
+        "sourceId": "0c9b4e05-9259-42cc-b40e-d6acbbeaa7e8",
+        "source": "https://artificialanalysis.ai/models/claude-fable-5-2-medium",
+        "model": "Claude Fable 5.2",
+        "name": "Claude Fable 5.2 (Medium, Default Fallback)",
+        "effort": "medium",
+        "provider": "Anthropic",
+        "contextTokens": 1000000,
+        "release": "2026-11-09",
+        "estimated": false,
+        "index": 56.4083157101519,
+        "cost": 3.8026050641787634,
+        "timePerTask": 499.9143123714571,
+        "outputTokensPerTask": {
+          "reasoning": 20674.60599869932,
+          "answer": 22455.967757538427,
+          "output": 43130.57375623775
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-10",
+        "briefcase": 1622.24,
+        "automation": 0.6882266338432704,
+        "terminal": 0.55050505050505,
+        "scicode": 0.597222222222222,
+        "lcr": 0.8,
+        "mmmuPro": null,
+        "frontierCode20": 0.412984090909091,
+        "omniscience": 63.5,
+        "omniscienceAccuracy": 0.7696666666666667,
+        "hallucinationRate": 0.5846599131693199,
+        "gdpPdf": 0.238,
+        "hleDiamond": 0.663,
+        "critptHard": 0.615,
+        "terminalScience": 0.604761904761905,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false
+      },
+      {
+        "slug": "claude-fable-5-2-xhigh",
+        "sourceId": "76942526-cc96-46b0-bc27-29561c53ed70",
+        "source": "https://artificialanalysis.ai/models/claude-fable-5-2-xhigh",
+        "model": "Claude Fable 5.2",
+        "name": "Claude Fable 5.2 (Xhigh, Default Fallback)",
+        "effort": "xhigh",
+        "provider": "Anthropic",
+        "contextTokens": 1000000,
+        "release": "2026-11-09",
+        "estimated": false,
+        "index": 62.2167392403357,
+        "cost": 14.828587632511116,
+        "timePerTask": 1575.8690121129725,
+        "outputTokensPerTask": {
+          "reasoning": 106355.64958936961,
+          "answer": 55588.474155676675,
+          "output": 161944.1237450463
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-10",
+        "briefcase": 1737.78,
+        "automation": 0.7416293165236524,
+        "terminal": 0.616161616161616,
+        "scicode": 0.65625,
+        "lcr": 0.826666666666667,
+        "mmmuPro": null,
+        "frontierCode20": 0.475810858585859,
+        "omniscience": 64.76666666666667,
+        "omniscienceAccuracy": 0.7803333333333333,
+        "hallucinationRate": 0.6039453717754173,
+        "gdpPdf": 0.214,
+        "hleDiamond": 0.758,
+        "critptHard": 0.735,
+        "terminalScience": 0.676190476190476,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false
+      },
+      {
+        "slug": "claude-fable-5-2-low",
+        "sourceId": "cfc7acb1-d903-4858-9b6c-6c7776caf8f9",
+        "source": "https://artificialanalysis.ai/models/claude-fable-5-2-low",
+        "model": "Claude Fable 5.2",
+        "name": "Claude Fable 5.2 (Low, Default Fallback)",
+        "effort": "low",
+        "provider": "Anthropic",
+        "contextTokens": 1000000,
+        "release": "2026-11-09",
+        "estimated": false,
+        "index": 53.9249388799182,
+        "cost": 3.097241904274546,
+        "timePerTask": 392.53108684106064,
+        "outputTokensPerTask": {
+          "reasoning": 16503.012760827907,
+          "answer": 19357.209400393673,
+          "output": 35860.22216122158
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-10",
+        "briefcase": 1562.73,
+        "automation": 0.6799749206673704,
+        "terminal": 0.545454545454545,
+        "scicode": 0.577546296296296,
+        "lcr": 0.8,
+        "mmmuPro": null,
+        "frontierCode20": 0.384397474747475,
+        "omniscience": 62.93333333333333,
+        "omniscienceAccuracy": 0.763,
+        "hallucinationRate": 0.5639943741209564,
+        "gdpPdf": 0.268,
+        "hleDiamond": 0.608,
+        "critptHard": 0.6,
+        "terminalScience": 0.538095238095238,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false
+      },
+      {
+        "slug": "claude-fable-5-2-high",
+        "sourceId": "fdc1913b-9497-45ef-83f7-17dae756f37e",
+        "source": "https://artificialanalysis.ai/models/claude-fable-5-2-high",
+        "model": "Claude Fable 5.2",
+        "name": "Claude Fable 5.2 (High, Default Fallback)",
+        "effort": "high",
+        "provider": "Anthropic",
+        "contextTokens": 1000000,
+        "release": "2026-11-09",
+        "estimated": false,
+        "index": 61.8218785440284,
+        "cost": 9.078414777860381,
+        "timePerTask": 1059.1583039840473,
+        "outputTokensPerTask": {
+          "reasoning": 58240.62807764298,
+          "answer": 39600.37631626577,
+          "output": 97841.00439390875
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-10",
+        "briefcase": 1677.44,
+        "automation": 0.7135975994544773,
+        "terminal": 0.595959595959596,
+        "scicode": 0.594907407407407,
+        "lcr": 0.833333333333333,
+        "mmmuPro": null,
+        "frontierCode20": 0.491275757575758,
+        "omniscience": 64.03333333333333,
+        "omniscienceAccuracy": 0.7723333333333333,
+        "hallucinationRate": 0.5797950219619327,
+        "gdpPdf": 0.218,
+        "hleDiamond": 0.738,
+        "critptHard": 0.73,
+        "terminalScience": 0.7,
+        "parameters": null,
+        "activeParameters": null,
+        "isOpenWeights": false
+      }
+    ]
+  },
   "verifiedCursor": {
     "source": "https://prod.cursor.com/evals",
     "methodology": "https://prod.cursor.com/blog/cursorbench",
@@ -12645,9 +12939,64 @@
         "costUsd": 0.03,
         "tokens": 3288,
         "steps": 18
+      },
+      {
+        "label": "Fable 5.2 Max",
+        "model": "Claude Fable 5.2",
+        "effort": "Max",
+        "provider": "Anthropic",
+        "score": 60,
+        "costUsd": 32.79,
+        "tokens": 352794,
+        "steps": 218,
+        "verifiedAt": "2026-11-10"
+      },
+      {
+        "label": "Fable 5.2 Medium",
+        "model": "Claude Fable 5.2",
+        "effort": "Medium",
+        "provider": "Anthropic",
+        "score": 54.8,
+        "costUsd": 4.66,
+        "tokens": 44103,
+        "steps": 35,
+        "verifiedAt": "2026-11-10"
+      },
+      {
+        "label": "Fable 5.2 Extra High",
+        "model": "Claude Fable 5.2",
+        "effort": "xHigh",
+        "provider": "Anthropic",
+        "score": 56.3,
+        "costUsd": 15.48,
+        "tokens": 161251,
+        "steps": 108,
+        "verifiedAt": "2026-11-10"
+      },
+      {
+        "label": "Fable 5.2 Low",
+        "model": "Claude Fable 5.2",
+        "effort": "Low",
+        "provider": "Anthropic",
+        "score": 53.2,
+        "costUsd": 3.94,
+        "tokens": 36616,
+        "steps": 30,
+        "verifiedAt": "2026-11-10"
+      },
+      {
+        "label": "Fable 5.2 High",
+        "model": "Claude Fable 5.2",
+        "effort": "High",
+        "provider": "Anthropic",
+        "score": 56.9,
+        "costUsd": 9.7,
+        "tokens": 99259,
+        "steps": 69,
+        "verifiedAt": "2026-11-10"
       }
     ]
   },
   "developerRows": [],
-  "updatedAt": "2026-10-27"
+  "updatedAt": "2026-11-10"
 });

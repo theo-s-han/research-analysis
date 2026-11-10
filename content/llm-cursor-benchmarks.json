@@ -633,6 +633,61 @@
       "costUsd": 0.03,
       "tokens": 3288,
       "steps": 18
+    },
+    {
+      "label": "Fable 5.2 Max",
+      "model": "Claude Fable 5.2",
+      "effort": "Max",
+      "provider": "Anthropic",
+      "score": 60,
+      "costUsd": 32.79,
+      "tokens": 352794,
+      "steps": 218,
+      "verifiedAt": "2026-11-10"
+    },
+    {
+      "label": "Fable 5.2 Medium",
+      "model": "Claude Fable 5.2",
+      "effort": "Medium",
+      "provider": "Anthropic",
+      "score": 54.8,
+      "costUsd": 4.66,
+      "tokens": 44103,
+      "steps": 35,
+      "verifiedAt": "2026-11-10"
+    },
+    {
+      "label": "Fable 5.2 Extra High",
+      "model": "Claude Fable 5.2",
+      "effort": "xHigh",
+      "provider": "Anthropic",
+      "score": 56.3,
+      "costUsd": 15.48,
+      "tokens": 161251,
+      "steps": 108,
+      "verifiedAt": "2026-11-10"
+    },
+    {
+      "label": "Fable 5.2 Low",
+      "model": "Claude Fable 5.2",
+      "effort": "Low",
+      "provider": "Anthropic",
+      "score": 53.2,
+      "costUsd": 3.94,
+      "tokens": 36616,
+      "steps": 30,
+      "verifiedAt": "2026-11-10"
+    },
+    {
+      "label": "Fable 5.2 High",
+      "model": "Claude Fable 5.2",
+      "effort": "High",
+      "provider": "Anthropic",
+      "score": 56.9,
+      "costUsd": 9.7,
+      "tokens": 99259,
+      "steps": 69,
+      "verifiedAt": "2026-11-10"
     }
   ]
 }

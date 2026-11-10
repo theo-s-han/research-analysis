@@ -17,6 +17,7 @@
     {"name":"GPT-5.6 Terra","id":"gpt-5.6-terra","provider":"OpenAI","tool":"codex","status":"현행"},
     {"name":"GPT-5.6 Luna","id":"gpt-5.6-luna","provider":"OpenAI","tool":"codex","status":"현행"},
     {"name":"GPT-5.5","id":"gpt-5.5","provider":"OpenAI","tool":"codex","status":"종료 예정","note":"Codex ChatGPT 로그인 제공 종료 예정일: 2026-10-14. API 수명주기와 구분."},
+    {"name":"Claude Fable 5.2","id":"claude-fable-5-2","provider":"Anthropic","tool":"claude-code","status":"현행","context":"1M","release":"2026-11-09","verifiedAt":"2026-11-10","source":"https://platform.claude.com/docs/en/models/fable-5-2/overview","guide":"Claude_Fable_5_2_Model_Guide.html","note":"Claude Code 2.1.321 이상. 요금제·조직 설정에 따라 선택 및 사용 한도 적용. Anthropic 직접 API 표준 단가: 입력 $8 / 출력 $40 (100만 토큰당). 기본 추론 High, 최대 출력 128K."},
     {"name":"Claude Fable 5.1","id":"claude-fable-5-1","provider":"Anthropic","tool":"claude-code","status":"현행","context":"1M"},
     {"name":"Claude Fable 5","id":"claude-fable-5","provider":"Anthropic","tool":"claude-code","status":"현행"},
     {"name":"Claude Opus 5.5","id":"claude-opus-5-5","provider":"Anthropic","tool":"claude-code","status":"현행","context":"1M","release":"2026-09-22"},
