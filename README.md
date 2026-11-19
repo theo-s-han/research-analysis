@@ -99,6 +99,8 @@ dist/                 생성된 게시 사이트 (Git 추적 제외)
 
 ## 통합 모델 비교 갱신
 
+2026-11-19 GPT-6.2 Sol·Astra의 10개 추론 설정과 직전 세대의 비교용 10개 설정을 AA v5.0.1 기록에 추가했습니다. 기존 Fable 기록·확인일과 AA v4 값은 유지합니다. llm-agent-benchmarks-v2-1.json은 Codex의 14개 설정을 별도 v2.1로 보존합니다. FrontierCode-AA 2.0은 새 46번 열, Terminal-Bench 4.1과 종합 점수는 평가 조건·차트에서 이전 판본과 구분합니다. 통합 차트의 첫 화면은 AA v5.0.1입니다.
+
 통합 비교는 AA Intelligence v5.0.1 내림차순으로 시작하며, 해당 평가판 점수가 없는 행은 뒤에서 기존 AA 점수순으로 표시합니다. 모델 가이드는 해당 평가판 기준으로 정렬합니다. 열 제목 클릭으로 정렬 방향을 전환하며 `content/llm-table-sort.js`가 통화·퍼센트·Context·시간 단위와 빈값을 처리합니다. 원 수치가 있으면 반올림 표시보다 우선합니다.
 
 `content/llm-model-availability.json`은 공식 문서로 확인한 모델 제공 목록과 확인일입니다. Codex ChatGPT 로그인과 Claude Code의 Anthropic 직접 API를 기준으로 하며, 승인 계정·종료 예정·파트너 제공 조건을 구분합니다. 사용자 지정 제공자의 임의 모델을 모두 지원한다고 표시하지 않습니다.

@@ -47,9 +47,11 @@ export function installModelResearch(data) {
   addHeader('AA Intelligence v5.0.1 ↑', '업무·코딩·과학·일반 추론을 같은 비중으로 합산한 Artificial Analysis 종합 지능 지수. 높을수록 좋음. v4.3.2와 직접 비교하지 않음.', 'number');
   addHeader('AA Cost / task v5.0.1 ↓', 'AA v5.0.1 평가의 작업당 USD 비용. 낮을수록 저렴. 기존 v4 평가와 구성·가중치가 다르며 구독 사용량과는 별개.', 'money');
   addHeader('FrontierCode 2.0 ↑', 'AA 모델 평가 환경에서 실제 저장소 구현·수정 결과를 루브릭으로 채점한 점수(%). 높을수록 좋음. 에이전트 평가의 FrontierCode 1.1과 구분.', 'percent');
+  addHeader('Agent FrontierCode-AA 2.0 ↑', 'Coding Agent Index v2.1의 실제 저장소 수정 평가(%). Codex 등 실행기에서 132개 과제를 3회 시도한 평균. 모델 평가의 FrontierCode 2.0·이전 Agent 1.1과 별도.', 'percent');
+  header.lastElementChild.dataset.basis = 'agent';
   for (let index = 10; index <= 17; index += 1) header.cells[index].dataset.basis = 'agent';
   header.cells[10].querySelector('.metric-tip').textContent = 'Coding Agent Index ↑';
-  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5: DeepSWE 1.1 / TB4.0 / SWE-Atlas-QnA. v2.0: FrontierCode 1.1 / TB4.0 / SWE-Atlas-QnA-AA의 동일 가중 평균. 평가판별 행·차트 분리, 직접 증감 비교 금지. AA Intelligence와 다름.';
+  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5: DeepSWE 1.1 / TB4.0 / SWE-Atlas-QnA. v2.0: FrontierCode 1.1 / TB4.0 / SWE-Atlas-QnA-AA. v2.1: FrontierCode-AA 2.0 / TB4.1 / SWE-Atlas-QnA-AA. 각 3개 구성 평가의 동일 가중 평균. 평가판별 행·차트 분리, 직접 증감 비교 금지. AA Intelligence와 다름.';
   header.cells[12].querySelector('.metric-tip').textContent = 'Agent Terminal-Bench ↑';
   header.cells[12].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 환경의 Terminal-Bench 성공률(%). 버전은 평가 조건 열과 차트명에서 구분. AA 모델 평가의 Terminal 값과 다름.';
   header.cells[4].querySelector('.metric-tip').dataset.tip = '모델 사양, AA 모델 평가, 코딩 에이전트 평가 행을 구분. 서로 다른 평가 체계의 점수·비용을 혼합하지 않음.';
@@ -312,17 +314,18 @@ export function installModelResearch(data) {
     textCell(row, column, value == null ? '—' : display);
     if (value != null) row.cells[column].dataset.sort = row.cells[column].dataset.chartValue = String(value);
   };
-  [data.verifiedAgents, data.verifiedAgentsV2].forEach(snapshot => snapshot.records.forEach(record => {
-    const v2 = snapshot.suite === 'Coding Agent Index v2.0';
+  [data.verifiedAgents, data.verifiedAgentsV2, data.verifiedAgentsV21].forEach(snapshot => snapshot.records.forEach(record => {
+    const v21 = snapshot.suite === 'Coding Agent Index v2.1';
+    const v2 = v21 || snapshot.suite === 'Coding Agent Index v2.0';
     const verifiedAt = record.verifiedAt || snapshot.verifiedAt;
-    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', v2 ? 'Agent v2.0' : 'Agent v1.5');
-    row.dataset.recordId = (v2 ? 'agent:v2.0:' : 'agent:v1.5:') + record.sourceId;
+    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', v21 ? 'Agent v2.1' : v2 ? 'Agent v2.0' : 'Agent v1.5');
+    row.dataset.recordId = (v21 ? 'agent:v2.1:' : v2 ? 'agent:v2.0:' : 'agent:v1.5:') + record.sourceId;
     row.dataset.costStatus = record.costStatus || 'priced';
     textCell(row, 8, record.model.includes('+') ? '모델별 상이' : contextOf(record.model));
     if (record.model.includes('+')) row.cells[8].title = '서로 다른 모델을 조합한 평가. 단일 Context 수치로 합산·대체하지 않음.';
     textCell(row, 9, record.harness + ' ' + record.harnessVersion);
     row.cells[9].title = Object.entries(record.harnessVersions).map(([benchmark,version]) => benchmark + ': ' + version.min.version + (version.min.version === version.max.version ? '' : '–' + version.max.version)).join('\n');
-    [[10, 'index'], [v2 ? 41 : 11, v2 ? 'frontierCode' : 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
+    [[10, 'index'], [v21 ? 46 : v2 ? 41 : 11, v2 ? 'frontierCode' : 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
     numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
     numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
     numberCell(row, 16, record.turns, record.turns.toFixed(1));
@@ -331,7 +334,7 @@ export function installModelResearch(data) {
     textCell(row, 20, 'AA 공식 평가');
     const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
     textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · ' + (record.costUsd == null ? 'API 비용 미산출' : '실패를 포함한 평균 API 비용'));
-    textCell(row, conditionColumn, snapshot.suite + (v2 ? ' · FrontierCode 1.1 / TB 4.0 / SWE-Atlas-QnA-AA' : ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA') + ' · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
+    textCell(row, conditionColumn, snapshot.suite + (v21 ? ' · FrontierCode-AA 2.0 / TB 4.1 / SWE-Atlas-QnA-AA' : v2 ? ' · FrontierCode 1.1 / TB 4.0 / SWE-Atlas-QnA-AA' : ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA') + ' · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
     linkTo(row, snapshot.source, 'AA 평가 원문');
     linkTo(row, snapshot.methodology, '평가 방법');
     addFacts(row, record.model);
@@ -354,7 +357,8 @@ export function installModelResearch(data) {
       let reason = '공개 원문에서 동일 조건의 수치를 확인하지 못함.';
       if (column >= 38 && column <= 40) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
       else if (column === 41) reason = 'Coding Agent Index v2.0의 FrontierCode 1.1 평가 대상에만 표시. DeepSWE 등 이전 평가의 수치로 환산하지 않음.';
-      else if (column === 11 && row.dataset.benchmark === 'Agent v2.0') reason = 'v2.0은 DeepSWE 대신 FrontierCode 1.1을 평가. 별도 FrontierCode 열에 기록.';
+      else if (column === 11 && ['Agent v2.0','Agent v2.1'].includes(row.dataset.benchmark)) reason = '이 판본은 DeepSWE 대신 FrontierCode를 평가. 해당 판본의 FrontierCode 열에 기록.';
+      else if (column === 46) reason = 'Coding Agent Index v2.1의 FrontierCode-AA 2.0 전용. 모델 평가 또는 이전 에이전트 평가로 대체하지 않음.';
       else if (column === 42) reason = '이 조사 스냅샷에서 동일 설정의 MMMU-Pro 값을 수집하지 않음. 원문 미공개를 의미하지 않으며 다른 평가로 대체하지 않음.';
       else if (column >= 43 && column <= 45 && row.dataset.benchmark !== data.verifiedModelsV5.suite) reason = '별도 AA v5.0.1 스냅샷에 포함된 추론 설정만 표시. 기존 평가판 수치로 대체하지 않음.';
       else if ((column === 28 || column === 33) && row.dataset.benchmark === data.verifiedModelsV5.suite) reason = '이 설정은 별도 AA v5.0.1 열에 기록.';
@@ -386,6 +390,7 @@ export function installModelResearch(data) {
   table.dataset.agentRecords = String(data.agentRows.length);
   table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
   table.dataset.verifiedAgentV2Records = String(data.verifiedAgentsV2.records.length);
+  table.dataset.verifiedAgentV21Records = String(data.verifiedAgentsV21.records.length);
   table.dataset.verifiedModelRecords = String(usedModelRecords.size);
   table.dataset.verifiedCursorRecords = String(data.verifiedCursor.records.length);
   table.dataset.offeringRecords = String(data.offerings.records.length);

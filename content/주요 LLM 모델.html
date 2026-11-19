@@ -528,7 +528,7 @@ document.title = '주요 LLM·코딩 모델 통합 비교 — 2026-10-07';
       });
     }));
     metrics.push(...[...publicMetrics.values()].sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true })));
-    metrics.sort((a, b) => Number(b.basis === 'model') - Number(a.basis === 'model'));
+    metrics.sort((a, b) => Number(b.column === 43) - Number(a.column === 43) || Number(b.basis === 'model') - Number(a.basis === 'model'));
     return { metrics, records };
   }
 

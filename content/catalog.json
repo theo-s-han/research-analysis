@@ -126,5 +126,18 @@
     "category": "모델 리서치",
     "tags": ["Claude Fable 5.2", "Anthropic", "모델 비교"],
     "referenceDate": "2026-11-10"
+  },
+  "GPT_6_2_Astra_Sol_Model_Guide.html": {
+    "slug": "gpt-6-2-astra-sol-model-guide",
+    "title": "GPT-6.2 Sol · Astra 모델 분석",
+    "description": "이전 Sol·Astra 대비 성능·비용 변화, AA v5.0.1 전체 비교와 Codex Agent 실측·이용 조건.",
+    "category": "모델 리서치",
+    "tags": [
+      "GPT-6.2 Sol",
+      "GPT-6.2 Astra",
+      "Codex",
+      "모델 비교"
+    ],
+    "referenceDate": "2026-11-19"
   }
 }

@@ -47,9 +47,11 @@
   addHeader('AA Intelligence v5.0.1 ↑', '업무·코딩·과학·일반 추론을 같은 비중으로 합산한 Artificial Analysis 종합 지능 지수. 높을수록 좋음. v4.3.2와 직접 비교하지 않음.', 'number');
   addHeader('AA Cost / task v5.0.1 ↓', 'AA v5.0.1 평가의 작업당 USD 비용. 낮을수록 저렴. 기존 v4 평가와 구성·가중치가 다르며 구독 사용량과는 별개.', 'money');
   addHeader('FrontierCode 2.0 ↑', 'AA 모델 평가 환경에서 실제 저장소 구현·수정 결과를 루브릭으로 채점한 점수(%). 높을수록 좋음. 에이전트 평가의 FrontierCode 1.1과 구분.', 'percent');
+  addHeader('Agent FrontierCode-AA 2.0 ↑', 'Coding Agent Index v2.1의 실제 저장소 수정 평가(%). Codex 등 실행기에서 132개 과제를 3회 시도한 평균. 모델 평가의 FrontierCode 2.0·이전 Agent 1.1과 별도.', 'percent');
+  header.lastElementChild.dataset.basis = 'agent';
   for (let index = 10; index <= 17; index += 1) header.cells[index].dataset.basis = 'agent';
   header.cells[10].querySelector('.metric-tip').textContent = 'Coding Agent Index ↑';
-  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5: DeepSWE 1.1 / TB4.0 / SWE-Atlas-QnA. v2.0: FrontierCode 1.1 / TB4.0 / SWE-Atlas-QnA-AA의 동일 가중 평균. 평가판별 행·차트 분리, 직접 증감 비교 금지. AA Intelligence와 다름.';
+  header.cells[10].querySelector('.metric-tip').dataset.tip = 'AA 코딩 에이전트 종합 점수. v1.5: DeepSWE 1.1 / TB4.0 / SWE-Atlas-QnA. v2.0: FrontierCode 1.1 / TB4.0 / SWE-Atlas-QnA-AA. v2.1: FrontierCode-AA 2.0 / TB4.1 / SWE-Atlas-QnA-AA. 각 3개 구성 평가의 동일 가중 평균. 평가판별 행·차트 분리, 직접 증감 비교 금지. AA Intelligence와 다름.';
   header.cells[12].querySelector('.metric-tip').textContent = 'Agent Terminal-Bench ↑';
   header.cells[12].querySelector('.metric-tip').dataset.tip = '코딩 에이전트 환경의 Terminal-Bench 성공률(%). 버전은 평가 조건 열과 차트명에서 구분. AA 모델 평가의 Terminal 값과 다름.';
   header.cells[4].querySelector('.metric-tip').dataset.tip = '모델 사양, AA 모델 평가, 코딩 에이전트 평가 행을 구분. 서로 다른 평가 체계의 점수·비용을 혼합하지 않음.';
@@ -312,17 +314,18 @@
     textCell(row, column, value == null ? '—' : display);
     if (value != null) row.cells[column].dataset.sort = row.cells[column].dataset.chartValue = String(value);
   };
-  [data.verifiedAgents, data.verifiedAgentsV2].forEach(snapshot => snapshot.records.forEach(record => {
-    const v2 = snapshot.suite === 'Coding Agent Index v2.0';
+  [data.verifiedAgents, data.verifiedAgentsV2, data.verifiedAgentsV21].forEach(snapshot => snapshot.records.forEach(record => {
+    const v21 = snapshot.suite === 'Coding Agent Index v2.1';
+    const v2 = v21 || snapshot.suite === 'Coding Agent Index v2.0';
     const verifiedAt = record.verifiedAt || snapshot.verifiedAt;
-    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', v2 ? 'Agent v2.0' : 'Agent v1.5');
-    row.dataset.recordId = (v2 ? 'agent:v2.0:' : 'agent:v1.5:') + record.sourceId;
+    const row = makeRow(record.provider, record.model + ' (' + record.effort + ')', '코딩 에이전트 평가', v21 ? 'Agent v2.1' : v2 ? 'Agent v2.0' : 'Agent v1.5');
+    row.dataset.recordId = (v21 ? 'agent:v2.1:' : v2 ? 'agent:v2.0:' : 'agent:v1.5:') + record.sourceId;
     row.dataset.costStatus = record.costStatus || 'priced';
     textCell(row, 8, record.model.includes('+') ? '모델별 상이' : contextOf(record.model));
     if (record.model.includes('+')) row.cells[8].title = '서로 다른 모델을 조합한 평가. 단일 Context 수치로 합산·대체하지 않음.';
     textCell(row, 9, record.harness + ' ' + record.harnessVersion);
     row.cells[9].title = Object.entries(record.harnessVersions).map(([benchmark,version]) => benchmark + ': ' + version.min.version + (version.min.version === version.max.version ? '' : '–' + version.max.version)).join('\n');
-    [[10, 'index'], [v2 ? 41 : 11, v2 ? 'frontierCode' : 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
+    [[10, 'index'], [v21 ? 46 : v2 ? 41 : 11, v2 ? 'frontierCode' : 'deepSWE'], [12, 'terminalBench'], [13, 'sweAtlas']].forEach(([column, key]) => numberCell(row, column, record[key], record[key].toFixed(1)));
     numberCell(row, 14, record.totalTokens, (record.totalTokens / 1e6).toFixed(2) + 'M');
     numberCell(row, 15, record.timeSeconds / 60, (record.timeSeconds / 60).toFixed(1) + 'm');
     numberCell(row, 16, record.turns, record.turns.toFixed(1));
@@ -331,7 +334,7 @@
     textCell(row, 20, 'AA 공식 평가');
     const fallback = record.fallbackModels.length ? '대체 모델: ' + record.fallbackModels.join(', ') : '대체 모델 없음';
     textCell(row, 25, fallback + ' · 유지된 시도 ' + record.retainedAttempts + '회 · ' + (record.costUsd == null ? 'API 비용 미산출' : '실패를 포함한 평균 API 비용'));
-    textCell(row, conditionColumn, snapshot.suite + (v2 ? ' · FrontierCode 1.1 / TB 4.0 / SWE-Atlas-QnA-AA' : ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA') + ' · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
+    textCell(row, conditionColumn, snapshot.suite + (v21 ? ' · FrontierCode-AA 2.0 / TB 4.1 / SWE-Atlas-QnA-AA' : v2 ? ' · FrontierCode 1.1 / TB 4.0 / SWE-Atlas-QnA-AA' : ' · DeepSWE 1.1 / TB 4.0 / SWE-Atlas-QnA') + ' · 자료 확인 ' + verifiedAt + ' · 실행일 미명시 · ' + fallback);
     linkTo(row, snapshot.source, 'AA 평가 원문');
     linkTo(row, snapshot.methodology, '평가 방법');
     addFacts(row, record.model);
@@ -354,7 +357,8 @@
       let reason = '공개 원문에서 동일 조건의 수치를 확인하지 못함.';
       if (column >= 38 && column <= 40) reason = '동일 작업군·테스트·완료 기준의 실사용 측정 기록 없음. 다른 벤치마크 점수로 대신 계산하지 않음.';
       else if (column === 41) reason = 'Coding Agent Index v2.0의 FrontierCode 1.1 평가 대상에만 표시. DeepSWE 등 이전 평가의 수치로 환산하지 않음.';
-      else if (column === 11 && row.dataset.benchmark === 'Agent v2.0') reason = 'v2.0은 DeepSWE 대신 FrontierCode 1.1을 평가. 별도 FrontierCode 열에 기록.';
+      else if (column === 11 && ['Agent v2.0','Agent v2.1'].includes(row.dataset.benchmark)) reason = '이 판본은 DeepSWE 대신 FrontierCode를 평가. 해당 판본의 FrontierCode 열에 기록.';
+      else if (column === 46) reason = 'Coding Agent Index v2.1의 FrontierCode-AA 2.0 전용. 모델 평가 또는 이전 에이전트 평가로 대체하지 않음.';
       else if (column === 42) reason = '이 조사 스냅샷에서 동일 설정의 MMMU-Pro 값을 수집하지 않음. 원문 미공개를 의미하지 않으며 다른 평가로 대체하지 않음.';
       else if (column >= 43 && column <= 45 && row.dataset.benchmark !== data.verifiedModelsV5.suite) reason = '별도 AA v5.0.1 스냅샷에 포함된 추론 설정만 표시. 기존 평가판 수치로 대체하지 않음.';
       else if ((column === 28 || column === 33) && row.dataset.benchmark === data.verifiedModelsV5.suite) reason = '이 설정은 별도 AA v5.0.1 열에 기록.';
@@ -386,6 +390,7 @@
   table.dataset.agentRecords = String(data.agentRows.length);
   table.dataset.verifiedAgentRecords = String(data.verifiedAgents.records.length);
   table.dataset.verifiedAgentV2Records = String(data.verifiedAgentsV2.records.length);
+  table.dataset.verifiedAgentV21Records = String(data.verifiedAgentsV21.records.length);
   table.dataset.verifiedModelRecords = String(usedModelRecords.size);
   table.dataset.verifiedCursorRecords = String(data.verifiedCursor.records.length);
   table.dataset.offeringRecords = String(data.offerings.records.length);
@@ -401,6 +406,32 @@
       "claudeLifecycle": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
     },
     "models": [
+      {
+        "name": "GPT-6.2 Sol",
+        "id": "gpt-6.2-sol",
+        "provider": "OpenAI",
+        "tool": "codex",
+        "status": "현행",
+        "context": "1.05M",
+        "release": "2026-11-17",
+        "verifiedAt": "2026-11-19",
+        "source": "https://developers.openai.com/api/docs/models/gpt-6.2-sol",
+        "guide": "GPT_6_2_Astra_Sol_Model_Guide.html",
+        "note": "Codex 앱·CLI 및 ChatGPT Work 제공. Plus·Pro·Business·Enterprise·Edu의 계정·관리자 정책 적용. API low/medium/high/xhigh/max, none 미지원. Codex 기본 Context 500K. API 최대 출력 128K. 표준 입력·출력 단가 $2 / $10 (100만 토큰당)."
+      },
+      {
+        "name": "GPT-6.2 Astra",
+        "id": "gpt-6.2-astra",
+        "provider": "OpenAI",
+        "tool": "codex",
+        "status": "현행",
+        "context": "1.05M",
+        "release": "2026-11-17",
+        "verifiedAt": "2026-11-19",
+        "source": "https://developers.openai.com/api/docs/models/gpt-6.2-astra",
+        "guide": "GPT_6_2_Astra_Sol_Model_Guide.html",
+        "note": "Codex 앱·CLI 및 ChatGPT Work 제공. Plus·Pro·Business·Enterprise·Edu의 계정·관리자 정책 적용. API low/medium/high/xhigh/max, none 미지원. Codex 기본 Context 272K. API 최대 출력 128K. 표준 입력·출력 단가 $8 / $40 (100만 토큰당)."
+      },
       {
         "name": "GPT-6.1 Terra",
         "id": "gpt-6.1-terra",
@@ -3855,6 +3886,747 @@
         "retainedAttempts": 870,
         "fallbackModels": [],
         "verifiedAt": "2026-10-27"
+      }
+    ]
+  },
+  "verifiedAgentsV21": {
+    "source": "https://artificialanalysis.ai/agents/coding-agents",
+    "methodology": "https://artificialanalysis.ai/methodology/coding-agents-benchmarking/",
+    "suite": "Coding Agent Index v2.1",
+    "verifiedAt": "2026-11-19",
+    "benchmarkVersions": {
+      "frontierCode": "2.0",
+      "terminalBench": "4.1",
+      "sweAtlas": "QnA-AA"
+    },
+    "records": [
+      {
+        "sourceId": "7853ef55ffc046be0c351cb5ba7d0290",
+        "model": "GPT-6.2 Astra",
+        "effort": "Max",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 53.470227815792306,
+        "frontierCode": 41.6667929292929,
+        "terminalBench": 63.636363636363605,
+        "sweAtlas": 55.1075268817204,
+        "costUsd": 5.116919949371592,
+        "costStatus": "priced",
+        "timeSeconds": 1506.74742166287,
+        "totalTokens": 4665449.11941823,
+        "turns": 51.0223199739329,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "c4f606fc3bab9772d3e2ab6c95ebed5a",
+        "model": "GPT-6.2 Sol",
+        "effort": "High",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 47.455238405561,
+        "frontierCode": 38.2927272727273,
+        "terminalBench": 53.5353535353535,
+        "sweAtlas": 50.537634408602194,
+        "costUsd": 0.7638440246776945,
+        "costStatus": "priced",
+        "timeSeconds": 635.375702943413,
+        "totalTokens": 2960996.70475244,
+        "turns": 42.3476430976431,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "8178a0ab530e25e65f53d836ef248eae",
+        "model": "GPT-6.2 Sol",
+        "effort": "Low",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 37.1599956554795,
+        "frontierCode": 28.0977777777778,
+        "terminalBench": 40.9090909090909,
+        "sweAtlas": 42.4731182795699,
+        "costUsd": 0.32526370956583217,
+        "costStatus": "priced",
+        "timeSeconds": 431.7271802976,
+        "totalTokens": 1305458.7342531,
+        "turns": 33.6586293037906,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "1fece3eef716cd9668b972cced54606c",
+        "model": "GPT-6.1 Terra",
+        "effort": "Max",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0 / 0.163.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.163.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.163.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.163.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.163.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 48.6481600955794,
+        "frontierCode": 41.4071717171717,
+        "terminalBench": 50.5050505050505,
+        "sweAtlas": 54.0322580645161,
+        "costUsd": 1.5308471982459535,
+        "costStatus": "priced",
+        "timeSeconds": 1685.52923539155,
+        "totalTokens": 14350373.2568426,
+        "turns": 105.494243510373,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "5146f276cbceb4e9fdeb5834609f805b",
+        "model": "GPT-6.1 Sol",
+        "effort": "Max",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.154.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.154.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.154.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.154.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.154.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.154.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.154.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 52.159890300858,
+        "frontierCode": 42.4930303030303,
+        "terminalBench": 54.040404040404,
+        "sweAtlas": 59.9462365591398,
+        "costUsd": 1.5065869065928608,
+        "costStatus": "priced",
+        "timeSeconds": 1313.97312170088,
+        "totalTokens": 4325533.06883038,
+        "turns": 42.9780058651026,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "d2d75a8abf0ca8d8888f99cff7bee543",
+        "model": "GPT-6.2 Astra",
+        "effort": "xHigh",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 53.121247963506,
+        "frontierCode": 43.4790909090909,
+        "terminalBench": 62.121212121212096,
+        "sweAtlas": 53.7634408602151,
+        "costUsd": 3.1979110852488017,
+        "costStatus": "priced",
+        "timeSeconds": 992.350285163462,
+        "totalTokens": 3087610.85681956,
+        "turns": 44.9873465841208,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "97f24b3f300fe06034101d053f3a894b",
+        "model": "GPT-6 Astra",
+        "effort": "Max",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.153.4 / 0.151.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.153.4",
+              "dateReleased": "2026-09-04"
+            },
+            "max": {
+              "version": "0.153.4",
+              "dateReleased": "2026-09-04"
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.151.0",
+              "dateReleased": "2026-08-29"
+            },
+            "max": {
+              "version": "0.151.0",
+              "dateReleased": "2026-08-29"
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.153.4",
+              "dateReleased": "2026-09-04"
+            },
+            "max": {
+              "version": "0.153.4",
+              "dateReleased": "2026-09-04"
+            }
+          }
+        },
+        "index": 53.0999198979038,
+        "frontierCode": 42.5842171717172,
+        "terminalBench": 57.5757575757576,
+        "sweAtlas": 59.139784946236595,
+        "costUsd": 7.625489243747186,
+        "costStatus": "priced",
+        "timeSeconds": 1559.4343789508,
+        "totalTokens": 3474078.67649169,
+        "turns": 40.7989573150863,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "eae5a29e0ed56a9c2aa5b6e82dd082e2",
+        "model": "GPT-6.2 Astra",
+        "effort": "Medium",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 49.0562984685565,
+        "frontierCode": 39.870101010101,
+        "terminalBench": 53.5353535353535,
+        "sweAtlas": 53.7634408602151,
+        "costUsd": 1.202238571568918,
+        "costStatus": "priced",
+        "timeSeconds": 695.319823558162,
+        "totalTokens": 1017093.94328531,
+        "turns": 30.0951993048767,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "f60010d6306ed860deef16152e949af3",
+        "model": "GPT-6.2 Astra",
+        "effort": "High",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 52.2778597806017,
+        "frontierCode": 42.1626767676768,
+        "terminalBench": 60.1010101010101,
+        "sweAtlas": 54.5698924731183,
+        "costUsd": 2.371803913771108,
+        "costStatus": "priced",
+        "timeSeconds": 947.360237916802,
+        "totalTokens": 2262375.64772037,
+        "turns": 40.1943358314326,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "e7d93c34f5c806bec7608750fc56e91a",
+        "model": "GPT-6.2 Astra",
+        "effort": "Low",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 35.578306180080396,
+        "frontierCode": 26.505202020202002,
+        "terminalBench": 43.9393939393939,
+        "sweAtlas": 36.2903225806452,
+        "costUsd": 0.7041831624949644,
+        "costStatus": "priced",
+        "timeSeconds": 469.291166748127,
+        "totalTokens": 551427.540500635,
+        "turns": 23.9591615075486,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "2b66aa9f8afa482977259846d9b207ba",
+        "model": "GPT-6.2 Sol",
+        "effort": "xHigh",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 49.7854108287173,
+        "frontierCode": 40.4363888888889,
+        "terminalBench": 57.5757575757576,
+        "sweAtlas": 51.3440860215054,
+        "costUsd": 0.8980194131553201,
+        "costStatus": "priced",
+        "timeSeconds": 755.824669517758,
+        "totalTokens": 3261840.41567312,
+        "turns": 42.627375909634,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "eb55a750b7784b3f03c16efc3c39e1ff",
+        "model": "GPT-6.2 Sol",
+        "effort": "Max",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 48.6171442923862,
+        "frontierCode": 41.5340656565656,
+        "terminalBench": 58.0808080808081,
+        "sweAtlas": 46.2365591397849,
+        "costUsd": 1.2157296114476108,
+        "costStatus": "priced",
+        "timeSeconds": 1051.376479092,
+        "totalTokens": 4254921.74435613,
+        "turns": 45.1365808623873,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "2827f8a25558cdb94dfada79c70b0d8c",
+        "model": "GPT-6.2 Sol",
+        "effort": "Medium",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.166.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.166.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.166.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 45.3516511893125,
+        "frontierCode": 36.2911868686869,
+        "terminalBench": 49.494949494949495,
+        "sweAtlas": 50.2688172043011,
+        "costUsd": 0.5717863807280066,
+        "costStatus": "priced",
+        "timeSeconds": 505.937055827088,
+        "totalTokens": 2283352.00391897,
+        "turns": 40.359834908222,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
+      },
+      {
+        "sourceId": "44059b1749b7773326c3ee04acbfaba2",
+        "model": "GPT-6 Luna",
+        "effort": "Max",
+        "provider": "OpenAI",
+        "harness": "Codex",
+        "harnessVersion": "0.154.0",
+        "harnessVersions": {
+          "frontiercode-v2.0": {
+            "min": {
+              "version": "0.154.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.154.0",
+              "dateReleased": null
+            }
+          },
+          "swe-atlas-qna": {
+            "min": {
+              "version": "0.154.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.154.0",
+              "dateReleased": null
+            }
+          },
+          "terminal-bench-v4": {
+            "min": {
+              "version": "0.154.0",
+              "dateReleased": null
+            },
+            "max": {
+              "version": "0.154.0",
+              "dateReleased": null
+            }
+          }
+        },
+        "index": 25.893788421853,
+        "frontierCode": 24.088989898989897,
+        "terminalBench": 15.151515151515198,
+        "sweAtlas": 38.4408602150538,
+        "costUsd": 0.19217143913196935,
+        "costStatus": "priced",
+        "timeSeconds": 1411.62542041382,
+        "totalTokens": 10141373.6729934,
+        "turns": 88.8330618008037,
+        "retainedAttempts": 966,
+        "fallbackModels": [],
+        "verifiedAt": "2026-11-19"
       }
     ]
   },
@@ -12039,7 +12811,7 @@
     "source": "https://artificialanalysis.ai/models",
     "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
     "verifiedAt": "2026-11-10",
-    "updatedAt": "2026-11-10",
+    "updatedAt": "2026-11-19",
     "suite": "AA Intelligence Index v5.0.1",
     "benchmarkVersions": {
       "briefcase": "1.1",
@@ -12050,7 +12822,7 @@
     "underReview": [
       "scicode"
     ],
-    "scope": "Claude Fable 5.2 모델 평가 · Default Fallback · 기존 AA v4.3.2 수치와 분리",
+    "scope": "Fable 5.2는 2026-11-10 기록, GPT-6.2 Sol·Astra 및 직전 세대 비교는 2026-11-19 확인. AA v4.3.2와 별도.",
     "records": [
       {
         "slug": "claude-fable-5-2",
@@ -12301,6 +13073,1106 @@
         "parameters": null,
         "activeParameters": null,
         "isOpenWeights": false
+      },
+      {
+        "slug": "gpt-6-astra",
+        "sourceId": "2f339a97-9a0d-499a-9cb5-e0db665bfa25",
+        "source": "https://artificialanalysis.ai/models/gpt-6-astra",
+        "model": "GPT-6 Astra",
+        "name": "GPT-6 Astra (Max)",
+        "effort": "max",
+        "provider": "OpenAI",
+        "release": "2026-09-03",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 56.8538559596797,
+        "cost": 6.244666943602518,
+        "timePerTask": 1241.0173704440235,
+        "outputTokensPerTask": {
+          "reasoning": 35759.69683488444,
+          "answer": 16213.502141553043,
+          "output": 51973.19897643748
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1568.82,
+        "automation": 0.6849174806688876,
+        "terminal": 0.590909090909091,
+        "scicode": 0.564814814814815,
+        "lcr": 0.806666666666667,
+        "mmmuPro": 0.86878612716763,
+        "frontierCode20": 0.42374797979798,
+        "omniscience": 42.43333333333333,
+        "omniscienceAccuracy": 0.6156666666666667,
+        "hallucinationRate": 0.4978317432784042,
+        "gdpPdf": 0.31,
+        "hleDiamond": 0.638,
+        "critptHard": 0.705,
+        "terminalScience": 0.633333333333333,
+        "tokenPricing": {
+          "input": 10,
+          "output": 50,
+          "cachedInput": 1
+        }
+      },
+      {
+        "slug": "gpt-6-astra-xhigh",
+        "sourceId": "1f541ef3-913f-4eb2-9d07-0e93c7a9a5e3",
+        "source": "https://artificialanalysis.ai/models/gpt-6-astra-xhigh",
+        "model": "GPT-6 Astra",
+        "name": "GPT-6 Astra (Xhigh)",
+        "effort": "xhigh",
+        "provider": "OpenAI",
+        "release": "2026-09-03",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 55.3057468569681,
+        "cost": 3.6589264906126227,
+        "timePerTask": 609.4129724339082,
+        "outputTokensPerTask": {
+          "reasoning": 14692.868640794215,
+          "answer": 12030.88995460506,
+          "output": 26723.758595399275
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1543.65,
+        "automation": 0.6717778020215392,
+        "terminal": 0.595959595959596,
+        "scicode": 0.556712962962963,
+        "lcr": 0.8,
+        "mmmuPro": 0.86242774566474,
+        "frontierCode20": 0.414029545454545,
+        "omniscience": 43.666666666666664,
+        "omniscienceAccuracy": 0.6103333333333333,
+        "hallucinationRate": 0.44568006843455943,
+        "gdpPdf": 0.322,
+        "hleDiamond": 0.615,
+        "critptHard": 0.71,
+        "terminalScience": 0.547619047619048,
+        "tokenPricing": {
+          "input": 10,
+          "output": 50,
+          "cachedInput": 1
+        }
+      },
+      {
+        "slug": "gpt-6-astra-high",
+        "sourceId": "e05a4828-0536-4876-870d-a235023f992b",
+        "source": "https://artificialanalysis.ai/models/gpt-6-astra-high",
+        "model": "GPT-6 Astra",
+        "name": "GPT-6 Astra (High)",
+        "effort": "high",
+        "provider": "OpenAI",
+        "release": "2026-09-03",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 54.849838322506,
+        "cost": 3.2385719685518306,
+        "timePerTask": 523.3551818777271,
+        "outputTokensPerTask": {
+          "reasoning": 12091.51990835846,
+          "answer": 11041.949728129557,
+          "output": 23133.469636488015
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1502.98,
+        "automation": 0.666122174975011,
+        "terminal": 0.54040404040404,
+        "scicode": 0.554398148148148,
+        "lcr": 0.8,
+        "mmmuPro": 0.864161849710983,
+        "frontierCode20": 0.401351515151515,
+        "omniscience": 44.56666666666667,
+        "omniscienceAccuracy": 0.611,
+        "hallucinationRate": 0.4250214224507284,
+        "gdpPdf": 0.31,
+        "hleDiamond": 0.593,
+        "critptHard": 0.715,
+        "terminalScience": 0.595238095238095,
+        "tokenPricing": {
+          "input": 10,
+          "output": 50,
+          "cachedInput": 1
+        }
+      },
+      {
+        "slug": "gpt-6-1-sol",
+        "sourceId": "b25ac058-1e33-4c31-bbc9-a20c3ad0717a",
+        "source": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+        "model": "GPT-6.1 Sol",
+        "name": "GPT-6.1 Sol (Max)",
+        "effort": "max",
+        "provider": "OpenAI",
+        "release": "2026-09-29",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 54.6087338138148,
+        "cost": 1.2720632679446995,
+        "timePerTask": 1412.2553915789185,
+        "outputTokensPerTask": {
+          "reasoning": 49212.93730141593,
+          "answer": 18610.75443636227,
+          "output": 67823.6917377782
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1557.04,
+        "automation": 0.6486844882398171,
+        "terminal": 0.560606060606061,
+        "scicode": 0.541666666666667,
+        "lcr": 0.83,
+        "mmmuPro": 0.859537572254335,
+        "frontierCode20": 0.406262878787879,
+        "omniscience": 42.03333333333333,
+        "omniscienceAccuracy": 0.6183333333333333,
+        "hallucinationRate": 0.5187772925764192,
+        "gdpPdf": 0.31,
+        "hleDiamond": 0.588,
+        "critptHard": 0.695,
+        "terminalScience": 0.580952380952381,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-1-sol-xhigh",
+        "sourceId": "092a3b0e-c5c8-45dc-bf1b-53673c8ff352",
+        "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-xhigh",
+        "model": "GPT-6.1 Sol",
+        "name": "GPT-6.1 Sol (Xhigh)",
+        "effort": "xhigh",
+        "provider": "OpenAI",
+        "release": "2026-09-29",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 52.458219253291,
+        "cost": 0.7639949356156494,
+        "timePerTask": 579.2201828463576,
+        "outputTokensPerTask": {
+          "reasoning": 15526.658464337335,
+          "answer": 14714.525483136498,
+          "output": 30241.183947473834
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1504.23,
+        "automation": 0.6657372141364344,
+        "terminal": 0.54040404040404,
+        "scicode": 0.556712962962963,
+        "lcr": 0.796666666666667,
+        "mmmuPro": 0.850867052023121,
+        "frontierCode20": 0.385190909090909,
+        "omniscience": 42.36666666666667,
+        "omniscienceAccuracy": 0.6106666666666667,
+        "hallucinationRate": 0.4803082191780822,
+        "gdpPdf": 0.318,
+        "hleDiamond": 0.558,
+        "critptHard": 0.695,
+        "terminalScience": 0.504761904761905,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-astra-medium",
+        "sourceId": "e97a4ef5-e817-480e-9595-12f81dc4974f",
+        "source": "https://artificialanalysis.ai/models/gpt-6-astra-medium",
+        "model": "GPT-6 Astra",
+        "name": "GPT-6 Astra (Medium)",
+        "effort": "medium",
+        "provider": "OpenAI",
+        "release": "2026-09-03",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 51.5548393864113,
+        "cost": 2.732438933013427,
+        "timePerTask": 386.4277925605977,
+        "outputTokensPerTask": {
+          "reasoning": 8580.704057163004,
+          "answer": 9470.920369968386,
+          "output": 18051.62442713139
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1462.33,
+        "automation": 0.6459498850561176,
+        "terminal": 0.494949494949495,
+        "scicode": 0.541666666666667,
+        "lcr": 0.796666666666667,
+        "mmmuPro": 0.850867052023121,
+        "frontierCode20": 0.365771717171717,
+        "omniscience": 41.4,
+        "omniscienceAccuracy": 0.5963333333333334,
+        "hallucinationRate": 0.4516928158546656,
+        "gdpPdf": 0.304,
+        "hleDiamond": 0.527,
+        "critptHard": 0.72,
+        "terminalScience": 0.533333333333333,
+        "tokenPricing": {
+          "input": 10,
+          "output": 50,
+          "cachedInput": 1
+        }
+      },
+      {
+        "slug": "gpt-6-1-sol-high",
+        "sourceId": "3b84fee3-b70a-41bc-819e-5fbdef9a0042",
+        "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-high",
+        "model": "GPT-6.1 Sol",
+        "name": "GPT-6.1 Sol (High)",
+        "effort": "high",
+        "provider": "OpenAI",
+        "release": "2026-09-29",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 50.3291231936536,
+        "cost": 0.5909853515780825,
+        "timePerTask": 442.70313403712396,
+        "outputTokensPerTask": {
+          "reasoning": 10135.343936248304,
+          "answer": 12470.855135528855,
+          "output": 22606.19907177716
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1468.58,
+        "automation": 0.6449523732184466,
+        "terminal": 0.515151515151515,
+        "scicode": 0.55787037037037,
+        "lcr": 0.823333333333333,
+        "mmmuPro": 0.849132947976879,
+        "frontierCode20": 0.36737297979798,
+        "omniscience": 41,
+        "omniscienceAccuracy": 0.604,
+        "hallucinationRate": 0.4898989898989899,
+        "gdpPdf": 0.32,
+        "hleDiamond": 0.519,
+        "critptHard": 0.685,
+        "terminalScience": 0.461904761904762,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-1-sol-medium",
+        "sourceId": "a2e51d62-ea4e-4f15-8be0-be9dc1fb489d",
+        "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-medium",
+        "model": "GPT-6.1 Sol",
+        "name": "GPT-6.1 Sol (Medium)",
+        "effort": "medium",
+        "provider": "OpenAI",
+        "release": "2026-09-29",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 46.3468797067114,
+        "cost": 0.3593898648025732,
+        "timePerTask": 253.3124023408256,
+        "outputTokensPerTask": {
+          "reasoning": 4804.5871643877435,
+          "answer": 8713.748770791233,
+          "output": 13518.335935178977
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1360.59,
+        "automation": 0.6257350970435687,
+        "terminal": 0.47979797979798,
+        "scicode": 0.532407407407407,
+        "lcr": 0.833333333333333,
+        "mmmuPro": 0.839306358381503,
+        "frontierCode20": 0.333875757575758,
+        "omniscience": 40.166666666666664,
+        "omniscienceAccuracy": 0.596,
+        "hallucinationRate": 0.48102310231023104,
+        "gdpPdf": 0.3,
+        "hleDiamond": 0.46,
+        "critptHard": 0.67,
+        "terminalScience": 0.371428571428571,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-astra-low",
+        "sourceId": "a3f8100d-e38f-408b-b0fa-0085dae18dc1",
+        "source": "https://artificialanalysis.ai/models/gpt-6-astra-low",
+        "model": "GPT-6 Astra",
+        "name": "GPT-6 Astra (Low)",
+        "effort": "low",
+        "provider": "OpenAI",
+        "release": "2026-09-03",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 43.3349823228524,
+        "cost": 1.4237229635663595,
+        "timePerTask": 202.46320604578813,
+        "outputTokensPerTask": {
+          "reasoning": 3304.4374595689696,
+          "answer": 5821.371540046026,
+          "output": 9125.808999614996
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1256.43,
+        "automation": 0.5909672610445402,
+        "terminal": 0.419191919191919,
+        "scicode": 0.540509259259259,
+        "lcr": 0.8,
+        "mmmuPro": 0.846242774566474,
+        "frontierCode20": 0.262162878787879,
+        "omniscience": 40.3,
+        "omniscienceAccuracy": 0.586,
+        "hallucinationRate": 0.4420289855072464,
+        "gdpPdf": 0.304,
+        "hleDiamond": 0.451,
+        "critptHard": 0.63,
+        "terminalScience": 0.371428571428571,
+        "tokenPricing": {
+          "input": 10,
+          "output": 50,
+          "cachedInput": 1
+        }
+      },
+      {
+        "slug": "gpt-6-1-sol-low",
+        "sourceId": "e76e0fe5-93ca-4272-9359-2eb1740467d1",
+        "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-low",
+        "model": "GPT-6.1 Sol",
+        "name": "GPT-6.1 Sol (Low)",
+        "effort": "low",
+        "provider": "OpenAI",
+        "release": "2026-09-29",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 34.8029244314559,
+        "cost": 0.16147357831822573,
+        "timePerTask": 112.83937460799866,
+        "outputTokensPerTask": {
+          "reasoning": 1585.0911146155215,
+          "answer": 4252.903561642771,
+          "output": 5837.994676258292
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1114.73,
+        "automation": 0.5257088964747538,
+        "terminal": 0.308080808080808,
+        "scicode": 0.532407407407407,
+        "lcr": 0.84,
+        "mmmuPro": 0.83121387283237,
+        "frontierCode20": 0.201560858585859,
+        "omniscience": 38,
+        "omniscienceAccuracy": 0.5863333333333334,
+        "hallucinationRate": 0.49879129734085415,
+        "gdpPdf": 0.27,
+        "hleDiamond": 0.382,
+        "critptHard": 0.625,
+        "terminalScience": 0.10952380952381,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-2-sol",
+        "sourceId": "a1a84b18-e8c9-48fb-8e04-6003bd9f6ff4",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-sol",
+        "model": "GPT-6.2 Sol",
+        "name": "GPT-6.2 Sol (Max)",
+        "effort": "max",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 57.2576209885477,
+        "cost": 1.014379970300768,
+        "timePerTask": 512.4320472324612,
+        "outputTokensPerTask": {
+          "reasoning": 22799.616600251877,
+          "answer": 17560.810817991904,
+          "output": 40360.42741824378
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1612.06,
+        "automation": 0.7127833267998683,
+        "terminal": 0.601010101010101,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": null,
+        "frontierCode20": 0.443797727272727,
+        "omniscience": 40.36666666666667,
+        "omniscienceAccuracy": 0.6163333333333333,
+        "hallucinationRate": 0.5543006081668115,
+        "gdpPdf": 0.3,
+        "hleDiamond": 0.64,
+        "critptHard": 0.625,
+        "terminalScience": 0.676190476190476,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-2-sol-xhigh",
+        "sourceId": "27c326a6-ec9b-415f-a29e-b1f4927484dc",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-sol-xhigh",
+        "model": "GPT-6.2 Sol",
+        "name": "GPT-6.2 Sol (Xhigh)",
+        "effort": "xhigh",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 55.7351067246438,
+        "cost": 0.6479676730055945,
+        "timePerTask": 320.5317982938617,
+        "outputTokensPerTask": {
+          "reasoning": 11054.92704813459,
+          "answer": 13267.62959975846,
+          "output": 24322.55664789305
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1580.04,
+        "automation": 0.705524736092306,
+        "terminal": 0.560606060606061,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": null,
+        "frontierCode20": 0.427523484848485,
+        "omniscience": 38.6,
+        "omniscienceAccuracy": 0.607,
+        "hallucinationRate": 0.5623409669211196,
+        "gdpPdf": 0.284,
+        "hleDiamond": 0.618,
+        "critptHard": 0.625,
+        "terminalScience": 0.666666666666667,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-2-sol-high",
+        "sourceId": "cd85e412-c43f-4535-bf8e-5ba113d97ca3",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-sol-high",
+        "model": "GPT-6.2 Sol",
+        "name": "GPT-6.2 Sol (High)",
+        "effort": "high",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 54.8898658241942,
+        "cost": 0.563644652221075,
+        "timePerTask": 274.5760802555268,
+        "outputTokensPerTask": {
+          "reasoning": 8116.332669594714,
+          "answer": 12044.149306661755,
+          "output": 20160.48197625647
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1540.79,
+        "automation": 0.6985330673395808,
+        "terminal": 0.585858585858586,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": null,
+        "frontierCode20": 0.40224898989899,
+        "omniscience": 38.3,
+        "omniscienceAccuracy": 0.6143333333333333,
+        "hallucinationRate": 0.5998271391529818,
+        "gdpPdf": 0.288,
+        "hleDiamond": 0.583,
+        "critptHard": 0.615,
+        "terminalScience": 0.676190476190476,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-2-sol-medium",
+        "sourceId": "82b37079-56d9-4451-8a1a-22b0a921f4f8",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-sol-medium",
+        "model": "GPT-6.2 Sol",
+        "name": "GPT-6.2 Sol (Medium)",
+        "effort": "medium",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 52.6777305876603,
+        "cost": 0.40605590960076604,
+        "timePerTask": 194.6647109651335,
+        "outputTokensPerTask": {
+          "reasoning": 4402.224694487704,
+          "answer": 9248.711332357292,
+          "output": 13650.936026844996
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1494.92,
+        "automation": 0.7028139746749251,
+        "terminal": 0.560606060606061,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": null,
+        "frontierCode20": 0.413984848484848,
+        "omniscience": 34.2,
+        "omniscienceAccuracy": 0.5916666666666667,
+        "hallucinationRate": 0.6114285714285714,
+        "gdpPdf": 0.292,
+        "hleDiamond": 0.507,
+        "critptHard": 0.64,
+        "terminalScience": 0.604761904761905,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-2-sol-low",
+        "sourceId": "a77965fb-2117-4e2c-bd8b-80b5579a7e7e",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-sol-low",
+        "model": "GPT-6.2 Sol",
+        "name": "GPT-6.2 Sol (Low)",
+        "effort": "low",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 40.552508943285,
+        "cost": 0.18358471526572703,
+        "timePerTask": 91.59819434993022,
+        "outputTokensPerTask": {
+          "reasoning": 1309.7432538072276,
+          "answer": 4669.977860041405,
+          "output": 5979.721113848633
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1229.56,
+        "automation": 0.6323411367140339,
+        "terminal": 0.378787878787879,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": null,
+        "frontierCode20": 0.313682323232323,
+        "omniscience": 24.766666666666666,
+        "omniscienceAccuracy": 0.5463333333333333,
+        "hallucinationRate": 0.6583394562821455,
+        "gdpPdf": 0.286,
+        "hleDiamond": 0.345,
+        "critptHard": 0.58,
+        "terminalScience": 0.371428571428571,
+        "tokenPricing": {
+          "input": 2,
+          "output": 10,
+          "cachedInput": 0.1
+        }
+      },
+      {
+        "slug": "gpt-6-2-astra",
+        "sourceId": "75c1b0b8-9db3-4c7e-95be-d74e59defee4",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-astra",
+        "model": "GPT-6.2 Astra",
+        "name": "GPT-6.2 Astra (Max)",
+        "effort": "max",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 62.1387990593969,
+        "cost": 3.9979061566801852,
+        "timePerTask": 820.5414400729205,
+        "outputTokensPerTask": {
+          "reasoning": 26149.701445193998,
+          "answer": 14879.779105970738,
+          "output": 41029.480551164736
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1643.24,
+        "automation": 0.7724838304241671,
+        "terminal": 0.641414141414141,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": 0.894797687861272,
+        "frontierCode20": 0.453801767676768,
+        "omniscience": 50,
+        "omniscienceAccuracy": 0.6856666666666666,
+        "hallucinationRate": 0.5906680805938495,
+        "gdpPdf": 0.298,
+        "hleDiamond": 0.722,
+        "critptHard": 0.715,
+        "terminalScience": 0.780952380952381,
+        "tokenPricing": {
+          "input": 8,
+          "output": 40,
+          "cachedInput": 0.4
+        }
+      },
+      {
+        "slug": "gpt-6-2-astra-xhigh",
+        "sourceId": "592572d5-f789-4106-abbc-fadf2206d10b",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-astra-xhigh",
+        "model": "GPT-6.2 Astra",
+        "name": "GPT-6.2 Astra (Xhigh)",
+        "effort": "xhigh",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 61.5602325371388,
+        "cost": 2.5211433764120375,
+        "timePerTask": 444.16069579301836,
+        "outputTokensPerTask": {
+          "reasoning": 11094.960239714394,
+          "answer": 11142.644629656188,
+          "output": 22237.60486937058
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1594.37,
+        "automation": 0.7605659882991926,
+        "terminal": 0.641414141414141,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": 0.879190751445087,
+        "frontierCode20": 0.489513383838384,
+        "omniscience": 48.266666666666666,
+        "omniscienceAccuracy": 0.672,
+        "hallucinationRate": 0.5772357723577236,
+        "gdpPdf": 0.28,
+        "hleDiamond": 0.673,
+        "critptHard": 0.705,
+        "terminalScience": 0.785714285714286,
+        "tokenPricing": {
+          "input": 8,
+          "output": 40,
+          "cachedInput": 0.4
+        }
+      },
+      {
+        "slug": "gpt-6-2-astra-high",
+        "sourceId": "fe959a7a-944c-4ba8-8e41-349712599b39",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-astra-high",
+        "model": "GPT-6.2 Astra",
+        "name": "GPT-6.2 Astra (High)",
+        "effort": "high",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 60.0882280338247,
+        "cost": 2.073874957362806,
+        "timePerTask": 356.1001551371803,
+        "outputTokensPerTask": {
+          "reasoning": 7931.327122096396,
+          "answer": 9896.574418014407,
+          "output": 17827.901540110804
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1570.41,
+        "automation": 0.7601806664137661,
+        "terminal": 0.601010101010101,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": 0.876878612716763,
+        "frontierCode20": 0.471319444444444,
+        "omniscience": 46.766666666666666,
+        "omniscienceAccuracy": 0.6633333333333333,
+        "hallucinationRate": 0.5811881188118811,
+        "gdpPdf": 0.286,
+        "hleDiamond": 0.659,
+        "critptHard": 0.715,
+        "terminalScience": 0.752380952380952,
+        "tokenPricing": {
+          "input": 8,
+          "output": 40,
+          "cachedInput": 0.4
+        }
+      },
+      {
+        "slug": "gpt-6-2-astra-medium",
+        "sourceId": "8cec011f-c959-4726-8668-2ee2409a6bca",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-astra-medium",
+        "model": "GPT-6.2 Astra",
+        "name": "GPT-6.2 Astra (Medium)",
+        "effort": "medium",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 56.9986252138657,
+        "cost": 1.6176877362867854,
+        "timePerTask": 269.8419750975006,
+        "outputTokensPerTask": {
+          "reasoning": 5547.377960291535,
+          "answer": 7617.180974919373,
+          "output": 13164.558935210907
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1408.2,
+        "automation": 0.7283488043087559,
+        "terminal": 0.585858585858586,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": 0.861271676300578,
+        "frontierCode20": 0.46559797979798,
+        "omniscience": 44.766666666666666,
+        "omniscienceAccuracy": 0.6416666666666667,
+        "hallucinationRate": 0.5413953488372093,
+        "gdpPdf": 0.284,
+        "hleDiamond": 0.56,
+        "critptHard": 0.675,
+        "terminalScience": 0.747619047619048,
+        "tokenPricing": {
+          "input": 8,
+          "output": 40,
+          "cachedInput": 0.4
+        }
+      },
+      {
+        "slug": "gpt-6-2-astra-low",
+        "sourceId": "cc93ecfd-845e-455d-9642-6799d7133b7e",
+        "source": "https://artificialanalysis.ai/models/gpt-6-2-astra-low",
+        "model": "GPT-6.2 Astra",
+        "name": "GPT-6.2 Astra (Low)",
+        "effort": "low",
+        "provider": "OpenAI",
+        "release": "2026-11-17",
+        "contextTokens": 1000000,
+        "isOpenWeights": false,
+        "parameters": null,
+        "activeParameters": null,
+        "version": "v5.0.1",
+        "verifiedAt": "2026-11-19",
+        "estimated": false,
+        "index": 45.6504174923967,
+        "cost": 0.661705400010306,
+        "timePerTask": 108.11759249219969,
+        "outputTokensPerTask": {
+          "reasoning": 1475.83758230567,
+          "answer": 3740.5353652818258,
+          "output": 5216.372947587495
+        },
+        "evaluationSlugs": [
+          "aa-briefcase",
+          "automationbench-aa",
+          "terminalbench-4-0",
+          "frontiercode-2-0",
+          "omniscience",
+          "gdp-pdf",
+          "hle-diamond",
+          "critpt-v2-hard",
+          "terminal-bench-science"
+        ],
+        "briefcase": 1038.71,
+        "automation": 0.6857271977314532,
+        "terminal": 0.51010101010101,
+        "scicode": null,
+        "lcr": null,
+        "mmmuPro": 0.850867052023121,
+        "frontierCode20": 0.326629292929293,
+        "omniscience": 38.666666666666664,
+        "omniscienceAccuracy": 0.6063333333333333,
+        "hallucinationRate": 0.5580016934801016,
+        "gdpPdf": 0.28,
+        "hleDiamond": 0.477,
+        "critptHard": 0.61,
+        "terminalScience": 0.509523809523809,
+        "tokenPricing": {
+          "input": 8,
+          "output": 40,
+          "cachedInput": 0.4
+        }
       }
     ]
   },
@@ -12998,5 +14870,5 @@
     ]
   },
   "developerRows": [],
-  "updatedAt": "2026-11-10"
+  "updatedAt": "2026-11-19"
 });

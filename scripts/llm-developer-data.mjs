@@ -1,13 +1,14 @@
 // Measurements are independent of AA model/agent scores and consumer-plan capacity.
 export function validateAgentSnapshot(snapshot) {
-  const v2 = snapshot.suite === 'Coding Agent Index v2.0';
+  const v21 = snapshot.suite === 'Coding Agent Index v2.1';
+  const v2 = v21 || snapshot.suite === 'Coding Agent Index v2.0';
   const component = v2 ? 'frontierCode' : 'deepSWE';
-  const componentSlug = v2 ? 'frontiercode-v1.1-main' : 'deep-swe-v1.1';
+  const componentSlug = v21 ? 'frontiercode-v2.0' : v2 ? 'frontiercode-v1.1-main' : 'deep-swe-v1.1';
   if (snapshot.source !== 'https://artificialanalysis.ai/agents/coding-agents'
-      || !['Coding Agent Index v1.5', 'Coding Agent Index v2.0'].includes(snapshot.suite)
+      || !['Coding Agent Index v1.5', 'Coding Agent Index v2.0', 'Coding Agent Index v2.1'].includes(snapshot.suite)
       || !/^\d{4}-\d{2}-\d{2}$/.test(snapshot.verifiedAt)
-      || snapshot.benchmarkVersions?.[component] !== '1.1'
-      || snapshot.benchmarkVersions?.terminalBench !== '4.0'
+      || snapshot.benchmarkVersions?.[component] !== (v21 ? '2.0' : '1.1')
+      || snapshot.benchmarkVersions?.terminalBench !== (v21 ? '4.1' : '4.0')
       || snapshot.benchmarkVersions?.sweAtlas !== (v2 ? 'QnA-AA' : 'QnA')
       || !Array.isArray(snapshot.records)) throw new Error('Unverified coding-agent snapshot');
   const ids = new Set();

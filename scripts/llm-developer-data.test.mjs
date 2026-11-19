@@ -125,6 +125,26 @@ test('Fable 5.2 keeps five v5.0.1 settings separate from legacy AA and matches C
   assert.throws(() => validateModelSnapshot({...latest, records:[{...rows[0], version:'v4.3.2'}]}));
 });
 
+test('GPT-6.2 keeps both model families, first-party access and separate v2.1 agent components', async () => {
+  const read = async name => JSON.parse(await fs.readFile(new URL('../content/'+name, import.meta.url), 'utf8'));
+  const models = await read('llm-model-benchmarks-v5.json');
+  const agents = await read('llm-agent-benchmarks-v2-1.json');
+  const availability = await read('llm-model-availability.json');
+  validateModelSnapshot(models);
+  validateAgentSnapshot(agents);
+  for (const name of ['GPT-6.2 Sol','GPT-6.2 Astra']) {
+    const rows = models.records.filter(row => row.model === name);
+    assert.deepEqual(rows.map(row => row.effort).sort(), ['high','low','max','medium','xhigh']);
+    assert(availability.models.some(model => model.name === name && model.tool === 'codex' && model.guide === 'GPT_6_2_Astra_Sol_Model_Guide.html'));
+    const native = agents.records.filter(row => row.model === name);
+    assert.equal(native.length, 5);
+    assert(native.every(row => row.verifiedAt === '2026-11-19' && row.harness === 'Codex' && row.harnessVersions['frontiercode-v2.0']));
+  }
+  assert.throws(() => validateAgentSnapshot({...agents, suite:'Coding Agent Index v2.0'}));
+  assert.throws(() => validateAgentSnapshot({...agents, benchmarkVersions:{...agents.benchmarkVersions, terminalBench:'4.0'}}));
+  assert.throws(() => validateAgentSnapshot({...agents, records:[{...agents.records[0], index:99}]}));
+});
+
 test('Cursor values keep their own evaluation/version and source label', async () => {
   const input = JSON.parse(await fs.readFile(new URL('../content/llm-cursor-benchmarks.json', import.meta.url), 'utf8'));
   validateCursorSnapshot(input);

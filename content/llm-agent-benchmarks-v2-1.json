@@ -1,0 +1,741 @@
+{
+  "source": "https://artificialanalysis.ai/agents/coding-agents",
+  "methodology": "https://artificialanalysis.ai/methodology/coding-agents-benchmarking/",
+  "suite": "Coding Agent Index v2.1",
+  "verifiedAt": "2026-11-19",
+  "benchmarkVersions": {
+    "frontierCode": "2.0",
+    "terminalBench": "4.1",
+    "sweAtlas": "QnA-AA"
+  },
+  "records": [
+    {
+      "sourceId": "7853ef55ffc046be0c351cb5ba7d0290",
+      "model": "GPT-6.2 Astra",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 53.470227815792306,
+      "frontierCode": 41.6667929292929,
+      "terminalBench": 63.636363636363605,
+      "sweAtlas": 55.1075268817204,
+      "costUsd": 5.116919949371592,
+      "costStatus": "priced",
+      "timeSeconds": 1506.74742166287,
+      "totalTokens": 4665449.11941823,
+      "turns": 51.0223199739329,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "c4f606fc3bab9772d3e2ab6c95ebed5a",
+      "model": "GPT-6.2 Sol",
+      "effort": "High",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 47.455238405561,
+      "frontierCode": 38.2927272727273,
+      "terminalBench": 53.5353535353535,
+      "sweAtlas": 50.537634408602194,
+      "costUsd": 0.7638440246776945,
+      "costStatus": "priced",
+      "timeSeconds": 635.375702943413,
+      "totalTokens": 2960996.70475244,
+      "turns": 42.3476430976431,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "8178a0ab530e25e65f53d836ef248eae",
+      "model": "GPT-6.2 Sol",
+      "effort": "Low",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 37.1599956554795,
+      "frontierCode": 28.0977777777778,
+      "terminalBench": 40.9090909090909,
+      "sweAtlas": 42.4731182795699,
+      "costUsd": 0.32526370956583217,
+      "costStatus": "priced",
+      "timeSeconds": 431.7271802976,
+      "totalTokens": 1305458.7342531,
+      "turns": 33.6586293037906,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "1fece3eef716cd9668b972cced54606c",
+      "model": "GPT-6.1 Terra",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0 / 0.163.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.163.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.163.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 48.6481600955794,
+      "frontierCode": 41.4071717171717,
+      "terminalBench": 50.5050505050505,
+      "sweAtlas": 54.0322580645161,
+      "costUsd": 1.5308471982459535,
+      "costStatus": "priced",
+      "timeSeconds": 1685.52923539155,
+      "totalTokens": 14350373.2568426,
+      "turns": 105.494243510373,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "5146f276cbceb4e9fdeb5834609f805b",
+      "model": "GPT-6.1 Sol",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 52.159890300858,
+      "frontierCode": 42.4930303030303,
+      "terminalBench": 54.040404040404,
+      "sweAtlas": 59.9462365591398,
+      "costUsd": 1.5065869065928608,
+      "costStatus": "priced",
+      "timeSeconds": 1313.97312170088,
+      "totalTokens": 4325533.06883038,
+      "turns": 42.9780058651026,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "d2d75a8abf0ca8d8888f99cff7bee543",
+      "model": "GPT-6.2 Astra",
+      "effort": "xHigh",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 53.121247963506,
+      "frontierCode": 43.4790909090909,
+      "terminalBench": 62.121212121212096,
+      "sweAtlas": 53.7634408602151,
+      "costUsd": 3.1979110852488017,
+      "costStatus": "priced",
+      "timeSeconds": 992.350285163462,
+      "totalTokens": 3087610.85681956,
+      "turns": 44.9873465841208,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "97f24b3f300fe06034101d053f3a894b",
+      "model": "GPT-6 Astra",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.153.4 / 0.151.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.151.0",
+            "dateReleased": "2026-08-29"
+          },
+          "max": {
+            "version": "0.151.0",
+            "dateReleased": "2026-08-29"
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          },
+          "max": {
+            "version": "0.153.4",
+            "dateReleased": "2026-09-04"
+          }
+        }
+      },
+      "index": 53.0999198979038,
+      "frontierCode": 42.5842171717172,
+      "terminalBench": 57.5757575757576,
+      "sweAtlas": 59.139784946236595,
+      "costUsd": 7.625489243747186,
+      "costStatus": "priced",
+      "timeSeconds": 1559.4343789508,
+      "totalTokens": 3474078.67649169,
+      "turns": 40.7989573150863,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "eae5a29e0ed56a9c2aa5b6e82dd082e2",
+      "model": "GPT-6.2 Astra",
+      "effort": "Medium",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 49.0562984685565,
+      "frontierCode": 39.870101010101,
+      "terminalBench": 53.5353535353535,
+      "sweAtlas": 53.7634408602151,
+      "costUsd": 1.202238571568918,
+      "costStatus": "priced",
+      "timeSeconds": 695.319823558162,
+      "totalTokens": 1017093.94328531,
+      "turns": 30.0951993048767,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "f60010d6306ed860deef16152e949af3",
+      "model": "GPT-6.2 Astra",
+      "effort": "High",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 52.2778597806017,
+      "frontierCode": 42.1626767676768,
+      "terminalBench": 60.1010101010101,
+      "sweAtlas": 54.5698924731183,
+      "costUsd": 2.371803913771108,
+      "costStatus": "priced",
+      "timeSeconds": 947.360237916802,
+      "totalTokens": 2262375.64772037,
+      "turns": 40.1943358314326,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "e7d93c34f5c806bec7608750fc56e91a",
+      "model": "GPT-6.2 Astra",
+      "effort": "Low",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 35.578306180080396,
+      "frontierCode": 26.505202020202002,
+      "terminalBench": 43.9393939393939,
+      "sweAtlas": 36.2903225806452,
+      "costUsd": 0.7041831624949644,
+      "costStatus": "priced",
+      "timeSeconds": 469.291166748127,
+      "totalTokens": 551427.540500635,
+      "turns": 23.9591615075486,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "2b66aa9f8afa482977259846d9b207ba",
+      "model": "GPT-6.2 Sol",
+      "effort": "xHigh",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 49.7854108287173,
+      "frontierCode": 40.4363888888889,
+      "terminalBench": 57.5757575757576,
+      "sweAtlas": 51.3440860215054,
+      "costUsd": 0.8980194131553201,
+      "costStatus": "priced",
+      "timeSeconds": 755.824669517758,
+      "totalTokens": 3261840.41567312,
+      "turns": 42.627375909634,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "eb55a750b7784b3f03c16efc3c39e1ff",
+      "model": "GPT-6.2 Sol",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 48.6171442923862,
+      "frontierCode": 41.5340656565656,
+      "terminalBench": 58.0808080808081,
+      "sweAtlas": 46.2365591397849,
+      "costUsd": 1.2157296114476108,
+      "costStatus": "priced",
+      "timeSeconds": 1051.376479092,
+      "totalTokens": 4254921.74435613,
+      "turns": 45.1365808623873,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "2827f8a25558cdb94dfada79c70b0d8c",
+      "model": "GPT-6.2 Sol",
+      "effort": "Medium",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.166.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.166.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.166.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 45.3516511893125,
+      "frontierCode": 36.2911868686869,
+      "terminalBench": 49.494949494949495,
+      "sweAtlas": 50.2688172043011,
+      "costUsd": 0.5717863807280066,
+      "costStatus": "priced",
+      "timeSeconds": 505.937055827088,
+      "totalTokens": 2283352.00391897,
+      "turns": 40.359834908222,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    },
+    {
+      "sourceId": "44059b1749b7773326c3ee04acbfaba2",
+      "model": "GPT-6 Luna",
+      "effort": "Max",
+      "provider": "OpenAI",
+      "harness": "Codex",
+      "harnessVersion": "0.154.0",
+      "harnessVersions": {
+        "frontiercode-v2.0": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "swe-atlas-qna": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        },
+        "terminal-bench-v4": {
+          "min": {
+            "version": "0.154.0",
+            "dateReleased": null
+          },
+          "max": {
+            "version": "0.154.0",
+            "dateReleased": null
+          }
+        }
+      },
+      "index": 25.893788421853,
+      "frontierCode": 24.088989898989897,
+      "terminalBench": 15.151515151515198,
+      "sweAtlas": 38.4408602150538,
+      "costUsd": 0.19217143913196935,
+      "costStatus": "priced",
+      "timeSeconds": 1411.62542041382,
+      "totalTokens": 10141373.6729934,
+      "turns": 88.8330618008037,
+      "retainedAttempts": 966,
+      "fallbackModels": [],
+      "verifiedAt": "2026-11-19"
+    }
+  ]
+}
